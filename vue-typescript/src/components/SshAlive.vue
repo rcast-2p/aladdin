@@ -6,11 +6,10 @@
     <v-chip v-else color="red" dark>dead</v-chip>
   </div>
 </template>
-<script>
+<script lang="ts">
 import * as child from "child_process";
-// const exec = require("child_process");
-import axios from "axios";
-export default {
+import Vue from "vue";
+export default Vue.extend({
   data() {
     return {
       alive: true,
@@ -29,5 +28,5 @@ export default {
       });
     },
   },
-};
+});
 </script>

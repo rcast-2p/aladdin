@@ -5,8 +5,9 @@
     <v-btn @click="$store.commit('set_address', address)">Set</v-btn>
   </div>
 </template>
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({
   created() {
     this.$store.commit("set_address", "");
   },
@@ -15,6 +16,5 @@ export default {
       address: "",
     };
   },
-};
+});
 </script>
-<style></style>

@@ -5,6 +5,7 @@
       <v-spacer></v-spacer>
       <v-btn to="/webview">webview</v-btn>
       <v-btn to="/">home</v-btn>
+      <v-btn to="/graph">graph</v-btn>
     </v-app-bar>
 
     <v-content>
