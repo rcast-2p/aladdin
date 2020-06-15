@@ -93,21 +93,21 @@ export default Vue.extend({
     },
     fcolor_hex: {
       set(newval: string) {
-        let fcolor = this.fcolor;
+        const fcolor: { [s: string]: number } = this.fcolor;
         fcolor.r = parseInt(newval.slice(1, 3), 16);
         fcolor.g = parseInt(newval.slice(3, 5), 16);
         fcolor.b = parseInt(newval.slice(5, 7), 16);
       },
       get() {
-        let hex_u = function(color: { [s: string]: number }, rgb: string) {
+        const hexU = (color: { [s: string]: number }, rgb: string)=> {
           return ("0" + color[rgb].toString(16)).slice(-2);
         };
         console.log(this.svgname);
-        let fcolor = this.fcolor;
+        const fcolor: { [s: string]: number } = this.fcolor;
         console.log(this.fcolor);
-        return `#${hex_u(fcolor, "r")}${hex_u(fcolor, "g")}${hex_u(
+        return `#${hexU(fcolor, "r")}${hexU(fcolor, "g")}${hexU(
           fcolor,
-          "b"
+      "b"
         )}`;
       },
     },
@@ -118,11 +118,11 @@ export default Vue.extend({
         this.lcolor.b = parseInt(newval.slice(5, 7), 16);
       },
       get() {
-        let hex_u = function(color: { [s: string]: number }, rgb: string) {
+        const hexU = (color: { [s: string]: number }, rgb: string)=> {
           return ("0" + color[rgb].toString(16)).slice(-2);
         };
-        let lcolor = this.lcolor;
-        return `#${hex_u(lcolor, "r")}${hex_u(lcolor, "g")}${hex_u(
+        const lcolor: { [s: string]: number } = this.lcolor;
+        return `#${hexU(lcolor, "r")}${hexU(lcolor, "g")}${hexU(
           lcolor,
           "b"
         )}`;

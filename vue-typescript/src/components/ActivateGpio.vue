@@ -19,18 +19,18 @@ export default {
   data() {
     return {
       items: ["241", "172", "128", "76"],
-      values: []
+      values: [],
     };
   },
   methods: {
     driverRegister() {
-      let key_string = "";
-      for (let item of this.values) {
-        key_string += `${item} `;
+      let keyString = "";
+      for (const item of this.values) {
+        keyString += `${item} `;
       }
       const command =
         `ssh debian@${this.$store.state.address} ` +
-        `sh /home/debian/pulse/sample.sh ${key_string}`;
+        `sh /home/debian/pulse/sample.sh ${keyString}`;
       const foo = child.exec(command, (error, stdout, stderr) => {
         if (error) {
           this.alive = false;
@@ -40,7 +40,7 @@ export default {
           this.alive = true;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>

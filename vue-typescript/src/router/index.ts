@@ -7,29 +7,25 @@ const routes = [
   {
     path: "/webview",
     name: "webview",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Iframe.vue"),
+      import(/* webpackChunkName: "webview" */ "../views/Iframe.vue"),
   },
   {
     path: "/",
     name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
     path: "/graph",
     name: "graph",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Graph.vue"),
+      import(/* webpackChunkName: "graph" */ "../views/Graph.vue"),
+  },
+  {
+    path: "/pru",
+    name: "pru",
+    component: () => import(/* webpackChunkName: "pru" */ "../views/PRU.vue"),
   },
 ];
 
