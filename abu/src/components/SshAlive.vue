@@ -12,7 +12,7 @@ import { exec } from "child_process";
 export default Vue.extend({
   data() {
     return {
-      alive: true
+      alive: true,
     };
   },
   methods: {
@@ -27,7 +27,7 @@ export default Vue.extend({
           this.alive = true;
         }
       });
-    }
-  }
+    },
+  },
 });
 </script>

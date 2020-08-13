@@ -36,11 +36,11 @@ export default {
     return {
       loading: false,
       url: "",
-      webview: ""
+      webview: "",
     };
   },
   props: {
-    initUrl: { type: String, require: true, default: "https://qiita.com" }
+    initUrl: { type: String, require: true, default: "https://qiita.com" },
   },
   methods: {
     goBack() {
@@ -64,7 +64,7 @@ export default {
       if (event.isMainFrame) {
         this.url = event.url;
       }
-    }
+    },
   },
   mounted() {
     // 初期URLの設定
@@ -82,10 +82,10 @@ export default {
     });
 
     // commit eventの付与
-    this.webview.addEventListener("load-commit", e => {
+    this.webview.addEventListener("load-commit", (e) => {
       this.setUrlBar(e);
     });
-  }
+  },
 };
 </script>
 

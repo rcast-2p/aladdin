@@ -2,9 +2,9 @@ module.exports = {
   transpileDependencies: ["vuetify"],
   pluginOptions: {
     electronBuilder: {
-      nodeIntegration: true
-    }
-  }
+      nodeIntegration: true,
+    },
+  },
   // configureWebpack: config => {
   //   config.externals = {
   //     childprocess: 'require("electron").remote.require("child_process")'

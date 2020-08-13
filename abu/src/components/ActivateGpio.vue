@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       items: ["241", "172", "128", "76"],
-      values: []
+      values: [],
     };
   },
   methods: {
@@ -40,7 +40,7 @@ export default {
           this.alive = true;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>

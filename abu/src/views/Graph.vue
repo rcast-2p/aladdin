@@ -76,7 +76,7 @@ export default Vue.extend({
       xlabel: "time [ms]",
       ylabel: "PRUDAQ count [AU 0-1023]",
       every: 1000,
-      limit: -1
+      limit: -1,
     };
   },
   computed: {
@@ -106,7 +106,7 @@ export default Vue.extend({
         const fcolor: { [s: string]: number } = this.fcolor;
         console.log(this.fcolor);
         return `#${hexU(fcolor, "r")}${hexU(fcolor, "g")}${hexU(fcolor, "b")}`;
-      }
+      },
     },
     lcolorHex: {
       set(newval: string) {
@@ -120,8 +120,8 @@ export default Vue.extend({
         };
         const lcolor: { [s: string]: number } = this.lcolor;
         return `#${hexU(lcolor, "r")}${hexU(lcolor, "g")}${hexU(lcolor, "b")}`;
-      }
-    }
+      },
+    },
   },
 
   methods: {
@@ -135,7 +135,7 @@ export default Vue.extend({
           console.error(stderr);
         }
       });
-    }
-  }
+    },
+  },
 });
 </script>

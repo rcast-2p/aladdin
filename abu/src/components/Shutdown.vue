@@ -16,7 +16,7 @@ import * as child from "child_process";
 export default {
   data() {
     return {
-      valert: false
+      valert: false,
     };
   },
   methods: {
@@ -47,7 +47,7 @@ export default {
           this.alive = true;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>

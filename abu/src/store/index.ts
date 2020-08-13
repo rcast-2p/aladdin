@@ -6,7 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store<RootState>({
   state: {
-    address: ""
+    address: "",
   },
   mutations: {
     setAddress(state, address) {
@@ -18,8 +18,8 @@ export default new Vuex.Store<RootState>({
           state.address = localStorage.getItem("address") as string;
         }
       }
-    }
+    },
   },
   actions: {},
-  modules: {}
+  modules: {},
 });

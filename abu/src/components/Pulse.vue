@@ -63,7 +63,7 @@ export default {
       pulsed: "/sys/class/gpio/gpio76/value",
       cwccwd: "/sys/class/gpio/gpio128/value",
       revd: "/sys/class/gpio/gpio241/value",
-      alive: false
+      alive: false,
     };
   },
 
@@ -90,8 +90,8 @@ export default {
           this.alive = true;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

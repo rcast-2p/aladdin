@@ -22,7 +22,7 @@ export default {
     AddressInput,
     PulseOutput,
     ActivateGpio,
-    Shutdown
-  }
+    Shutdown,
+  },
 };
 </script>

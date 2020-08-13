@@ -1,0 +1,44 @@
+for(int r_i=0;r_i<rN;r_i++){
+  for(int i=0;i<N;i++){
+    one_pulse(5*N,1);
+    one_line_step(1,r_i%2);
+    one_pulse(5*N,2);
+    one_line_step(1,r_i%2);
+  }
+  for(int i=0;i<N;i++){
+    one_pulse(N,1);
+    one_line_step(1,r_i%2);
+    one_pulse(N,2);
+    one_line_step(1,r_i%2);
+  }
+  for(int i=0;i<N;i++){
+    one_pulse(5*N,1);
+    one_line_step(1,r_i%2);
+    one_pulse(5*N,2);
+    one_line_step(1,r_i%2);
+  }
+  for(int i=0;i<N;i++){
+    one_pulse(N,1);
+    one_line_step(1,r_i%2);
+    one_pulse(N,2);
+    one_line_step(1,r_i%2);
+  }
+  for(int i=0;i<N;i++){
+    one_pulse(5*N,1);
+    one_line_step(1,r_i%2);
+    one_pulse(5*N,2);
+    one_line_step(1,r_i%2);
+  }
+}
+
+- pin configuration (1-12)
+  2bit each (0-23)
+- E size (4 bit)
+  24-27
+- scan speed (4 bit)
+  28-31
+
+
+
+
+
