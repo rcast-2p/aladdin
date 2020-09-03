@@ -33,6 +33,7 @@ export default {
       menu: [
         { icon: "mdi-home", text: "Polymerization", to: "polymerization" },
         { icon: "mdi-home", text: "Plain", to: "scan" },
+        { icon: "mdi-home", text: "Viewer", to: "viewer" },
       ],
     };
   },

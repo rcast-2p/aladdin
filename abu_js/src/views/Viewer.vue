@@ -32,6 +32,47 @@
         <v-text-field label="height" v-model.number="config.height" outlined />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="4">
+        <v-switch label="verbosity" v-model="config.verbosity" />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field label="count" v-model.number="config.count" outlined />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field label="bufnum" v-model.number="config.bufnum" outlined />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field label="max" v-model.number="config.max" outlined />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field label="min" v-model.number="config.min" outlined />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field
+          label="retSteps"
+          v-model.number="config.retSteps"
+          outlined
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field
+          label="dataChan"
+          v-model.number="config.dataChan"
+          outlined
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field
+          label="threshold"
+          v-model.number="config.threshold"
+          outlined
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-switch label="img rebuild (no save)" v-model="config.imgRebuild" />
+      </v-col>
+    </v-row>
     <div id="canmom">
       <canvas id="canvas"></canvas>
     </div>
@@ -55,6 +96,15 @@ export default {
           address: "0.0.0.0",
           port: 8072,
         },
+        count: 10000,
+        bufnum: 15,
+        verbosity: true,
+        min: -1,
+        max: -1,
+        retSteps: 1,
+        dataChan: 0,
+        threshold: 100,
+        imgRebuild: false,
       },
       workerOn: false,
       worker: "",
@@ -130,7 +180,7 @@ export default {
 <style>
 #canvas {
   border: solid 1px black;
-  width: 200px;
-  height: 200px;
+  width: 512px;
+  height: 512px;
 }
 </style>

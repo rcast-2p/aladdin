@@ -16,16 +16,18 @@
           <v-col cols="4">
             <v-text-field
               label="scanWidth"
-              v-model="config.scanWidth"
+              v-model.number="config.scanWidth"
               suffix="um"
+              type="number"
               outlined
             />
           </v-col>
           <v-col cols="4">
             <v-text-field
               label="scanHeight"
-              v-model="config.scanHeight"
+              v-model.number="config.scanHeight"
               suffix="um"
+              type="number"
               outlined
             />
           </v-col>
@@ -56,6 +58,15 @@
               outlined
             />
           </v-col>
+          <v-col cols="4">
+            <v-select
+              label="invert"
+              v-model.number="config.invert"
+              :items="invertOptions"
+              type="number"
+              outlined
+            />
+          </v-col>
         </v-row>
         <v-row>
           {{ scanOverview }}
@@ -65,9 +76,27 @@
           <v-col cols="4">
             <v-text-field
               label="return step"
-              v-model="config.retStep"
+              v-model.number="config.retStep"
               suffix="um"
+              type="number"
               outlined
+            />
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              label="repeat num"
+              v-model.number="config.repeatNum"
+              type="number"
+              outlined
+            />
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              label="speed"
+              v-model.number="config.speed"
+              suffix="ms"
+              outlined
+              type="number"
             />
           </v-col>
         </v-row>
@@ -119,6 +148,9 @@
               type="number"
             />
           </v-col>
+          <v-col cols="12">
+            <v-data-table :headers="resultHeader" :items="resultItem" />
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -129,33 +161,47 @@ import axios from "@/plugins/axios";
 export default {
   data() {
     return {
+      resultItem: [],
+      resultHeader: [
+        { text: "command", value: "command" },
+        { text: "returncode", value: "returncode" },
+        { text: "stdout", value: "stdout" },
+        { text: "stderr", value: "stderr" },
+      ],
       config: {
         beagle: {
-          address: "0.0.0.0",
+          address: "192.168.2.101",
           port: 8070,
         },
         receiver: {
           port: 8060,
         },
+        invert: 1,
+        widthGo: 1,
+        widthCome: 1,
+        heightGo: 1,
+        heightCome: 1,
         scanWidth: 100,
         scanHeight: 100,
+        repeatNum: 10,
         zplainNum: 10,
         scanZscale: 10,
         scanResolution: 0.5,
+        speed: 1,
         retStep: 10.0,
         pinConfig: [
-          { name: "plsPin1", value: 1 },
-          { name: "CWPin1", value: 2 },
-          { name: "AWPin1", value: 3 },
-          { name: "RSPin1", value: 4 },
-          { name: "plsPin2", value: 5 },
-          { name: "CWPin2", value: 6 },
-          { name: "AWPin2", value: 7 },
-          { name: "RSPin2", value: 8 },
-          { name: "plsPin3", value: 9 },
-          { name: "CWPin3", value: 10 },
-          { name: "AWPin3", value: 11 },
-          { name: "RSPin3", value: 12 },
+          { name: "plsPin1", value: 0 },
+          { name: "CWPin1", value: 1 },
+          { name: "AWPin1", value: 2 },
+          { name: "RSPin1", value: 3 },
+          { name: "plsPin2", value: 4 },
+          { name: "CWPin2", value: 5 },
+          { name: "AWPin2", value: 6 },
+          { name: "RSPin2", value: 7 },
+          { name: "plsPin3", value: 8 },
+          { name: "CWPin3", value: 9 },
+          { name: "AWPin3", value: 10 },
+          { name: "RSPin3", value: 11 },
         ],
         pulseMode: [
           { name: "Driver1", value: false },
@@ -170,6 +216,10 @@ export default {
         { text: "2.0um (10div 6)", value: 2.0 },
         { text: "2.5um (8div 5)", value: 2.5 },
         { text: "4.0um (5div 4)", value: 5.0 },
+      ],
+      invertOptions: [
+        { text: "false", value: 0 },
+        { text: "true", value: 1 },
       ],
       showAdvConfig: true,
       fal: true,
@@ -188,11 +238,29 @@ export default {
       return `http://${this.config.beagle.address}:${this.config.beagle.port}`;
     },
   },
+  created() {
+    if (localStorage.getItem("scanConfig")) {
+      this.config = JSON.parse(localStorage.getItem("scanConfig"));
+    }
+  },
   methods: {
     async emergencyStop() {
-      alert("Emergency Stop");
+      const retval = await axios({
+        baseURL: this.bbBaseURL,
+        // baseURL: "http://localhost:8101/tms/send/",
+        url: "stop",
+        // url: "contract_detail.php",
+      });
+      console.log(retval.data);
+      this.resultItem = retval.data.retarr;
     },
     async configPost2BB() {
+      this.config.widthGo = this.config.scanWidth / this.config.scanResolution;
+      this.config.widthCome = this.config.scanWidth / this.config.retStep;
+      this.config.heightGo =
+        this.config.scanHeight / this.config.scanResolution;
+      this.config.heightCome = this.config.scanHeight / this.config.retStep;
+      localStorage.setItem("scanConfig", JSON.stringify(this.config));
       const retval = await axios({
         baseURL: this.bbBaseURL,
         // baseURL: "http://localhost:8101/tms/send/",
@@ -200,7 +268,7 @@ export default {
         // url: "contract_detail.php",
         data: this.config,
       });
-      console.log(retval.data);
+      this.resultItem = retval.data.retarr;
       // if(retval.data.status="success"){
       //   this.dialog=true;
       // }

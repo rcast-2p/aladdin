@@ -56,7 +56,7 @@
       <v-col cols="12" v-if="fal" xs="12" sm="12" md="6" lg="6" xl="6">
         <h2>pin configuration</h2>
         <v-row>
-          <v-col v-for="(pin, pkey) in config.pinConfig" :key="pkey" cols="3">
+          <v-col v-for="(pin, pkey) in config.pinConfigs" :key="pkey" cols="3">
             <v-text-field
               :label="pin.name"
               type="number"
@@ -130,7 +130,7 @@ export default {
         speed: 1,
         shape: 0,
         invert: 1,
-        pinConfig: [
+        pinConfigs: [
           { name: "plsPin1", value: 0 },
           { name: "CWPin1", value: 1 },
           { name: "AWPin1", value: 2 },
