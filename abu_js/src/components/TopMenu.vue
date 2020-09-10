@@ -31,9 +31,14 @@ export default {
     return {
       drawer: false,
       menu: [
-        { icon: "mdi-home", text: "Polymerization", to: "polymerization" },
-        { icon: "mdi-home", text: "Plain", to: "scan" },
-        { icon: "mdi-home", text: "Viewer", to: "viewer" },
+        {
+          icon: "mdi-printer-3d",
+          text: "Polymerization",
+          to: "polymerization",
+        },
+        { icon: "mdi-crop-square", text: "Plain", to: "scan" },
+        { icon: "mdi-image", text: "Viewer", to: "viewer" },
+        { icon: "mdi-pulse", text: "Oscillo", to: "oscillo" },
       ],
     };
   },

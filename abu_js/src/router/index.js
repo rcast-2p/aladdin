@@ -27,6 +27,12 @@ const routes = [
       import(/* webpackChunkName: "Viewer" */ "../views/Viewer.vue"),
   },
   {
+    path: "/oscillo",
+    name: "Oscillo",
+    component: () =>
+      import(/* webpackChunkName: "Oscillo" */ "../views/Oscillo.vue"),
+  },
+  {
     path: "*",
     redirect: "/polymerization",
   },
