@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import VueMeta from "vue-meta";
+
 Vue.use(VueRouter);
 Vue.use(VueMeta, {
   // optional pluginOptions
@@ -15,26 +16,30 @@ const routes = [
   {
     path: "/polymerization",
     name: "Polymerization",
-    component: () =>
-      import(
-        /* webpackChunkName: "Polymerization" */ "../views/Polymerization.vue"
-      ),
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Polymerization" */ "../views/Polymerization.vue"),
   },
   {
     path: "/viewer",
     name: "Viewer",
-    component: () =>
-      import(/* webpackChunkName: "Viewer" */ "../views/Viewer.vue"),
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Viewer" */ "../views/OldViewer.vue"),
+  },
+  {
+    path: "/viewer-test",
+    name: "Test",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Test" */ "../views/Test.vue"),
   },
   {
     path: "/oscillo",
     name: "Oscillo",
-    component: () =>
-      import(/* webpackChunkName: "Oscillo" */ "../views/Oscillo.vue"),
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Oscillo" */ "../views/Oscillo.vue"),
   },
   {
     path: "*",
-    redirect: "/polymerization",
+    redirect: "/scan",
   },
 ];
 

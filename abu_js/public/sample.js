@@ -1,4 +1,4 @@
-const socket = new WebSocket("ws://0.0.0.0:8070");
+const socket = new WebSocket("ws://0.0.0.0:8072");
 socket.binaryType = "arraybuffer";
 // 接続が開いたときのイベント
 let canvas = {};
@@ -11,7 +11,7 @@ let plusImageData = new ImageData(new Uint8ClampedArray([0, 0, 0, 0]), 1);
 
 // メッセージの待ち受け
 socket.addEventListener("message", (event) => {
-  let arr = new Uint8ClampedArray(event.data);
+  const arr = new Uint8ClampedArray(event.data);
   plusImageData = new ImageData(arr, width);
 });
 

@@ -86,6 +86,7 @@
 <script>
 // import Worker from "worker-loader!../worker/sample.worker";
 import axios from "@/plugins/axios";
+
 export default {
   data() {
     return {
@@ -146,6 +147,7 @@ export default {
       console.log(typeof this.worker);
       this.worker.postMessage(
         { canvas: offscreenCanvas, width: this.config.width },
+        // eslint-disable-next-line
         [offscreenCanvas]
       );
       this.worker.onmessage = (e) => {
@@ -169,7 +171,7 @@ export default {
         // baseURL: "http://localhost:8101/tms/send/",
         url: "signal",
         // url: "contract_detail.php",
-        data: { signum: signum },
+        data: { signum },
       });
       console.log(retval.data);
       this.resultItem = retval.data.retarr;

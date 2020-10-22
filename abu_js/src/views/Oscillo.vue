@@ -65,6 +65,7 @@
 <script>
 // import Worker from "worker-loader!../worker/sample.worker";
 import axios from "@/plugins/axios";
+
 export default {
   data() {
     return {
