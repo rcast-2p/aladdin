@@ -62,7 +62,7 @@
       </v-col>
     </v-row>
     <v-switch v-model="showRoiGraph" />
-    <roi :average="info.average" v-if="showRoiGraph" />
+    <roi :average="info.average" :count="count" v-if="showRoiGraph" />
     <v-row no-gutters class="py-2">
       <v-col cols="1">UDP</v-col>
       <v-col cols="11">
@@ -441,7 +441,7 @@ export default {
         minimum: 0,
         average: 0,
       },
-      showRoiGraph: false,
+      showRoiGraph: true,
       roiStyle: {
         top: "20px",
         left: "20px",
@@ -449,6 +449,7 @@ export default {
         height: "100px",
       },
       dialog: { show: false, text: "", title: "" },
+      count: 0,
     };
   },
   mounted() {
@@ -523,6 +524,7 @@ export default {
           minimum: e.data.minimum,
           average: e.data.average,
         };
+        this.count += 1;
       };
 
       canvas.addEventListener("mousedown", (e) => {
@@ -550,7 +552,7 @@ export default {
           if (this.mouse.pos[1] < this.mouse.pos[3]) {
             // eslint-disable-next-line
             sy = this.mouse.pos[1];
-            sh = this.mouse.pos[3] - this.mouse.pos[2];
+            sh = this.mouse.pos[3] - this.mouse.pos[1];
           } else {
             // eslint-disable-next-line
             sy = this.mouse.pos[3];
