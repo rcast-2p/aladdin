@@ -20,6 +20,7 @@ function step() {
   requestAnimationFrame(step);
 }
 
+// eslint-disable-next-line
 self.addEventListener("message", (event) => {
   console.log(event);
   canvas = event.data.canvas;
