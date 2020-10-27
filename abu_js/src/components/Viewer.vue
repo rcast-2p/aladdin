@@ -17,9 +17,52 @@
         hide-details="auto"
       />
     </v-row>
-    <div id="canmom">
-      <canvas id="canvas"></canvas>
-    </div>
+    <v-row>
+      <v-col cols="9">
+        <div id="canmom">
+          <canvas id="canvas"></canvas>
+          <div class="roi" :style="roiStyle" />
+        </div>
+      </v-col>
+
+      <v-col cols="3">
+        max
+        <span class="red--text text--darken-4 infofont">{{ info.maximum }}</span
+        ><br />
+        min
+        <span class="red--text text--lighten-2 infofont">{{
+          info.minimum
+        }}</span
+        ><br />
+        ave
+        <span class="pink--text text--darken-2 infofont">{{
+          Math.floor(info.average)
+        }}</span
+        ><br />
+        x0
+        <span class="blue--text text--lighten-2 infofont">{{
+          mouse.pos[0]
+        }}</span
+        ><br />
+        y0
+        <span class="blue--text text--lighten-2 infofont">{{
+          mouse.pos[1]
+        }}</span
+        ><br />
+        x1
+        <span class="blue--text text--lighten-2 infofont">{{
+          mouse.pos[2]
+        }}</span
+        ><br />
+        y1
+        <span class="blue--text text--lighten-2 infofont">{{
+          mouse.pos[3]
+        }}</span
+        ><br />
+      </v-col>
+    </v-row>
+    <v-switch v-model="showRoiGraph" />
+    <roi :average="info.average" v-if="showRoiGraph" />
     <v-row no-gutters class="py-2">
       <v-col cols="1">UDP</v-col>
       <v-col cols="11">
@@ -330,11 +373,17 @@
 <script>
 // import Worker from "worker-loader!../worker/sample.worker";
 import axios from "@/plugins/axios";
+import Roi from "@/components/Roi.vue";
 
 export default {
   props: { config: Object, imgWidth: Number },
+  components: { Roi },
   data() {
     return {
+      mouse: {
+        pos: [0, 0, 10, 10],
+        state: 0,
+      },
       loading: false,
       udp: {
         port: 60000,
@@ -387,6 +436,18 @@ export default {
       ],
       resultItem: [],
       description: "",
+      info: {
+        maximum: 0,
+        minimum: 0,
+        average: 0,
+      },
+      showRoiGraph: false,
+      roiStyle: {
+        top: "20px",
+        left: "20px",
+        width: "200px",
+        height: "100px",
+      },
       dialog: { show: false, text: "", title: "" },
     };
   },
@@ -445,18 +506,76 @@ export default {
       const { imgWidth } = this;
       canvas.width = imgWidth;
       canvas.height = this.config.scanYLength / this.config.yFResolution;
-      console.log("canvas width, height: ", imgWidth, canvas.height);
+
       const offscreenCanvas = canvas.transferControlToOffscreen();
       this.worker = new Worker("/sample.js");
       console.log(typeof this.worker);
+
+      localStorage.setItem("scanConfig", JSON.stringify(this.config));
       this.worker.postMessage(
-        { canvas: offscreenCanvas, width: imgWidth },
+        { canvas: offscreenCanvas, width: imgWidth, height: canvas.height },
         // eslint-disable-next-line
         [offscreenCanvas]
       );
       this.worker.onmessage = (e) => {
-        console.log(e.data);
+        this.info = {
+          maximum: e.data.maximum,
+          minimum: e.data.minimum,
+          average: e.data.average,
+        };
       };
+
+      canvas.addEventListener("mousedown", (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const xpos = this.mouse.state * 2 + 0;
+        const ypos = this.mouse.state * 2 + 1;
+        const xdoublepos = e.clientX - rect.left;
+        const ydoublepos = e.clientY - rect.top;
+        this.mouse.pos[xpos] = xdoublepos;
+        this.mouse.pos[ypos] = ydoublepos;
+        let sx;
+        let sy;
+        let sw;
+        let sh;
+        if (this.mouse.state === 1) {
+          if (this.mouse.pos[0] < this.mouse.pos[2]) {
+            // eslint-disable-next-line
+            sx = this.mouse.pos[0];
+            sw = this.mouse.pos[2] - this.mouse.pos[0];
+          } else {
+            // eslint-disable-next-line
+            sx = this.mouse.pos[2];
+            sw = this.mouse.pos[0] - this.mouse.pos[1];
+          }
+          if (this.mouse.pos[1] < this.mouse.pos[3]) {
+            // eslint-disable-next-line
+            sy = this.mouse.pos[1];
+            sh = this.mouse.pos[3] - this.mouse.pos[2];
+          } else {
+            // eslint-disable-next-line
+            sy = this.mouse.pos[3];
+            sh = this.mouse.pos[1] - this.mouse.pos[3];
+          }
+          this.roiStyle = {
+            top: `${sy}px`,
+            left: `${sx}px`,
+            width: `${sw}px`,
+            height: `${sh}px`,
+          };
+          sx = Math.floor((sx * canvas.width) / 512);
+          sy = Math.floor((sy * canvas.height) / 512);
+          sw = Math.floor((sw * canvas.width) / 512);
+          sh = Math.floor((sh * canvas.height) / 512);
+          if (sw === 0) {
+            sw = 1;
+          }
+          if (sh === 0) {
+            sh = 1;
+          }
+          this.worker.postMessage([sx, sy, sw, sh]);
+        }
+        this.mouse.state = (this.mouse.state + 1) % 2;
+      });
     },
     prudaqServe(uuid) {
       this.loading = true;
@@ -573,9 +692,19 @@ export default {
 };
 </script>
 <style>
+#canmom {
+  position: relative;
+}
 #canvas {
   border: solid 1px black;
   width: 512px;
   height: 512px;
+}
+.infofont {
+  font-size: 2rem;
+}
+.roi {
+  position: absolute;
+  border: solid 2px black;
 }
 </style>
