@@ -31,6 +31,13 @@ const routes = [
     // eslint-disable-next-line
     component: () => import(/* webpackChunkName: "Test" */ "../views/Test.vue"),
   },
+
+  {
+    path: "/colormap",
+    name: "colormap",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "colormap" */ "../views/ColorMap.vue"),
+  },
   {
     path: "/oscillo",
     name: "Oscillo",

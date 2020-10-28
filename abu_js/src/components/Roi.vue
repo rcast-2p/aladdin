@@ -9,13 +9,13 @@
     ></apexchart>
     <v-row>
       <v-col cols="3">
-        <v-text-field label="max" v-model="maximum" disabled="maxauto" />
+        <v-text-field label="max" v-model="maximum" :disabled="maxauto" />
       </v-col>
       <v-col cols="3">
         <v-switch v-model="maxauto" label="max auto" />
       </v-col>
       <v-col cols="3">
-        <v-text-field label="min" v-model="minimum" disabled="minauto" />
+        <v-text-field label="min" v-model="minimum" :disabled="minauto" />
       </v-col>
       <v-col cols="3">
         <v-switch v-model="minauto" label="min auto" />

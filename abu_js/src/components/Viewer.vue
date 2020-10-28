@@ -273,6 +273,14 @@
           </v-col>
           <v-col cols="3">
             <v-switch
+              label="png save"
+              v-model="fileSave.tiffSave"
+              outlined
+              dense
+            />
+          </v-col>
+          <v-col cols="3">
+            <v-switch
               label="raw data save"
               v-model="fileSave.rawDataSave"
               outlined
@@ -415,6 +423,7 @@ export default {
         rawDataSave: false,
         debug: "octo_test/",
         pngSave: false,
+        tiffSave: false,
         enabled: true,
       },
       verbosity: false,
@@ -514,7 +523,12 @@ export default {
 
       localStorage.setItem("scanConfig", JSON.stringify(this.config));
       this.worker.postMessage(
-        { canvas: offscreenCanvas, width: imgWidth, height: canvas.height },
+        {
+          canvas: offscreenCanvas,
+          width: imgWidth,
+          height: canvas.height,
+          colormap: JSON.parse(localStorage.getItem("colormap")),
+        },
         // eslint-disable-next-line
         [offscreenCanvas]
       );

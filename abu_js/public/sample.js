@@ -11,7 +11,7 @@ socket.addEventListener("open", () => {
   socket.send("Hello Server!");
 });
 let plusImageData = new ImageData(new Uint8ClampedArray([0, 0, 0, 0]), 1);
-
+let colormap = [];
 // メッセージの待ち受け
 socket.addEventListener("message", (event) => {
   const view = new DataView(event.data, 4 * height * width, 4);
@@ -41,6 +41,8 @@ self.addEventListener("message", (event) => {
     canvas = event.data.canvas;
     width = event.data.width;
     height = event.data.height;
+    colormap = event.data.colormap;
+    console.log(colormap);
     ctx = canvas.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     requestAnimationFrame(step);
