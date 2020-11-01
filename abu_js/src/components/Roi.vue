@@ -7,18 +7,48 @@
       :options="chartOptions"
       :series="series"
     ></apexchart>
-    <v-row>
-      <v-col cols="3">
-        <v-text-field label="max" v-model="maximum" :disabled="maxauto" />
+    <v-row no-gutters>
+      <v-col cols="2">
+        <v-chip dark>Y</v-chip>
       </v-col>
       <v-col cols="3">
+        <v-text-field
+          label="min"
+          v-model="minimum"
+          :disabled="minauto"
+          hide-details="auto"
+          dense
+        />
+      </v-col>
+      <v-col cols="2">
+        <v-switch v-model="minauto" label="min auto" />
+      </v-col>
+      <v-col cols="3">
+        <v-text-field
+          label="max"
+          v-model="maximum"
+          :disabled="maxauto"
+          hide-details="auto"
+          dense
+        />
+      </v-col>
+      <v-col cols="2">
         <v-switch v-model="maxauto" label="max auto" />
       </v-col>
-      <v-col cols="3">
-        <v-text-field label="min" v-model="minimum" :disabled="minauto" />
+      <v-col cols="2">
+        <v-chip dark>X</v-chip>
       </v-col>
-      <v-col cols="3">
-        <v-switch v-model="minauto" label="min auto" />
+      <v-col cols="6">
+        <v-text-field
+          suffix="sec"
+          label="daq time"
+          v-model.number="daqSec"
+          hide-details="auto"
+          dense
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-btn dark>reflect</v-btn>
       </v-col>
     </v-row>
   </div>
@@ -35,6 +65,8 @@ export default {
       minimum: 0,
       maxauto: true,
       minauto: true,
+      daqSec: 10,
+      x: 0,
       chartData: [],
       series: [
         {
@@ -80,7 +112,7 @@ export default {
           type: "numeric",
         },
         yaxis: {
-          decimalsInFloat: 2,
+          decimalsInFloat: 0,
         },
         legend: {
           show: false,
@@ -88,23 +120,30 @@ export default {
       },
     };
   },
+  methods: {
+    updateXRange() {
+      const data = [];
+      for (let i = 0; i < this.daqSec * 30; i += 1) {
+        data.push({ x: i / 30 - this.daqSec, y: 0 });
+      }
+      this.chartData = data;
+      this.$refs.chart.updateSeries([
+        {
+          data,
+        },
+      ]);
+      this.x = 0;
+    },
+  },
   mounted() {
-    const data = [];
-    for (let i = 0; i < 20; i += 1) {
-      data.push({ x: i - 20, y: 0 });
-    }
-    this.chartData = data;
-    this.$refs.chart.updateSeries([
-      {
-        data,
-      },
-    ]);
+    this.updateXRange();
   },
   watch: {
-    count(val) {
+    count() {
+      this.x += 1;
       const data = this.chartData;
       data.shift();
-      data.push({ x: val, y: this.average });
+      data.push({ x: this.x / 30, y: this.average });
       this.chartData = data;
       this.$refs.chart.updateSeries([
         {
@@ -112,6 +151,11 @@ export default {
         },
       ]);
     },
+    daqSec() {
+      this.updateXRange();
+    },
+    maxauto() {},
+    minauto() {},
   },
 };
 </script>

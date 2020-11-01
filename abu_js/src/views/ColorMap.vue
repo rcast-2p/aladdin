@@ -60,6 +60,6 @@ export default {
 #canvas {
   border: solid 1px black;
   width: 512px;
-  height: 512px;
+  height: 8px;
 }
 </style>

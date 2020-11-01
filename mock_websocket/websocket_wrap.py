@@ -19,12 +19,14 @@ class WebsocketWrap:
     count = 4
     frequency = 60
     savefile = "/tmp/work/websocket.bin"
+    input_file = ""
 
     def __init__(self):
         parser = argparse.ArgumentParser(
             description="tiff file websocket sender")
         parser.add_argument("--port", type=int, required=True)
         parser.add_argument("--savefile", type=str, default=self.savefile)
+        parser.add_argument("--input-file", type=str, default=self.input_file)
         parser.add_argument("--count", type=int, default=self.count)
         parser.add_argument("--frequency", type=int,
                             default=self.frequency, help="video rate: 60")
@@ -34,6 +36,7 @@ class WebsocketWrap:
         print(repr(parsed))
         self.port = parsed.port
         self.savefile = parsed.savefile
+        self.input_file = parsed.input_file
         self.count = parsed.count
         self.frequency = parsed.frequency
         self.pixel_dwell_time = parsed.pixel_dwell_time
@@ -64,12 +67,12 @@ class WebsocketWrap:
         packet_num = width*height * \
             self.frequency//(1000000*self.pixel_dwell_time)
         if packet_num == 0:
-            return [0, height, -1, -1, websocket_i, -1]
+            return [0, height, -1, -1, 1]
         pixel_num = (1000000/self.pixel_dwell_time)/self.frequency
         y_begin_accm = math.floor(websocket_i*pixel_num/width)
         y_end_accm = math.floor((websocket_i+1)*pixel_num/width)
-        new_z = 0
 
+        new_z = 0
         if y_begin_accm % height > (y_end_accm-1) % height:
             return [y_begin_accm % height, height, 0, y_end_accm % height, new_z]
 
@@ -79,66 +82,48 @@ class WebsocketWrap:
                 (websocket_i-1)*pixel_num/(width*height))
             if z_previous_index < z_current_index:
                 new_z = 1
+        else:
+            new_z = 1
         return [y_begin_accm % height, (y_end_accm-1) % height+1, -1, -1, new_z]
 
+    # pylint: disable=too-many-locals
     async def send_img_data(self, websocket, _):
         """
         main function send image data
         """
-        tiff_img = Image.open(
-            "/home/endo/Documents/2papp/receiver/mock_data/dummy_tiff/pref500.tiff")
+        tiff_img = Image.open(self.input_file)
 
         tiff_img.seek(0)
         (width, height) = tiff_img.size
-        packet_num = width*height * \
-            self.frequency//(1000000*self.pixel_dwell_time)
         n_frames = tiff_img.n_frames
         recvtxt = await websocket.recv()
         print(recvtxt)
         # while True:
-        if packet_num == 0:
-            for f_i in range(n_frames):
-                time_start = time.perf_counter()
+        f_i = -1
+        ui32arr = np.array([])
+        for w_i in range(self.count):
+            time_start = time.perf_counter()
+            y_coord = self.y_coord((width, height), w_i)
+            imgbytes = bytes(np.array(y_coord[:4], dtype=np.uint16))
+            print(y_coord)
+            if y_coord[4] == 1:
+                f_i = (f_i+1) % n_frames
                 tiff_img.seek(f_i)
-                ui32arr = np.asarray(tiff_img, dtype=np.uint32)
-                if not self.tiffsend:
-                    ui32arr += 255*(256**3)
-                ui32arr = np.append(ui32arr, np.array(
-                    [65536*f_i+1], dtype=np.uint32))
-                imgbytes = bytes(ui32arr)
-                time_ws_begin = time.perf_counter()
-                await websocket.send(imgbytes)
-                time_end = time.perf_counter()
-                print(time_end-time_start)
-                print("ws", time_end-time_ws_begin)
-                time.sleep(max(self.duration-time_end+time_start, 0))
-        else:
-            f_i = 0
-            tiff_img.seek(f_i)
-            ui32arr = np.asarray(tiff_img, dtype=np.uint32)
-            print(ui32arr.shape)
-            for w_i in range(self.count):
-                time_start = time.perf_counter()
-                y_coord = self.y_coord((width, height), w_i)
-                print(y_coord)
-                if y_coord[4] == 1:
-                    f_i = (f_i+1) % n_frames
-                    tiff_img.seek(f_i)
-                    ui32arr2 = np.asarray(tiff_img, dtype=np.uint32)
-                imgbytes = bytes(ui32arr[y_coord[0]:y_coord[1], :])
-                if y_coord[2] != -1:
-                    f_i = (f_i+1) % n_frames
-                    tiff_img.seek(f_i)
-                    ui32arr2 = np.asarray(tiff_img, dtype=np.uint32)
-                    imgbytes2 = bytes(
-                        ui32arr2[y_coord[2]:y_coord[3], :])
-                    imgbytes += imgbytes2
-                imgbytes += bytes(np.array(y_coord[:4], dtype=np.uint32))
-                print(len(imgbytes))
-                await websocket.send(imgbytes)
-                time_end = time.perf_counter()
-                print(time_end-time_start)
-                time.sleep(max(self.duration-time_end+time_start, 0))
+                ui32arr = np.asarray(tiff_img, dtype=np.uint16)
+            print(ui32arr.size)
+            imgbytes += bytes(ui32arr[y_coord[0]:y_coord[1], :])
+            if y_coord[2] != -1:
+                f_i = (f_i+1) % n_frames
+                tiff_img.seek(f_i)
+                ui32arr2 = np.asarray(tiff_img, dtype=np.uint16)
+                imgbytes2 = bytes(
+                    ui32arr2[y_coord[2]:y_coord[3], :])
+                imgbytes += imgbytes2
+            print(len(imgbytes))
+            await websocket.send(imgbytes)
+            time_end = time.perf_counter()
+            print(time_end-time_start)
+            time.sleep(max(self.duration-time_end+time_start, 0))
 
     async def recv_img_data(self):
         """

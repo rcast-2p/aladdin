@@ -61,6 +61,32 @@
         ><br />
       </v-col>
     </v-row>
+    <v-row no-gutters>
+      <v-col cols="2">
+        <v-text-field
+          label="min"
+          v-model.number="colormap.minimum"
+          type="number"
+          offset="9"
+          cols="2"
+          hide-details="auto"
+          dense
+        />
+      </v-col>
+      <v-col cols="6" offset="2">
+        <v-btn @click="reflect">reflect</v-btn>
+      </v-col>
+      <v-col cols="2">
+        <v-text-field
+          label="max"
+          v-model.number="colormap.maximum"
+          type="number"
+          hide-details="auto"
+          dense
+        />
+      </v-col>
+    </v-row>
+    <show-color-map />
     <v-switch v-model="showRoiGraph" />
     <roi :average="info.average" :count="count" v-if="showRoiGraph" />
     <v-row no-gutters class="py-2">
@@ -273,7 +299,7 @@
           </v-col>
           <v-col cols="3">
             <v-switch
-              label="png save"
+              label="tiff save"
               v-model="fileSave.tiffSave"
               outlined
               dense
@@ -382,15 +408,22 @@
 // import Worker from "worker-loader!../worker/sample.worker";
 import axios from "@/plugins/axios";
 import Roi from "@/components/Roi.vue";
+import ShowColorMap from "@/components/ShowColorMap.vue";
 
 export default {
   props: { config: Object, imgWidth: Number },
-  components: { Roi },
+  components: { Roi, ShowColorMap },
   data() {
     return {
       mouse: {
         pos: [0, 0, 10, 10],
         state: 0,
+      },
+      colormap: {
+        maximum: 1023,
+        minimum: 0,
+        maxauto: false,
+        minauto: false,
       },
       loading: false,
       udp: {
@@ -482,6 +515,9 @@ export default {
     },
   },
   methods: {
+    reflect() {
+      this.worker.postMessage(this.colormap);
+    },
     getDateString() {
       const da = new Date();
       const hashLetter0 = String.fromCharCode((da.getTime() % 26) + 97);
@@ -528,14 +564,16 @@ export default {
           width: imgWidth,
           height: canvas.height,
           colormap: JSON.parse(localStorage.getItem("colormap")),
+          maximum: this.colormap.maximum,
+          minimum: this.colormap.minimum,
         },
         // eslint-disable-next-line
         [offscreenCanvas]
       );
       this.worker.onmessage = (e) => {
         this.info = {
-          maximum: e.data.maximum,
-          minimum: e.data.minimum,
+          maximum: e.data.volMax,
+          minimum: e.data.volMin,
           average: e.data.average,
         };
         this.count += 1;
