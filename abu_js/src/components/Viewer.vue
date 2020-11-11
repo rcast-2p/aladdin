@@ -9,6 +9,7 @@
         >Worker Start</v-btn
       >
       <v-btn @click="receiverOnly" color="cyan darken-2" dark>receiver</v-btn>
+      <v-btn @click="prudaqOnly" :loading="loading">PRUDAQ</v-btn>
       <v-text-field
         v-model="description"
         placeholder="description"
@@ -447,8 +448,8 @@ export default {
       },
       websocket: {
         address: "0.0.0.0",
-        port: 6000,
-        interval: 0.1,
+        port: 8072,
+        interval: 100.0,
         enabled: true,
       },
       fileSave: {
@@ -686,10 +687,10 @@ export default {
       image.height = this.config.yFSteps;
       image.xFSteps = this.config.xFSteps;
       image.yFSteps = this.config.yFSteps;
-      image.zFSteps = this.config.zFSteps;
-      image.xBSteps = this.config.xBSteps;
-      image.yBSteps = this.config.yBSteps;
-      image.zBSteps = this.config.zBSteps;
+      image.zPages =
+        this.config.zFSteps *
+        this.config.xyRepeatNum *
+        this.config.xyzRepeatNum;
       const data = {
         udp,
         image,

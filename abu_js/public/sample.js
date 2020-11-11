@@ -29,7 +29,7 @@ let plusImageData = new ImageData(new Uint8ClampedArray([0, 0, 0, 0]), 1);
 let colormap = [];
 // メッセージの待ち受け
 socket.addEventListener("message", (event) => {
-  const view = new DataView(event.data, 0, 16);
+  const view = new DataView(event.data, 0, 8);
   const yBegin1 = view.getInt16(0, true);
   const yEnd1 = view.getInt16(2, true);
   const yBegin2 = view.getInt16(4, true);
@@ -43,6 +43,9 @@ socket.addEventListener("message", (event) => {
   if (yBegin1 === 0) {
     volMin = 65537;
     volMax = 0;
+  }
+  if (yBegin1 === 19) {
+    console.log(19, new Uint16Array(event.data));
   }
   for (let pI = 0; pI < sentDataSize1; pI += 1) {
     voltageView[pI + width * yBegin1] = vpView1[pI];
@@ -60,7 +63,7 @@ socket.addEventListener("message", (event) => {
     volMax = 0;
     for (let pI = 0; pI < sentDataSize2; pI += 1) {
       voltageView[pI + width * yBegin2] = vpView2[pI];
-      rgba[pI * width * yBegin2] =
+      rgba[pI + width * yBegin2] =
         colormap[clamp256(vpView2[pI], maximum, minimum)];
       if (vpView1[pI] < volMin) {
         volMin = vpView1[pI];
@@ -74,13 +77,11 @@ socket.addEventListener("message", (event) => {
   plusImageData = new ImageData(arr, width);
   let sum = 0;
   const [sx, sy, sw, sh] = pos;
-  console.log(pos);
   for (let y = sy; y < sy + sh; y += 1) {
     for (let x = sx; x < sx + sw; x += 1) {
       sum += voltageView[y * width + x];
     }
   }
-  console.log(sum);
   const average = sum / (sw * sh);
   postMessage({ volMax, volMin, average });
 });

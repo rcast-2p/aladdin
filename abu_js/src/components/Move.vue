@@ -15,6 +15,7 @@
       <v-btn @click="move(0)" dark color="blue" :loading="loading">X</v-btn>
       <v-btn @click="move(1)" dark color="indigo" :loading="loading">Y</v-btn>
       <v-btn @click="move(2)" dark color="purple" :loading="loading">Z</v-btn>
+      <v-icon @click="moveLength = -moveLength">mdi-plus-minus</v-icon>
     </v-col>
   </v-row>
 </template>

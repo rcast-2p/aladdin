@@ -57,7 +57,6 @@
             </v-row>
           </v-col>
         </v-row>
-
         <v-row no-gutters class="py-2">
           <v-col cols="1">time</v-col>
           <v-col cols="11">
@@ -235,7 +234,7 @@
                 <v-col cols="4">
                   <v-text-field
                     label="BBAI address"
-                    v-model.number="config.beagle.address"
+                    v-model="config.beagle.address"
                     hide-details="auto"
                     dense
                     outlined
@@ -449,15 +448,15 @@ export default {
       const uuid = this.$refs.viewer.getDateString();
       try {
         const retvals = await Promise.all([
-          this.scan2BBAI(uuid),
+          this.scan2BBAI(uuid, 0.5),
           this.$refs.viewer.receiverConfig(uuid),
           this.$refs.viewer.prudaqServe(uuid),
         ]);
         console.log(retvals);
         this.resultItem = [
-          ...retvals[0].data.retval,
-          ...retvals[1].data.retval,
-          // ...retvals[2].data.retval,
+          ...retvals[0].data.retarr,
+          ...retvals[1].data.retarr,
+          ...retvals[2].data.retarr,
         ];
       } catch (e) {
         console.error(e);
@@ -468,11 +467,12 @@ export default {
         this.loading = false;
         this.$refs.viewer.loading = false;
       }
+      this.$refs.viewer.webworkerStart();
     },
     async scanOnly() {
       const uuid = this.$refs.viewer.getDateString();
       try {
-        const retval = await this.scan2BBAI(uuid);
+        const retval = await this.scan2BBAI(uuid, 0);
         this.resultItem = retval.data.retarr;
       } catch (e) {
         console.error(e);
@@ -483,7 +483,8 @@ export default {
         this.loading = false;
       }
     },
-    scan2BBAI(uuid) {
+    scan2BBAI(uuid, delay = 0) {
+      console.log(delay);
       this.config.uuid = uuid;
       this.config.xFSteps = this.xFSteps;
       this.config.xBSteps = this.xBSteps;
@@ -496,7 +497,7 @@ export default {
       return axios({
         baseURL: this.bbBaseURL,
         url: "/stage/scan",
-        data: { ...this.config, command: "scan" },
+        data: { ...this.config, command: "scan", delay },
       });
     },
     clearStorage() {
