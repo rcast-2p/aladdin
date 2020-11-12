@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     async aom(aomOnoff) {
-      const baseData = AbuCommon.commomScanConfig(this.config);
+      const baseData = AbuCommon.commonScanConfig(this.config);
       try {
         this.loading = true;
         const retval = await axios({

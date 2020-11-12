@@ -230,6 +230,10 @@
           ref="viewer"
           :config="config"
           :imgWidth="imgWidth"
+          :imgHeight="imgHeight"
+          :zPageNum="zPageNum"
+          :xFSteps="xFSteps"
+          :yFSteps="yFSteps"
           :packetNum="packetNum"
         />
       </v-col>
@@ -324,6 +328,12 @@ export default {
   computed: {
     imgWidth() {
       return this.sLength.scanXLength;
+    },
+    imgHeight() {
+      return this.sLength.scanYLength;
+    },
+    zPageNum() {
+      return this.zFPlaneNum * this.sCom.xyRepeatNum * this.sCom.xyzRepeatNum;
     },
     onePlaneDuration() {
       const onePlaneXPulseNum = (this.xFSteps + this.xBSteps) * this.yFSteps;
@@ -448,12 +458,19 @@ export default {
       // localStorage.setItem("scanConfig", JSON.stringify(this.config));
       this.loading = true;
       const { db } = this.$store.state;
+
+      const baseData = AbuCommon.commonScanConfig({
+        sCom: this.sCom,
+        sSpeed: this.sSpeed,
+        pinConfig: this.pinConfig,
+        sReso: this.sReso,
+      });
       const sendData = {
         ...sendC,
-        uuid,
-        ...this.config,
+        ...baseData,
         command: "scan",
         delay,
+        ...this.sCom,
       };
       db.commands.insert(sendData, (err) => {
         if (err !== null) {

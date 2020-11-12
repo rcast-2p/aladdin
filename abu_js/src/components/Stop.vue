@@ -18,7 +18,7 @@ export default {
     async stop(goBack) {
       try {
         this.loading = true;
-        const baseData = AbuCommon.commomScanConfig(this.config);
+        const baseData = AbuCommon.commonScanConfig(this.config);
         const retval = await axios({
           data: {
             ...baseData,

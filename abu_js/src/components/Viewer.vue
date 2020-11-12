@@ -413,7 +413,12 @@ import ShowColorMap from "@/components/ShowColorMap.vue";
 import AbuCommon from "@/assets/js/abu_common";
 
 export default {
-  props: { config: Object, imgWidth: Number, packetNum: Number },
+  props: {
+    imgWidth: Number,
+    imgHeight: Number,
+    zPageNum: Number,
+    packetNum: Number,
+  },
   components: { Roi, ShowColorMap },
   data() {
     return {
@@ -439,7 +444,7 @@ export default {
       },
       image: {
         width: this.imgWidth,
-        height: this.config.yFSteps,
+        height: this.imgHeight,
         threshold: 0,
         refactoryPeriod: 0,
         dataChan: 0,
@@ -542,16 +547,15 @@ export default {
     webworkerStart() {
       this.workerOn = !this.workerOn;
       const canvas = document.getElementById("canvas");
-      console.log(this.config);
-      const { imgWidth } = this;
+      const { imgWidth, imgHeight } = this;
       canvas.width = imgWidth;
-      canvas.height = this.config.scanYLength / this.config.yFResolution;
+      canvas.height = imgHeight;
 
       const offscreenCanvas = canvas.transferControlToOffscreen();
       this.worker = new Worker("/sample.js");
       console.log(typeof this.worker);
 
-      localStorage.setItem("scanConfig", JSON.stringify(this.config));
+      // localStorage.setItem("scanConfig", JSON.stringify(this.config));
       this.worker.postMessage(
         {
           canvas: offscreenCanvas,
@@ -677,13 +681,10 @@ export default {
     receiverConfig(uuid) {
       const { udp, image, fileSave, websocket, verbosity, description } = this;
       image.width = this.imgWidth;
-      image.height = this.config.yFSteps;
-      image.xFSteps = this.config.xFSteps;
-      image.yFSteps = this.config.yFSteps;
-      image.zPages =
-        this.config.zFSteps *
-        this.config.xyRepeatNum *
-        this.config.xyzRepeatNum;
+      image.height = this.imgHeight;
+      image.xFSteps = this.xFSteps;
+      image.yFSteps = this.yFSteps;
+      image.zPages = this.zPageNum;
       const data = {
         udp,
         image,
@@ -693,7 +694,7 @@ export default {
         verbosity,
         description,
       };
-      localStorage.setItem("recvConfig", JSON.stringify(data));
+      // localStorage.setItem("recvConfig", JSON.stringify(data));
       return axios({
         baseURL: this.recvBaseURL,
         url: "receiver",

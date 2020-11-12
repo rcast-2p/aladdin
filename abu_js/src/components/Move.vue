@@ -39,25 +39,25 @@ export default {
         switch (direction) {
           case 0: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.sReso.xFResolution;
+              steps = this.moveLength / this.config.sReso.xFResolution;
             } else {
-              steps = this.moveLength / this.sReso.xFResolution;
+              steps = this.moveLength / this.config.sReso.xFResolution;
             }
             break;
           }
           case 1: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.sReso.yFResolution;
+              steps = this.moveLength / this.config.sReso.yFResolution;
             } else {
-              steps = this.moveLength / this.sReso.yFResolution;
+              steps = this.moveLength / this.config.sReso.yFResolution;
             }
             break;
           }
           case 2: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.sReso.zFResolution;
+              steps = this.moveLength / this.config.sReso.zFResolution;
             } else {
-              steps = this.moveLength / this.sReso.zBResolution;
+              steps = this.moveLength / this.config.sReso.zBResolution;
             }
             break;
           }
@@ -65,25 +65,11 @@ export default {
             break;
           }
         }
-        const {
-          speedX,
-          speedY,
-          speedZ,
-          aomOpenHl,
-          invert,
-          pinConfig,
-        } = this.config;
-        const uuid = AbuCommon.getDateString();
+        const baseData = AbuCommon.commonScanConfig(this.config);
         const sendData = {
           command: "move",
-          invert,
-          speedX,
-          speedY,
-          speedZ,
-          uuid,
-          aomOpenHl,
+          ...baseData,
           direction,
-          pinConfig,
           steps,
         };
         const { db } = this.$store.state;
