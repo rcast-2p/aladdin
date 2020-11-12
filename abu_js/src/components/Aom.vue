@@ -11,6 +11,7 @@
 </template>
 <script>
 import axios from "@/plugins/axios";
+import AbuCommon from "@/assets/js/abu_common";
 
 export default {
   props: { config: Object, bbBaseURL: String },
@@ -19,18 +20,14 @@ export default {
   },
   methods: {
     async aom(aomOnoff) {
+      const baseData = AbuCommon.commomScanConfig(this.config);
       try {
         this.loading = true;
-        const { uuid, speed, aomOpenHl, invert, pinConfig } = this.config;
         const retval = await axios({
           data: {
-            uuid,
+            ...baseData,
             command: "aom",
-            invert,
-            speed,
-            aomOpenHl,
             aomOnoff,
-            pinConfig,
           },
           baseURL: this.bbBaseURL,
           url: "/stage/scan",

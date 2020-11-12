@@ -3,282 +3,235 @@
     <h1>Stage Scan</h1>
     <v-row>
       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
-        <move-ctrl ref="move" :config="config" :bbBaseURL="bbBaseURL" />
-        <v-row no-gutters class="py-2">
-          <stop-ctrl ref="ctrl" :config="config" :bbBaseURL="bbBaseURL" />
-          <v-btn @click="scanOnly" dark color="green" :loading="loading"
-            >Scan Only</v-btn
-          >
-          <v-btn
-            @click="scanNReceive"
-            dark
-            color="green darken-4"
-            :loading="loading"
-            >Scan</v-btn
-          >
-        </v-row>
-        <v-row no-gutters class="py-2">
-          <v-col cols="1">space </v-col>
-          <v-col cols="11">
-            <v-row no-gutters>
-              <v-col cols="4">
-                <v-text-field
-                  label="scan x length"
-                  v-model.number="config.scanXLength"
-                  suffix="um"
-                  type="number"
-                  outlined
-                  hide-details="auto"
-                  dense
-                />
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  label="scanYLength"
-                  v-model.number="config.scanYLength"
-                  suffix="um"
-                  type="number"
-                  outlined
-                  hide-details="auto"
-                  dense
-                />
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  label="scanZLength"
-                  v-model.number="config.scanZLength"
-                  suffix="um"
-                  type="number"
-                  outlined
-                  hide-details="auto"
-                  dense
-                />
+        <v-tabs v-model="tab">
+          <v-tab href="#camera"> camera </v-tab>
+          <v-tab href="#scan"> scan </v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tab">
+          <v-tab-item value="camera">
+            <camera-pos />
+          </v-tab-item>
+          <v-tab-item value="scan">
+            <move-ctrl
+              ref="move"
+              :config="{ sCom, sSpeed, pinConfig, sReso }"
+              :bbBaseURL="bbBaseURL"
+            />
+            <v-row no-gutters class="py-2">
+              <stop-ctrl
+                ref="ctrl"
+                :config="{ sCom, sSpeed, pinConfig }"
+                :bbBaseURL="bbBaseURL"
+              />
+              <v-btn @click="scanOnly" dark color="green" :loading="loading"
+                >Scan Only</v-btn
+              >
+              <v-btn
+                @click="scanNReceive"
+                dark
+                color="green darken-4"
+                :loading="loading"
+                >Scan</v-btn
+              >
+            </v-row>
+            <v-row no-gutters class="py-2">
+              <v-col cols="1">space </v-col>
+              <v-col cols="11">
+                <v-row no-gutters>
+                  <v-col cols="3" v-for="(_, sI) in sLength" :key="sI">
+                    <v-text-field
+                      label="scan x length"
+                      v-model.number="sLength[sI]"
+                      suffix="um"
+                      type="number"
+                      outlined
+                      hide-details="auto"
+                      dense
+                    />
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
-        <v-row no-gutters class="py-2">
-          <v-col cols="1">time</v-col>
-          <v-col cols="11">
-            <v-row no-gutters>
-              <v-col cols="3">
-                <v-text-field
-                  label="xy repeat num"
-                  v-model.number="config.xyRepeatNum"
-                  type="number"
-                  outlined
-                  hide-details="auto"
-                  dense
-                />
-              </v-col>
-              <v-col cols="3">
-                <v-text-field
-                  label="xyz repeat num"
-                  v-model.number="config.xyzRepeatNum"
-                  type="number"
-                  outlined
-                  hide-details="auto"
-                  dense
-                  readonly
-                />
-              </v-col>
-              <v-col cols="3">
-                <v-text-field
-                  label="aom open us"
-                  v-model.number="config.aomOpenUs"
-                  suffix="us"
-                  outlined
-                  type="number"
-                  hide-details="auto"
-                  dense
-                />
-              </v-col>
-              <v-col cols="3">
-                <v-text-field
-                  label="speed / pixel dwell time"
-                  v-model.number="config.speed"
-                  suffix="us"
-                  outlined
-                  type="number"
-                  hide-details="auto"
-                  dense
-                />
+            <v-row no-gutters class="py-2">
+              <v-col cols="1">time</v-col>
+              <v-col cols="11">
+                <v-row no-gutters>
+                  <v-col cols="3">
+                    <v-text-field
+                      label="xy repeat num"
+                      v-model.number="sCom.xyRepeatNum"
+                      type="number"
+                      outlined
+                      hide-details="auto"
+                      dense
+                    />
+                  </v-col>
+                  <v-col cols="3">
+                    <v-text-field
+                      label="xyz repeat num"
+                      v-model.number="sCom.xyzRepeatNum"
+                      type="number"
+                      outlined
+                      hide-details="auto"
+                      dense
+                      readonly
+                    />
+                  </v-col>
+                  <v-col cols="3">
+                    <v-text-field
+                      label="aom open us"
+                      v-model.number="sCom.aomOpenUs"
+                      suffix="us"
+                      outlined
+                      type="number"
+                      hide-details="auto"
+                      dense
+                    />
+                  </v-col>
+                  <v-col cols="3" v-for="(_, sI) in sSpeed" :key="sI">
+                    <v-text-field
+                      :label="sI + ' speed / pixel dwell time'"
+                      v-model.number="sSpeed[sI]"
+                      suffix="us"
+                      outlined
+                      type="number"
+                      hide-details="auto"
+                      dense
+                    />
+                  </v-col>
+                  <v-col cols="3">
+                    <v-text-field
+                      label="sampling rate"
+                      v-model.number="config.samplingRate"
+                      suffix="MHz"
+                      outlined
+                      type="number"
+                      hide-details="auto"
+                      dense
+                    /> </v-col
+                ></v-row>
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
-        <v-row>
-          <ul>
-            <li>
-              {{ scanOverview[0] }}
-            </li>
-            <li>
-              {{ scanOverview[1] }}
-            </li>
-            <li>
-              {{ scanOverview[2] }}
-            </li>
-          </ul>
-        </v-row>
-        <aom ref="aom" :config="config" :bbBaseURL="bbBaseURL" />
-        <v-expansion-panels>
-          <v-expansion-panel>
-            <v-expansion-panel-header
-              >other configuration</v-expansion-panel-header
-            >
-            <v-expansion-panel-content>
-              <h2>resolution & invert</h2>
-              <v-row>
-                <v-col cols="3">
-                  <v-select
-                    label="x forward resolution"
-                    v-model="config.xFResolution"
-                    :items="resolutionOptions"
-                    outlined
-                    hide-details="auto"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="3">
-                  <v-select
-                    label="x backward resolution"
-                    v-model="config.xBResolution"
-                    :items="resolutionOptions"
-                    outlined
-                    hide-details="auto"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="3">
-                  <v-select
-                    label="y forward resolution"
-                    v-model="config.yFResolution"
-                    :items="resolutionOptions"
-                    outlined
-                    hide-details="auto"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="3">
-                  <v-select
-                    label="y backward resolution"
-                    v-model="config.yBResolution"
-                    :items="resolutionOptions"
-                    outlined
-                    hide-details="auto"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="3">
-                  <v-select
-                    label="z forward resolution"
-                    v-model="config.zFResolution"
-                    :items="resolutionOptions"
-                    outlined
-                    hide-details="auto"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="3">
-                  <v-select
-                    label="z backward resolution"
-                    v-model="config.zBResolution"
-                    :items="resolutionOptions"
-                    outlined
-                    hide-details="auto"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="3">
-                  <v-select
-                    label="invert"
-                    v-model.number="config.invert"
-                    :items="invertOptions"
-                    type="number"
-                    outlined
-                    hide-details="auto"
-                    dense
-                  />
-                </v-col>
-                <v-col cols="3">
-                  <v-select
-                    label="aom open"
-                    :items="[
-                      { text: 'high', value: 1 },
-                      { text: 'low', value: 0 },
-                    ]"
-                    v-model.number="config.aomOpenHl"
-                    outlined
-                    type="number"
-                    hide-details="auto"
-                    dense
-                  />
-                </v-col>
-              </v-row>
-              <h2>pin & address</h2>
-              <v-row>
-                <v-col
-                  v-for="(pin, pkey) in config.pinConfig"
-                  :key="pkey"
-                  cols="2"
+            <v-row>
+              <ul>
+                <li
+                  v-for="(scanOverviewE, scanOverviewI) in scanOverview"
+                  :key="scanOverviewI"
                 >
-                  <v-text-field
-                    :label="pin.name"
-                    type="number"
-                    v-model.number="pin.value"
-                    hide-details="auto"
-                    dense
-                    outlined
-                  />
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    label="BBAI address"
-                    v-model="config.beagle.address"
-                    hide-details="auto"
-                    dense
-                    outlined
-                  />
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    label="BBAI port"
-                    v-model.number="config.beagle.port"
-                    hide-details="auto"
-                    dense
-                    outlined
-                    type="number"
-                  />
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    label="RECV port"
-                    v-model.number="config.receiver.port"
-                    hide-details="auto"
-                    dense
-                    outlined
-                    type="number"
-                  />
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-        <v-row no-gutters class="py-2">
-          <v-col cols="12">
-            <v-data-table :headers="resultHeader" :items="resultItem">
-              <template v-slot:[`item.stderr`]="{ item }">
-                <span class="red--text">{{ item.stderr }}</span>
-              </template>
-            </v-data-table>
-          </v-col>
-          <v-col cols="12">
-            <v-btn @click="clearStorage">clear scanMemory</v-btn>
-          </v-col>
-        </v-row>
+                  {{ scanOverviewE }}
+                </li>
+              </ul>
+            </v-row>
+            <aom
+              ref="aom"
+              :config="{ sCom, sSpeed, pinConfig }"
+              :bbBaseURL="bbBaseURL"
+            />
+            <v-expansion-panels>
+              <v-expansion-panel>
+                <v-expansion-panel-header
+                  >other configuration</v-expansion-panel-header
+                >
+                <v-expansion-panel-content>
+                  <h2>resolution & invert</h2>
+                  <v-row>
+                    <v-col cols="3" v-for="(_, sI) in sReso" :key="sI">
+                      <v-select
+                        label="sI"
+                        v-model="sReso[sI]"
+                        :items="resolutionOptions"
+                        outlined
+                        hide-details="auto"
+                        dense
+                      />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-select
+                        label="invert"
+                        v-model.number="sCom.invert"
+                        :items="invertOptions"
+                        type="number"
+                        outlined
+                        hide-details="auto"
+                        dense
+                      />
+                    </v-col>
+                    <v-col cols="3">
+                      <v-select
+                        label="aom open"
+                        :items="[
+                          { text: 'high', value: 1 },
+                          { text: 'low', value: 0 },
+                        ]"
+                        v-model.number="sCom.aomOpenHl"
+                        outlined
+                        type="number"
+                        hide-details="auto"
+                        dense
+                      />
+                    </v-col>
+                  </v-row>
+                  <h2>pin & address</h2>
+                  <v-row>
+                    <v-col
+                      v-for="(pin, pkey) in config.pinConfig"
+                      :key="pkey"
+                      cols="2"
+                    >
+                      <v-text-field
+                        :label="pin.name"
+                        type="number"
+                        v-model.number="pin.value"
+                        hide-details="auto"
+                        dense
+                        outlined
+                      />
+                    </v-col>
+                    <v-col cols="4">
+                      <v-text-field
+                        label="BBAI address"
+                        v-model="bbai.address"
+                        hide-details="auto"
+                        dense
+                        outlined
+                      />
+                    </v-col>
+                    <v-col cols="4">
+                      <v-text-field
+                        label="BBAI port"
+                        v-model.number="bbai.port"
+                        hide-details="auto"
+                        dense
+                        outlined
+                        type="number"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+            <v-row no-gutters class="py-2">
+              <v-col cols="12">
+                <v-data-table :headers="resultHeader" :items="resultItem">
+                  <template v-slot:[`item.stderr`]="{ item }">
+                    <span class="red--text">{{ item.stderr }}</span>
+                  </template>
+                </v-data-table>
+              </v-col>
+              <v-col cols="12">
+                <v-btn @click="clearStorage">clear scanMemory</v-btn>
+              </v-col>
+            </v-row>
+          </v-tab-item>
+        </v-tabs-items>
       </v-col>
       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
-        <viewer ref="viewer" :config="config" :imgWidth="imgWidth" />
+        <viewer
+          ref="viewer"
+          :config="config"
+          :imgWidth="imgWidth"
+          :packetNum="packetNum"
+        />
       </v-col>
     </v-row>
     <v-dialog v-model="dialog.show"
@@ -292,9 +245,11 @@
 <script>
 import MoveCtrl from "@/components/Move.vue";
 import StopCtrl from "@/components/Stop.vue";
+import CameraPos from "@/components/CameraPos.vue";
 import axios from "@/plugins/axios";
 import Viewer from "@/components/Viewer.vue";
 import Aom from "@/components/Aom.vue";
+import AbuCommon from "@/assets/js/abu_common";
 
 export default {
   data() {
@@ -306,54 +261,49 @@ export default {
         { text: "stdout", value: "stdout" },
         { text: "stderr", value: "stderr" },
       ],
-      config: {
-        uuid: "rcast_2p",
-        beagle: {
-          address: "192.168.2.101",
-          port: 8070,
-        },
-        receiver: {
-          port: 8060,
-        },
-        error: "",
+      tab: null,
+      bbai: {
+        address: "192.168.2.101",
+        port: 8070,
+      },
+      sCom: {
         invert: 1,
-        xFSteps: 1,
-        xBSteps: 1,
-        yFSteps: 1,
-        yBSteps: 1,
+        aomOpenUs: 1.0,
+        aomOpenHl: 1,
+        xyRepeatNum: 1,
+        xyzRepeatNum: 1,
+      },
+      sSpeed: {
+        x: 500,
+        y: 500,
+        z: 500,
+      },
+      sLength: {
         scanXLength: 100,
         scanYLength: 100,
         scanZLength: 100,
-        repeatNum: 10,
-        zplainNum: 10,
-        scanZscale: 10,
+        scanZELength: 100,
+      },
+      sReso: {
         xFResolution: 1.0,
         xBResolution: 1.0,
         yFResolution: 1.0,
         yBResolution: 1.0,
         zFResolution: 1.0,
         zBResolution: 1.0,
-        speed: 1,
-        aomOpenUs: 1.0,
-        aomOpenHl: 1,
-        retStep: 10.0,
-        pinConfig: [
-          { name: "plsPin1", value: 1 },
-          { name: "dirPin1", value: 2 },
-          { name: "plsPin2", value: 3 },
-          { name: "dirPin2", value: 4 },
-          { name: "plsPin3", value: 5 },
-          { name: "dirPin3", value: 6 },
-          { name: "aomPin", value: 7 },
-        ],
-        pulseMode: [
-          { name: "Driver1", value: false },
-          { name: "Driver2", value: false },
-          { name: "Driver3", value: false },
-        ],
-        xyRepeatNum: 1,
-        xyzRepeatNum: 1,
       },
+      config: {
+        samplingRate: 6.25,
+      },
+      pinConfig: [
+        { name: "plsPin1", value: 1 },
+        { name: "dirPin1", value: 2 },
+        { name: "plsPin2", value: 3 },
+        { name: "dirPin2", value: 4 },
+        { name: "plsPin3", value: 5 },
+        { name: "dirPin3", value: 6 },
+        { name: "aomPin", value: 7 },
+      ],
       resolutionOptions: [
         { text: "0.2 um (10 div 6)", value: 0.2 },
         { text: "0.25 um (8 div 5)", value: 0.25 },
@@ -367,85 +317,88 @@ export default {
         { text: "false", value: 0 },
         { text: "true", value: 1 },
       ],
-      showAdvConfig: true,
       loading: false,
       dialog: { show: false, text: "", title: "" },
     };
   },
   computed: {
     imgWidth() {
-      return this.config.scanXLength;
+      return this.sLength.scanXLength;
+    },
+    onePlaneDuration() {
+      const onePlaneXPulseNum = (this.xFSteps + this.xBSteps) * this.yFSteps;
+
+      return (
+        (onePlaneXPulseNum * this.sSpeed.x + this.yBSteps * this.sSpeed.y) /
+        1000
+      );
+    },
+    packetNum() {
+      const zMoveDuration =
+        ((this.zFSteps + this.zBSteps) * this.sSpeed.z) / 1000;
+      const totalDuration =
+        (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zFPlaneNum +
+          zMoveDuration) *
+        this.sCom.xyzRepeatNum;
+      const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
+      const packetPlus = (
+        (5000 * this.config.samplingRate * 1000) / 16000 +
+        packets
+      ).toFixed(0);
+      return Number(packetPlus);
     },
     scanOverview() {
-      const wPixel = this.config.scanXLength / this.config.xFResolution;
-      const wRetPixel = this.config.scanXLength / this.config.xBResolution;
-      const hPixel = this.config.scanYLength / this.config.yFResolution;
-      const hRetPixel = this.config.scanYLength / this.config.yFResolution;
-      const onePlanePulseNum = (wPixel + wRetPixel) * hPixel + hRetPixel;
-      const onePlaneDuration = (onePlanePulseNum * this.config.speed) / 1000;
-      const zPixel = this.config.scanZLength / this.config.zFResolution;
-      const zRetPixel = this.config.scanZLength / this.config.zBResolution;
+      const { xFSteps, xBSteps, yFSteps, yBSteps, zFSteps, zBSteps } = this;
+      const zMoveDuration = ((zFSteps + zBSteps) * this.sSpeed.z) / 1000;
       const totalDuration =
-        ((onePlanePulseNum * this.config.xyRepeatNum * zPixel + zRetPixel) *
-          this.config.speed) /
-        1000;
-      const packets = totalDuration / 1.6;
+        (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zFPlaneNum +
+          zMoveDuration) *
+        this.sCom.xyzRepeatNum;
+      const totalSec = (totalDuration / 60000).toFixed(1);
+      const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
       return [
-        `single xy: (${wPixel}+${wRetPixel}) x ${hPixel} + ${hRetPixel}=${onePlaneDuration} ms`,
-        `      total: (${onePlaneDuration} x ${this.config.xyRepeatNum} x ${zPixel} + ${zRetPixel}) x ${this.config.xyzRepeatNum} =  ${totalDuration} ms`,
-        `${packets} packets`,
+        `single xy: ((${xFSteps}+${xBSteps}) x ${yFSteps} x ${this.sSpeed.x} + ${yBSteps} x ${this.sSpeed.y}) / 1000=${this.onePlaneDuration} ms`,
+        `z plane num: ${this.zFPlaneNum}`,
+        `      total: (${this.onePlaneDuration} x ${this.sCom.xyzRepeatNum} x ${this.zFPlaneNum} + ${zMoveDuration}) x ${this.sCom.xyzRepeatNum} =  ${totalDuration} ms (${totalSec} sec)`,
+        `${packets.toFixed(1)} packets (${this.packetNum}) `,
       ];
     },
     bbBaseURL() {
-      return `http://${this.config.beagle.address}:${this.config.beagle.port}`;
+      return `http://${this.bbai.address}:${this.bbai.port}`;
     },
     xFSteps() {
-      return this.config.scanXLength / this.config.xFResolution;
+      return this.sLength.scanXLength / this.sReso.xFResolution;
     },
     xBSteps() {
-      return this.config.scanXLength / this.config.xBResolution;
+      return this.sLength.scanXLength / this.sReso.xBResolution;
     },
     yFSteps() {
-      return this.config.scanYLength / this.config.yFResolution;
+      return this.sLength.scanYLength / this.sReso.yFResolution;
     },
     yBSteps() {
-      return this.config.scanYLength / this.config.yBResolution;
+      return this.sLength.scanYLength / this.sReso.yBResolution;
     },
     zFSteps() {
-      return this.config.scanZLength / this.config.zFResolution;
+      return this.sLength.scanZLength / this.sReso.zFResolution;
     },
     zBSteps() {
-      return this.config.scanZLength / this.config.zBResolution;
+      return this.sLength.scanZLength / this.sReso.zBResolution;
     },
-  },
-  watch: {
-    xFSteps(val) {
-      this.config.xFSteps = val;
+    zFESteps() {
+      return this.sLength.scanZELength / this.sReso.zFResolution;
     },
-    xBSteps(val) {
-      this.config.xBSteps = val;
-    },
-    yFSteps(val) {
-      this.config.yFSteps = val;
-    },
-    yBSteps(val) {
-      this.config.yBSteps = val;
-    },
-    zFSteps(val) {
-      this.config.zFSteps = val;
-    },
-    zBSteps(val) {
-      this.config.zBSteps = val;
+    zFPlaneNum() {
+      return this.sLength.scanZLength / this.sLength.scanZELength;
     },
   },
   created() {
     if (localStorage.getItem("scanConfig")) {
-      this.config = JSON.parse(localStorage.getItem("scanConfig"));
+      // this.config = JSON.parse(localStorage.getItem("scanConfig"));
     }
   },
   methods: {
     async scanNReceive() {
-      const uuid = this.$refs.viewer.getDateString();
+      const uuid = AbuCommon.getDateString();
       try {
         const retvals = await Promise.all([
           this.scan2BBAI(uuid, 0.5),
@@ -470,7 +423,7 @@ export default {
       this.$refs.viewer.webworkerStart();
     },
     async scanOnly() {
-      const uuid = this.$refs.viewer.getDateString();
+      const uuid = AbuCommon.getDateString();
       try {
         const retval = await this.scan2BBAI(uuid, 0);
         this.resultItem = retval.data.retarr;
@@ -484,24 +437,37 @@ export default {
       }
     },
     scan2BBAI(uuid, delay = 0) {
-      console.log(delay);
-      this.config.uuid = uuid;
-      this.config.xFSteps = this.xFSteps;
-      this.config.xBSteps = this.xBSteps;
-      this.config.yFSteps = this.yFSteps;
-      this.config.yBSteps = this.yBSteps;
-      this.config.zFSteps = this.zFSteps;
-      this.config.zBSteps = this.zBSteps;
-      localStorage.setItem("scanConfig", JSON.stringify(this.config));
+      const sendC = {};
+      sendC.xFSteps = this.xFSteps;
+      sendC.xBSteps = this.xBSteps;
+      sendC.yFSteps = this.yFSteps;
+      sendC.yBSteps = this.yBSteps;
+      sendC.zFESteps = this.zFESteps;
+      sendC.zFPlaneNum = this.zFPlaneNum;
+      sendC.zBSteps = this.zBSteps;
+      // localStorage.setItem("scanConfig", JSON.stringify(this.config));
       this.loading = true;
+      const { db } = this.$store.state;
+      const sendData = {
+        ...sendC,
+        uuid,
+        ...this.config,
+        command: "scan",
+        delay,
+      };
+      db.commands.insert(sendData, (err) => {
+        if (err !== null) {
+          console.error(err);
+        }
+      });
       return axios({
         baseURL: this.bbBaseURL,
         url: "/stage/scan",
-        data: { ...this.config, command: "scan", delay },
+        data: sendData,
       });
     },
     clearStorage() {
-      localStorage.removeItem("scanConfig");
+      // localStorage.removeItem("scanConfig");
       this.dialog = {
         title: "localStorage.scanConfig",
         text: "cleared",
@@ -509,6 +475,6 @@ export default {
       };
     },
   },
-  components: { MoveCtrl, StopCtrl, Viewer, Aom },
+  components: { MoveCtrl, CameraPos, StopCtrl, Viewer, Aom },
 };
 </script>

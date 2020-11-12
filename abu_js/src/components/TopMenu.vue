@@ -31,13 +31,7 @@ export default {
     return {
       drawer: false,
       menu: [
-        {
-          icon: "mdi-printer-3d",
-          text: "Polymerization",
-          to: "polymerization",
-        },
         { icon: "mdi-crop-square", text: "Plain", to: "scan" },
-        { icon: "mdi-image", text: "Viewer", to: "viewer" },
         { icon: "mdi-pulse", text: "Oscillo", to: "oscillo" },
       ],
     };

@@ -88,6 +88,13 @@
       </v-col>
     </v-row>
     <show-color-map />
+    <v-row no-gutters class="py-2">
+      <v-btn @click="prudaqOnly" :loading="loading">PRUDAQ</v-btn>
+      <v-btn @click="sendSignal(2)" dark color="indigo">SIGINT</v-btn>
+      <v-btn @click="sendSignal(9)">SIGKILL</v-btn>
+      <v-btn @click="showPs">PS</v-btn>
+      <v-btn @click="clearStorage">clear recvMemory</v-btn>
+    </v-row>
     <v-switch v-model="showRoiGraph" />
     <roi :average="info.average" :count="count" v-if="showRoiGraph" />
     <v-row no-gutters class="py-2">
@@ -390,13 +397,6 @@
         </v-data-table>
       </v-col>
     </v-row>
-    <v-row no-gutters class="py-2">
-      <v-btn @click="prudaqOnly" :loading="loading">PRUDAQ</v-btn>
-      <v-btn @click="sendSignal(2)" dark color="indigo">SIGINT</v-btn>
-      <v-btn @click="sendSignal(9)">SIGKILL</v-btn>
-      <v-btn @click="showPs">PS</v-btn>
-      <v-btn @click="clearStorage">clear recvMemory</v-btn>
-    </v-row>
     <v-dialog v-model="dialog.show"
       ><v-card
         ><v-card-title>{{ dialog.title }}</v-card-title
@@ -410,9 +410,10 @@
 import axios from "@/plugins/axios";
 import Roi from "@/components/Roi.vue";
 import ShowColorMap from "@/components/ShowColorMap.vue";
+import AbuCommon from "@/assets/js/abu_common";
 
 export default {
-  props: { config: Object, imgWidth: Number },
+  props: { config: Object, imgWidth: Number, packetNum: Number },
   components: { Roi, ShowColorMap },
   data() {
     return {
@@ -506,6 +507,7 @@ export default {
       this.verbosity = recvConfig.verbosity;
       this.description = recvConfig.description;
     }
+    this.udp.count = this.packetNum;
   },
   computed: {
     recvBaseURL() {
@@ -515,23 +517,14 @@ export default {
       return `http://${this.prudaq.address}:${this.prudaq.port}`;
     },
   },
+  watch: {
+    packetNum(val) {
+      this.udp.count = val;
+    },
+  },
   methods: {
     reflect() {
       this.worker.postMessage(this.colormap);
-    },
-    getDateString() {
-      const da = new Date();
-      const hashLetter0 = String.fromCharCode((da.getTime() % 26) + 97);
-      const hashLetter1 = String.fromCharCode((da.getSeconds() % 26) + 97);
-      const day =
-        da.getFullYear() * 10000 + (da.getMonth() + 1) * 100 + da.getDate();
-      const time =
-        1000000 +
-        da.getHours() * 10000 +
-        da.getMinutes() * 100 +
-        da.getSeconds();
-      const timeStr = String(time).slice(1);
-      return `${hashLetter0}${hashLetter1}${day}-${timeStr}`;
     },
     reset() {
       if (typeof this.worker === "object") {
@@ -648,7 +641,7 @@ export default {
       });
     },
     async prudaqOnly() {
-      const uuid = this.getDateString();
+      const uuid = AbuCommon.getDateString();
       try {
         const retval = await this.prudaqServe(uuid);
         console.log(retval.data);
@@ -665,7 +658,7 @@ export default {
       }
     },
     async receiverOnly() {
-      const uuid = this.getDateString();
+      const uuid = AbuCommon.getDateString();
       try {
         const retval = await this.receiverConfig(uuid);
         console.log(retval.data);

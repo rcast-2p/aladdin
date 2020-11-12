@@ -7,6 +7,7 @@
 </template>
 <script>
 import axios from "@/plugins/axios";
+import AbuCommon from "@/assets/js/abu_common";
 
 export default {
   props: { config: Object, bbBaseURL: String },
@@ -17,16 +18,12 @@ export default {
     async stop(goBack) {
       try {
         this.loading = true;
-        const { uuid, speed, aomOpenHl, invert, pinConfig } = this.config;
+        const baseData = AbuCommon.commomScanConfig(this.config);
         const retval = await axios({
           data: {
-            uuid,
+            ...baseData,
             command: "stop",
-            invert,
-            speed,
-            aomOpenHl,
             goBack,
-            pinConfig,
           },
           baseURL: this.bbBaseURL,
           url: "/stage/scan",

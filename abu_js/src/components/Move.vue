@@ -21,6 +21,7 @@
 </template>
 <script>
 import axios from "@/plugins/axios";
+import AbuCommon from "@/assets/js/abu_common";
 
 export default {
   props: { config: Object, bbBaseURL: String },
@@ -38,25 +39,25 @@ export default {
         switch (direction) {
           case 0: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.config.xFResolution;
+              steps = this.moveLength / this.sReso.xFResolution;
             } else {
-              steps = this.moveLength / this.config.xFResolution;
+              steps = this.moveLength / this.sReso.xFResolution;
             }
             break;
           }
           case 1: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.config.yFResolution;
+              steps = this.moveLength / this.sReso.yFResolution;
             } else {
-              steps = this.moveLength / this.config.yFResolution;
+              steps = this.moveLength / this.sReso.yFResolution;
             }
             break;
           }
           case 2: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.config.zFResolution;
+              steps = this.moveLength / this.sReso.zFResolution;
             } else {
-              steps = this.moveLength / this.config.zFResolution;
+              steps = this.moveLength / this.sReso.zBResolution;
             }
             break;
           }
@@ -64,18 +65,35 @@ export default {
             break;
           }
         }
-        const { uuid, speed, aomOpenHl, invert, pinConfig } = this.config;
+        const {
+          speedX,
+          speedY,
+          speedZ,
+          aomOpenHl,
+          invert,
+          pinConfig,
+        } = this.config;
+        const uuid = AbuCommon.getDateString();
+        const sendData = {
+          command: "move",
+          invert,
+          speedX,
+          speedY,
+          speedZ,
+          uuid,
+          aomOpenHl,
+          direction,
+          pinConfig,
+          steps,
+        };
+        const { db } = this.$store.state;
+        db.commands.insert(sendData, (err) => {
+          if (err !== null) {
+            console.error(err);
+          }
+        });
         const retval = await axios({
-          data: {
-            command: "move",
-            invert,
-            speed,
-            uuid,
-            aomOpenHl,
-            direction,
-            pinConfig,
-            steps,
-          },
+          data: sendData,
           baseURL: this.bbBaseURL,
           url: "/stage/scan",
         });

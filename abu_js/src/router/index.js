@@ -14,25 +14,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "Scan" */ "../views/Scan.vue"),
   },
   {
-    path: "/polymerization",
-    name: "Polymerization",
-    // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "Polymerization" */ "../views/Polymerization.vue"),
-  },
-  {
-    path: "/viewer",
-    name: "Viewer",
-    // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "Viewer" */ "../views/OldViewer.vue"),
-  },
-  {
-    path: "/viewer-test",
-    name: "Test",
-    // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "Test" */ "../views/Test.vue"),
-  },
-
-  {
     path: "/colormap",
     name: "colormap",
     // eslint-disable-next-line
