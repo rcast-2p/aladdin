@@ -418,6 +418,8 @@ export default {
     imgHeight: Number,
     zPageNum: Number,
     packetNum: Number,
+    xFSteps: Number,
+    yFSteps: Number,
   },
   components: { Roi, ShowColorMap },
   data() {

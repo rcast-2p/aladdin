@@ -40,7 +40,7 @@
                 <v-row no-gutters>
                   <v-col cols="3" v-for="(_, sI) in sLength" :key="sI">
                     <v-text-field
-                      label="scan x length"
+                      :label="sI"
                       v-model.number="sLength[sI]"
                       suffix="um"
                       type="number"
@@ -174,7 +174,7 @@
                   <h2>pin & address</h2>
                   <v-row>
                     <v-col
-                      v-for="(pin, pkey) in config.pinConfig"
+                      v-for="(pin, pkey) in pinConfig"
                       :key="pkey"
                       cols="2"
                     >
@@ -219,7 +219,12 @@
                 </v-data-table>
               </v-col>
               <v-col cols="12">
-                <v-btn @click="clearStorage">clear scanMemory</v-btn>
+                <v-btn @click="clearStorage" color="red darken-4" dark
+                  >clear scanMemory</v-btn
+                >
+                <v-btn @click="saveStorage" color="blue darken-4" dark
+                  >save</v-btn
+                >
               </v-col>
             </v-row>
           </v-tab-item>
@@ -347,7 +352,7 @@ export default {
       const zMoveDuration =
         ((this.zFSteps + this.zBSteps) * this.sSpeed.z) / 1000;
       const totalDuration =
-        (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zFPlaneNum +
+        (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zPageNum +
           zMoveDuration) *
         this.sCom.xyzRepeatNum;
       const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
@@ -361,14 +366,14 @@ export default {
       const { xFSteps, xBSteps, yFSteps, yBSteps, zFSteps, zBSteps } = this;
       const zMoveDuration = ((zFSteps + zBSteps) * this.sSpeed.z) / 1000;
       const totalDuration =
-        (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zFPlaneNum +
+        (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zPageNum +
           zMoveDuration) *
         this.sCom.xyzRepeatNum;
       const totalSec = (totalDuration / 60000).toFixed(1);
       const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
       return [
         `single xy: ((${xFSteps}+${xBSteps}) x ${yFSteps} x ${this.sSpeed.x} + ${yBSteps} x ${this.sSpeed.y}) / 1000=${this.onePlaneDuration} ms`,
-        `z plane num: ${this.zFPlaneNum}`,
+        `z plane num: ${this.zPageNum} (${this.zFPlaneNum})`,
         `      total: (${this.onePlaneDuration} x ${this.sCom.xyzRepeatNum} x ${this.zFPlaneNum} + ${zMoveDuration}) x ${this.sCom.xyzRepeatNum} =  ${totalDuration} ms (${totalSec} sec)`,
         `${packets.toFixed(1)} packets (${this.packetNum}) `,
       ];
@@ -402,11 +407,43 @@ export default {
     },
   },
   created() {
-    if (localStorage.getItem("scanConfig")) {
-      // this.config = JSON.parse(localStorage.getItem("scanConfig"));
+    if (localStorage.getItem("abuConfig")) {
+      this.loadStorage(JSON.parse(localStorage.getItem("abuConfig")));
     }
   },
   methods: {
+    loadStorage(storage) {
+      Object.keys(storage.scanner).forEach((key) => {
+        Object.keys(storage.scanner[key]).forEach((key2) => {
+          if (this[key][key2] !== undefined) {
+            this[key][key2] = storage.scanner[key][key2];
+          }
+        });
+      });
+    },
+    saveStorage() {
+      const saveData = {
+        viewer: {
+          udp: this.$refs.viewer.udp,
+          image: this.$refs.viewer.image,
+          websocket: this.$refs.viewer.websocket,
+          fileSave: this.$refs.viewer.fileSave,
+          verbosity: this.$refs.viewer.verbosity,
+          prudaq: this.$refs.viewer.prudaq,
+          receiver: this.$refs.viewer.receiver,
+        },
+        scanner: {
+          config: this.config,
+          pinConfig: this.pinConfig,
+          bbai: this.bbai,
+          sCom: this.sCom,
+          sSpeed: this.sSpeed,
+          sLength: this.sLength,
+          sReso: this.sReso,
+        },
+      };
+      localStorage.setItem("abuConfig", JSON.stringify(saveData));
+    },
     async scanNReceive() {
       const uuid = AbuCommon.getDateString();
       try {
