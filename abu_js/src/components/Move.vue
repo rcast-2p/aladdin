@@ -41,7 +41,7 @@ export default {
             if (this.moveLength > 0) {
               steps = this.moveLength / this.config.sReso.xFResolution;
             } else {
-              steps = this.moveLength / this.config.sReso.xFResolution;
+              steps = this.moveLength / this.config.sReso.xBResolution;
             }
             break;
           }
@@ -49,7 +49,7 @@ export default {
             if (this.moveLength > 0) {
               steps = this.moveLength / this.config.sReso.yFResolution;
             } else {
-              steps = this.moveLength / this.config.sReso.yFResolution;
+              steps = this.moveLength / this.config.sReso.yBResolution;
             }
             break;
           }
