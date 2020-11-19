@@ -28,16 +28,18 @@
 
       <v-col cols="3">
         max
-        <span class="red--text text--darken-4 infofont">{{ info.maximum }}</span
+        <span class="red--text text--darken-4 infofont">{{
+          (info.maximum / 64).toFixed(1)
+        }}</span
         ><br />
         min
         <span class="red--text text--lighten-2 infofont">{{
-          info.minimum
+          (info.minimum / 64).toFixed(1)
         }}</span
         ><br />
         ave
         <span class="pink--text text--darken-2 infofont">{{
-          Math.floor(info.average)
+          (info.average / 64).toFixed(1)
         }}</span
         ><br />
         x0

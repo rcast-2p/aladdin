@@ -15,7 +15,7 @@ let ctx = {};
 let width = 20;
 let height = 20;
 let minimum = 0;
-let maximum = 1023;
+let maximum = 65535;
 let count = 0;
 let pos = [0, 0, 1, 1];
 let imgBuffer;
@@ -87,6 +87,7 @@ socket.addEventListener("message", (event) => {
 });
 
 function step() {
+  // TODO こんなに全部貼らなくていいような。
   ctx.putImageData(plusImageData, 0, 0);
   requestAnimationFrame(step);
 }
@@ -98,23 +99,24 @@ self.addEventListener("message", (event) => {
     width = event.data.width;
     height = event.data.height;
     colormap = new Uint32Array(new Uint8Array(event.data.colormap).buffer);
-    minimum = event.data.minimum;
-    maximum = event.data.maximum;
+    minimum = event.data.minimum * 64;
+    maximum = event.data.maximum * 64;
     ctx = canvas.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     requestAnimationFrame(step);
     voltageBuffer = new ArrayBuffer(width * height * 2);
     imgBuffer = new ArrayBuffer(width * height * 4);
   } else if (event.data.maximum) {
-    maximum = event.data.maximum;
-    minimum = event.data.minimum;
+    console.log("reflect?");
+    maximum = event.data.maximum * 64;
+    minimum = event.data.minimum * 64;
     const imageArea = height * width;
-    const voltageView = new Uint32Array(voltageBuffer);
-    const rgba = new Uint32Array(imageArea);
+    const voltageView = new Uint16Array(voltageBuffer);
+    const rgba = new Uint32Array(imgBuffer);
     for (let pI = 0; pI < imageArea; pI += 1) {
       rgba[pI] = colormap[clamp256(voltageView[pI], maximum, minimum)];
     }
-    const arr = new Uint8ClampedArray(rgba.buffer, 0, 4 * height * width);
+    const arr = new Uint8ClampedArray(imgBuffer, 0, 4 * height * width);
     plusImageData = new ImageData(arr, width);
   } else {
     pos = event.data;
