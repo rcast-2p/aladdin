@@ -26,6 +26,18 @@ const routes = [
     component: () => import(/* webpackChunkName: "Oscillo" */ "../views/Oscillo.vue"),
   },
   {
+    path: "/tiff",
+    name: "Tiff",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Tiff" */ "../views/Tiff.vue"),
+  },
+  {
+    path: "/camera",
+    name: "Camera",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Camera" */ "../views/Camera.vue"),
+  },
+  {
     path: "*",
     redirect: "/scan",
   },

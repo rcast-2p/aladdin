@@ -33,6 +33,8 @@ export default {
       menu: [
         { icon: "mdi-crop-square", text: "Plain", to: "scan" },
         { icon: "mdi-pulse", text: "Oscillo", to: "oscillo" },
+        { icon: "mdi-image", text: "Tiff", to: "tiff" },
+        { icon: "mdi-camera", text: "Camera", to: "camera" },
       ],
     };
   },
