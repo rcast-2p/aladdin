@@ -15,10 +15,19 @@ export default {
     return { loading: false };
   },
   methods: {
+    async killLite() {
+      const retval = await axios({
+        data: {},
+        baseURL: "http://192.168.2.104:8080", // FIXME
+        url: "/prudaq/kill-lite",
+      });
+      console.log(retval);
+    },
     async stop(goBack) {
       try {
         this.loading = true;
         const baseData = AbuCommon.commonScanConfig(this.config);
+        this.killLite();
         const retval = await axios({
           data: {
             ...baseData,

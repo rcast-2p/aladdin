@@ -312,6 +312,8 @@ export default {
         { name: "plsPin3", value: 5 },
         { name: "dirPin3", value: 6 },
         { name: "aomPin", value: 7 },
+        { name: "awX", value: 8 },
+        { name: "awY", value: 9 },
       ],
       resolutionOptions: [
         { text: "0.2 um (10 div 6)", value: 0.2 },
@@ -369,12 +371,12 @@ export default {
         (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zPageNum +
           zMoveDuration) *
         this.sCom.xyzRepeatNum;
-      const totalSec = (totalDuration / 60000).toFixed(1);
+      const totalMin = (totalDuration / 60000).toFixed(1);
       const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
       return [
         `single xy: ((${xFSteps}+${xBSteps}) x ${yFSteps} x ${this.sSpeed.x} + ${yBSteps} x ${this.sSpeed.y}) / 1000=${this.onePlaneDuration} ms`,
         `z plane num: ${this.zPageNum} (${this.zFPlaneNum})`,
-        `      total: (${this.onePlaneDuration} x ${this.sCom.xyzRepeatNum} x ${this.zFPlaneNum} + ${zMoveDuration}) x ${this.sCom.xyzRepeatNum} =  ${totalDuration} ms (${totalSec} sec)`,
+        `      total: (${this.onePlaneDuration} x ${this.sCom.xyzRepeatNum} x ${this.zFPlaneNum} + ${zMoveDuration}) x ${this.sCom.xyzRepeatNum} =  ${totalDuration} ms (${totalMin} min)`,
         `${packets.toFixed(1)} packets (${this.packetNum}) `,
       ];
     },
