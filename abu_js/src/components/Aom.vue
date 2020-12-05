@@ -26,11 +26,10 @@ export default {
         const retval = await axios({
           data: {
             ...baseData,
-            command: "aom",
             aomOnoff,
           },
           baseURL: this.bbBaseURL,
-          url: "/stage/scan",
+          url: "/stage/aom",
         });
         console.log(retval.data);
         this.resultItem = retval.data.retarr;

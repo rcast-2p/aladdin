@@ -31,14 +31,14 @@
                 dark
                 color="green darken-4"
                 :loading="loading"
-                >Scan</v-btn
+                >Start</v-btn
               >
             </v-row>
             <v-row no-gutters class="py-2">
               <v-col cols="1">space </v-col>
               <v-col cols="11">
                 <v-row no-gutters>
-                  <v-col cols="3" v-for="(_, sI) in sLength" :key="sI">
+                  <v-col cols="2" v-for="(_, sI) in sLength" :key="sI">
                     <v-text-field
                       :label="sI"
                       v-model.number="sLength[sI]"
@@ -137,7 +137,7 @@
                   <v-row>
                     <v-col cols="3" v-for="(_, sI) in sReso" :key="sI">
                       <v-select
-                        label="sI"
+                        :label="sI"
                         v-model="sReso[sI]"
                         :items="resolutionOptions"
                         outlined
@@ -234,11 +234,11 @@
         <viewer
           ref="viewer"
           :config="config"
-          :imgWidth="imgWidth"
-          :imgHeight="imgHeight"
+          :sizeX="sizeX"
+          :sizeY="sizeY"
+          :lengthY="sLength.scanYLength"
           :zPageNum="zPageNum"
           :xFSteps="xFSteps"
-          :yFSteps="yFSteps"
           :packetNum="packetNum"
         />
       </v-col>
@@ -290,6 +290,7 @@ export default {
       sLength: {
         scanXLength: 100,
         scanYLength: 100,
+        yPrevEveryLength: 5,
         scanZLength: 100,
         scanZELength: 100,
       },
@@ -312,8 +313,7 @@ export default {
         { name: "plsPin3", value: 5 },
         { name: "dirPin3", value: 6 },
         { name: "aomPin", value: 7 },
-        { name: "awX", value: 8 },
-        { name: "awY", value: 9 },
+        { name: "aomRef", value: 8 },
       ],
       resolutionOptions: [
         { text: "0.2 um (10 div 6)", value: 0.2 },
@@ -333,11 +333,11 @@ export default {
     };
   },
   computed: {
-    imgWidth() {
+    sizeX() {
       return this.sLength.scanXLength;
     },
-    imgHeight() {
-      return this.sLength.scanYLength;
+    sizeY() {
+      return this.sLength.scanYLength / this.sLength.yPrevEveryLength;
     },
     zPageNum() {
       return this.zFPlaneNum * this.sCom.xyRepeatNum * this.sCom.xyzRepeatNum;
@@ -390,10 +390,13 @@ export default {
       return this.sLength.scanXLength / this.sReso.xBResolution;
     },
     yFSteps() {
-      return this.sLength.scanYLength / this.sReso.yFResolution;
+      return this.sLength.scanYLength / this.sLength.yPrevEveryLength;
     },
     yBSteps() {
       return this.sLength.scanYLength / this.sReso.yBResolution;
+    },
+    yPrevEverySteps() {
+      return this.sLength.yPrevEveryLength / this.sReso.yFResolution;
     },
     zFSteps() {
       return this.sLength.scanZLength / this.sReso.zFResolution;
@@ -487,10 +490,13 @@ export default {
     },
     scan2BBAI(uuid, delay = 0) {
       const sendC = {};
+      sendC.lengthX = this.sLength.scanXLength;
+      sendC.lengthY = this.sLength.scanYLength;
       sendC.xFSteps = this.xFSteps;
       sendC.xBSteps = this.xBSteps;
       sendC.yFSteps = this.yFSteps;
       sendC.yBSteps = this.yBSteps;
+      sendC.yPrevEverySteps = this.yPrevEverySteps;
       sendC.zFESteps = this.zFESteps;
       sendC.zFPlaneNum = this.zFPlaneNum;
       sendC.zBSteps = this.zBSteps;

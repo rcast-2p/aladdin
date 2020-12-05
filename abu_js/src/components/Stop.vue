@@ -30,12 +30,12 @@ export default {
         this.killLite();
         const retval = await axios({
           data: {
-            ...baseData,
             command: "stop",
+            ...baseData,
             goBack,
           },
           baseURL: this.bbBaseURL,
-          url: "/stage/scan",
+          url: "/stage/stop",
         });
         console.log(retval.data);
         this.resultItem = retval.data.retarr;

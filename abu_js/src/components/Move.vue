@@ -71,6 +71,7 @@ export default {
           ...baseData,
           direction,
           steps,
+          moveLength: this.moveLength,
         };
         const { db } = this.$store.state;
         db.commands.insert(sendData, (err) => {
@@ -81,7 +82,7 @@ export default {
         const retval = await axios({
           data: sendData,
           baseURL: this.bbBaseURL,
-          url: "/stage/scan",
+          url: "/stage/move",
         });
         console.log(retval.data);
         this.resultItem = retval.data.retarr;

@@ -1,0 +1,633 @@
+openapi: 3.0.0
+tags:
+  - name: stage-scan
+  - name: ctrl-PC
+  - name: BBEN
+  - name: BBAI
+info:
+  title: 2pAPI
+  version: '1.0'
+  contact:
+    name: Koji Endo
+  description: two-photon api
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /receiver/ps:
+    post:
+      summary: /receiver/ps
+      operationId: receiver-ps
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            examples:
+              example-1:
+                value: {}
+            schema:
+              type: object
+      tags:
+        - stage-scan
+      description: get ps of ./receiver_main.out
+  /receiver/signal:
+    post:
+      summary: /receiver/signal
+      operationId: receiver-signal
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            examples:
+              example-1:
+                value:
+                  signum: 9
+            schema:
+              properties:
+                signum:
+                  type: integer
+              required:
+                - signum
+              type: object
+      tags:
+        - stage-scan
+        - ctrl-PC
+      description: send signal to ./receiver_main.out
+  /stage/stop:
+    post:
+      summary: /stage/stop
+      operationId: stage-stop
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            examples:
+              example-1:
+                value:
+                  aomOpenHl: 1
+                  goBack: 0
+                  invert: 0
+                  pinConfig:
+                    - name: plsPin1
+                      value: 1
+                    - name: dirPin1
+                      value: 2
+                    - name: plsPin2
+                      value: 3
+                    - name: dirPin2
+                      value: 4
+                    - name: plsPin3
+                      value: 5
+                    - name: dirPin3
+                      value: 6
+                    - name: aomPin
+                      value: 7
+                    - name: aomRef
+                      value: 8
+                  speedX: 100
+                  speedY: 1000
+                  speedZ: 1000
+                  uuid: eo20201204-000440
+            schema:
+              properties:
+                aomOpenHl:
+                  type: integer
+                goBack:
+                  type: integer
+                invert:
+                  type: integer
+                pinConfig:
+                  items:
+                    properties:
+                      name:
+                        type: string
+                      value:
+                        type: integer
+                    required:
+                      - name
+                      - value
+                    type: object
+                  type: array
+                speedX:
+                  type: integer
+                speedY:
+                  type: integer
+                speedZ:
+                  type: integer
+                uuid:
+                  type: string
+              required:
+                - aomOpenHl
+                - goBack
+                - invert
+                - pinConfig
+                - speedX
+                - speedY
+                - speedZ
+                - uuid
+              type: object
+      description: stop the stage scan
+      tags:
+        - stage-scan
+  /stage/aom:
+    post:
+      summary: /stage/aom
+      operationId: stage-aom
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            examples:
+              example-1:
+                value:
+                  aomOnoff: 1
+                  aomOpenHl: 1
+                  invert: 0
+                  pinConfig:
+                    - name: plsPin1
+                      value: 1
+                    - name: dirPin1
+                      value: 2
+                    - name: plsPin2
+                      value: 3
+                    - name: dirPin2
+                      value: 4
+                    - name: plsPin3
+                      value: 5
+                    - name: dirPin3
+                      value: 6
+                    - name: aomPin
+                      value: 7
+                    - name: aomRef
+                      value: 8
+                  speedX: 100
+                  speedY: 1000
+                  speedZ: 1000
+                  uuid: iu20201204-000820
+            schema:
+              properties:
+                aomOnoff:
+                  type: integer
+                aomOpenHl:
+                  type: integer
+                invert:
+                  type: integer
+                pinConfig:
+                  items:
+                    properties:
+                      name:
+                        type: string
+                      value:
+                        type: integer
+                    required:
+                      - name
+                      - value
+                    type: object
+                  type: array
+                speedX:
+                  type: integer
+                speedY:
+                  type: integer
+                speedZ:
+                  type: integer
+                uuid:
+                  type: string
+              required:
+                - aomOnoff
+                - aomOpenHl
+                - invert
+                - pinConfig
+                - speedX
+                - speedY
+                - speedZ
+                - uuid
+              type: object
+      description: toggle aom on and off
+      tags:
+        - stage-scan
+  /prudaq:
+    post:
+      summary: /prudaq
+      operationId: prudaq
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                udpPort:
+                  type: integer
+                count:
+                  type: integer
+                bufferSize:
+                  type: integer
+                uuid:
+                  type: string
+              required:
+                - address
+                - bufferSize
+                - count
+                - udpPort
+                - uuid
+            examples:
+              example-1:
+                value:
+                  address: 192.168.2.100
+                  bufferSize: 64020
+                  count: 2618
+                  udpPort: 60000
+                  uuid: hd20201203-233655
+        description: ''
+      description: control prudaq udp sending
+      tags:
+        - stage-scan
+  /receiver:
+    post:
+      summary: /receiver
+      operationId: receiver
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                udp:
+                  type: object
+                  properties:
+                    port:
+                      type: integer
+                    bufferSize:
+                      type: integer
+                    count:
+                      type: integer
+                    bufferNum:
+                      type: integer
+                    enabled:
+                      type: boolean
+                    inputFile:
+                      type: string
+                    homeAddress:
+                      type: string
+                  required:
+                    - bufferNum
+                    - bufferSize
+                    - count
+                    - enabled
+                    - homeAddress
+                    - inputFile
+                    - port
+                image:
+                  type: object
+                  properties:
+                    width:
+                      type: integer
+                    height:
+                      type: integer
+                    threshold:
+                      type: integer
+                    refactoryPeriod:
+                      type: integer
+                    dataChan:
+                      type: integer
+                    fileName:
+                      type: string
+                    pixelMax:
+                      type: integer
+                    pixelMin:
+                      type: integer
+                    xFSteps:
+                      type: integer
+                    yFSteps:
+                      type: integer
+                    zPages:
+                      type: integer
+                  required:
+                    - dataChan
+                    - fileName
+                    - height
+                    - pixelMax
+                    - pixelMin
+                    - refactoryPeriod
+                    - threshold
+                    - width
+                    - xFSteps
+                    - yFSteps
+                    - zPages
+                fileSave:
+                  type: object
+                  properties:
+                    rawData:
+                      type: string
+                    rawDataSave:
+                      type: boolean
+                    debug:
+                      type: string
+                    pngSave:
+                      type: boolean
+                    tiffSave:
+                      type: boolean
+                    enabled:
+                      type: boolean
+                  required:
+                    - debug
+                    - enabled
+                    - pngSave
+                    - rawData
+                    - rawDataSave
+                    - tiffSave
+                websocket:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    port:
+                      type: integer
+                    interval:
+                      type: integer
+                    enabled:
+                      type: boolean
+                  required:
+                    - address
+                    - enabled
+                    - interval
+                    - port
+                uuid:
+                  type: string
+                verbosity:
+                  type: boolean
+                description:
+                  type: string
+              required:
+                - description
+                - fileSave
+                - image
+                - udp
+                - uuid
+                - verbosity
+                - websocket
+            examples:
+              example-1:
+                value:
+                  udp:
+                    port: 60000
+                    bufferSize: 64020
+                    count: 2618
+                    bufferNum: 4096
+                    enabled: true
+                    inputFile: ''
+                    homeAddress: 192.168.2.100
+                  image:
+                    width: 100
+                    height: 100
+                    threshold: 100
+                    refactoryPeriod: 0
+                    dataChan: 0
+                    fileName: ''
+                    pixelMax: -1
+                    pixelMin: 32767
+                    xFSteps: 400
+                    yFSteps: 20
+                    zPages: 1
+                  fileSave:
+                    rawData: octo_test/
+                    rawDataSave: false
+                    debug: octo_test/
+                    pngSave: false
+                    tiffSave: true
+                    enabled: true
+                  websocket:
+                    address: 0.0.0.0
+                    port: 8072
+                    interval: 100
+                    enabled: true
+                  uuid: un20201204-001813
+                  verbosity: false
+                  description: gain50
+      description: control ./receiver_main
+      tags:
+        - stage-scan
+  /stage/scan:
+    post:
+      summary: /stage/scan
+      operationId: stage-scan
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                aomOpenHl:
+                  type: integer
+                aomOpenUs:
+                  type: integer
+                command:
+                  type: string
+                delay:
+                  type: integer
+                invert:
+                  type: integer
+                pinConfig:
+                  items:
+                    properties:
+                      name:
+                        type: string
+                      value:
+                        type: integer
+                    required:
+                      - name
+                      - value
+                    type: object
+                  type: array
+                speedX:
+                  type: integer
+                speedY:
+                  type: integer
+                speedZ:
+                  type: integer
+                uuid:
+                  type: string
+                xBSteps:
+                  type: integer
+                xFSteps:
+                  type: integer
+                xyRepeatNum:
+                  type: integer
+                xyzRepeatNum:
+                  type: integer
+                yBSteps:
+                  type: integer
+                yFSteps:
+                  type: integer
+                yPrevEverySteps:
+                  type: integer
+                zBSteps:
+                  type: integer
+                zFESteps:
+                  type: integer
+                zFPlaneNum:
+                  type: integer
+              required:
+                - aomOpenHl
+                - aomOpenUs
+                - command
+                - delay
+                - invert
+                - pinConfig
+                - speedX
+                - speedY
+                - speedZ
+                - uuid
+                - xBSteps
+                - xFSteps
+                - xyRepeatNum
+                - xyzRepeatNum
+                - yBSteps
+                - yFSteps
+                - yPrevEverySteps
+                - zBSteps
+                - zFESteps
+                - zFPlaneNum
+              type: object
+            examples:
+              example-1:
+                value:
+                  xFSteps: 400
+                  xBSteps: 400
+                  yFSteps: 20
+                  yBSteps: 100
+                  yPrevEverySteps: 5
+                  zFESteps: 1
+                  zFPlaneNum: 1
+                  zBSteps: 1
+                  uuid: ez20201204-001625
+                  invert: 0
+                  speedX: 100
+                  speedY: 1000
+                  speedZ: 1000
+                  aomOpenHl: 1
+                  pinConfig:
+                    - name: plsPin1
+                      value: 1
+                    - name: dirPin1
+                      value: 2
+                    - name: plsPin2
+                      value: 3
+                    - name: dirPin2
+                      value: 4
+                    - name: plsPin3
+                      value: 5
+                    - name: dirPin3
+                      value: 6
+                    - name: aomPin
+                      value: 7
+                    - name: aomRef
+                      value: 8
+                  command: scan
+                  delay: 0
+                  aomOpenUs: 50
+                  xyRepeatNum: 1
+                  xyzRepeatNum: 1
+      description: control stage scan
+      tags:
+        - stage-scan
+  /stage/move:
+    post:
+      summary: /stage/move
+      operationId: stage-move
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                aomOpenHl:
+                  type: integer
+                direction:
+                  type: integer
+                invert:
+                  type: integer
+                pinConfig:
+                  items:
+                    properties:
+                      name:
+                        type: string
+                      value:
+                        type: integer
+                    required:
+                      - name
+                      - value
+                    type: object
+                  type: array
+                speedX:
+                  type: integer
+                speedY:
+                  type: integer
+                speedZ:
+                  type: integer
+                steps:
+                  type: integer
+                uuid:
+                  type: string
+              required:
+                - aomOpenHl
+                - direction
+                - invert
+                - pinConfig
+                - speedX
+                - speedY
+                - speedZ
+                - steps
+                - uuid
+              type: object
+            examples:
+              example-1:
+                value:
+                  uuid: eo20201204-001914
+                  invert: 0
+                  speedX: 100
+                  speedY: 1000
+                  speedZ: 1000
+                  aomOpenHl: 1
+                  pinConfig:
+                    - name: plsPin1
+                      value: 1
+                    - name: dirPin1
+                      value: 2
+                    - name: plsPin2
+                      value: 3
+                    - name: dirPin2
+                      value: 4
+                    - name: plsPin3
+                      value: 5
+                    - name: dirPin3
+                      value: 6
+                    - name: aomPin
+                      value: 7
+                    - name: aomRef
+                      value: 8
+                  direction: 0
+                  steps: 400
+      description: control stage move
+      tags:
+        - stage-scan
+components:
+  schemas: {}

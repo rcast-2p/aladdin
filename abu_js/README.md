@@ -1,4 +1,13 @@
-# instan
+# abu_js
+
+## /prudaq
+
+```json
+{"address":"192.168.2.100","udpPort":60000,"count":2618,"bufferSize":64020,"uuid":"lh20201203-195507"}
+```
+
+
+## 
 
 ## Project setup
 ```

@@ -21,7 +21,7 @@
     <v-row>
       <v-col cols="9">
         <div id="canmom">
-          <canvas id="canvas"></canvas>
+          <canvas id="canvas" :style="canvasStyle"></canvas>
           <div class="roi" :style="roiStyle" />
         </div>
       </v-col>
@@ -416,12 +416,12 @@ import AbuCommon from "@/assets/js/abu_common";
 
 export default {
   props: {
-    imgWidth: Number,
-    imgHeight: Number,
+    sizeX: Number,
+    sizeY: Number,
+    lengthY: Number,
     zPageNum: Number,
     packetNum: Number,
     xFSteps: Number,
-    yFSteps: Number,
   },
   components: { Roi, ShowColorMap },
   data() {
@@ -447,8 +447,8 @@ export default {
         homeAddress: "192.168.2.100",
       },
       image: {
-        width: this.imgWidth,
-        height: this.imgHeight,
+        width: this.sizeX,
+        height: this.sizeY,
         threshold: 0,
         refactoryPeriod: 0,
         dataChan: 0,
@@ -503,6 +503,10 @@ export default {
       },
       dialog: { show: false, text: "", title: "" },
       count: 0,
+      canvasStyle: {
+        width: `512px`,
+        height: `512px`,
+      },
     };
   },
   mounted() {
@@ -526,6 +530,7 @@ export default {
       return `http://${this.prudaq.address}:${this.prudaq.port}`;
     },
   },
+
   watch: {
     packetNum(val) {
       this.udp.count = val;
@@ -550,20 +555,30 @@ export default {
     },
     webworkerStart() {
       this.workerOn = !this.workerOn;
-      const canvas = document.getElementById("canvas");
-      const { imgWidth, imgHeight } = this;
-      canvas.width = imgWidth;
-      canvas.height = imgHeight;
+      let styleWidth = 512;
+      let styleHeight = 512;
 
+      if (this.lengthY < this.sizeX) {
+        styleHeight = Math.round((styleWidth * this.lengthY) / this.sizeX);
+      } else {
+        styleWidth = Math.round((styleHeight * this.sizeX) / this.lengthY);
+      }
+      this.canvasStyle = {
+        width: `${styleWidth}px`,
+        height: `${styleHeight}px`,
+      };
+      const canvas = document.getElementById("canvas");
+      const { sizeX, sizeY } = this;
+      canvas.width = sizeX;
+      canvas.height = sizeY;
       const offscreenCanvas = canvas.transferControlToOffscreen();
       this.worker = new Worker("/sample.js");
-      console.log(typeof this.worker);
 
       // localStorage.setItem("scanConfig", JSON.stringify(this.config));
       this.worker.postMessage(
         {
           canvas: offscreenCanvas,
-          width: imgWidth,
+          width: sizeX,
           height: canvas.height,
           colormap: JSON.parse(localStorage.getItem("colormap")),
           maximum: this.colormap.maximum,
@@ -684,10 +699,9 @@ export default {
     },
     receiverConfig(uuid) {
       const { udp, image, fileSave, websocket, verbosity, description } = this;
-      image.width = this.imgWidth;
-      image.height = this.imgHeight;
+      image.sizeX = this.sizeX;
+      image.sizeY = this.sizeY;
       image.xFSteps = this.xFSteps;
-      image.yFSteps = this.yFSteps;
       image.zPages = this.zPageNum;
       const data = {
         udp,
@@ -711,7 +725,6 @@ export default {
         url: "receiver/signal",
         data: { signum },
       });
-      console.log(retval.data);
       this.resultItem = retval.data.retarr;
       this.dialog = {
         title: "signal",

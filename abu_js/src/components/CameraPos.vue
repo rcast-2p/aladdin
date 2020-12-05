@@ -46,12 +46,12 @@
     <v-data-table :headers="headers" :items="history">
       <template v-slot:[`item.command`]="{ item }">
         <v-chip v-if="item.command === 'move'" color="blue lighten-4">
-          {{ item.command }}:{{ dirArr[item.direction] }} {{ item.steps }}
+          <v-icon v-text="computeIcon(item)" />
+          {{ item.command }}:{{ dirArr[item.direction] }} {{ item.moveLength }}
         </v-chip>
         <v-chip v-else-if="item.command === 'scan'" color="red lighten-4">
-          {{ item.command }}:{{ dirArr[item.direction] }}
-          {{ item.scanXLength }} x
-          {{ item.scanYLength }}
+          {{ item.command }}:{{ dirArr[item.direction] }} {{ item.lengthX }} x
+          {{ item.lengthY }}
         </v-chip>
       </template>
     </v-data-table>
@@ -102,6 +102,34 @@ export default {
     },
   },
   methods: {
+    computeIcon(item) {
+      console.log(item);
+      if (item.moveLength > 0) {
+        switch (item.direction) {
+          case 0: {
+            return "mdi-arrow-right";
+          }
+          case 1: {
+            return "mdi-arrow-down";
+          }
+          default: {
+            return "mdi-close-circle-outline";
+          }
+        }
+      } else {
+        switch (item.direction) {
+          case 0: {
+            return "mdi-arrow-left";
+          }
+          case 1: {
+            return "mdi-arrow-up";
+          }
+          default: {
+            return "mdi-adjust";
+          }
+        }
+      }
+    },
     createRectArr(docs) {
       const pos = { x: this.xOffset, y: this.yOffset };
       const rectArr = [];
@@ -128,16 +156,16 @@ export default {
           rectArr.push({
             left: `${pos.x * this.magnification}px`,
             top: `${pos.y * this.magnification}px`,
-            width: `${doc.scanXLength * this.magnification}px`,
-            height: `${doc.scanYLength * this.magnification}px`,
+            width: `${doc.lengthX * this.magnification}px`,
+            height: `${doc.lengthY * this.magnification}px`,
             "border-color": colors[rectCount],
           });
           rectCount += 1;
         } else if (doc.command === "move") {
           if (doc.direction === 0) {
-            pos.x += doc.steps;
+            pos.x += doc.moveLength;
           } else if (doc.direction === 1) {
-            pos.y += doc.steps;
+            pos.y += doc.moveLength;
           }
         }
       });
