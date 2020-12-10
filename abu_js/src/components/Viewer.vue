@@ -573,6 +573,11 @@ export default {
       canvas.height = sizeY;
       const offscreenCanvas = canvas.transferControlToOffscreen();
       this.worker = new Worker("/sample.js");
+      if (localStorage.getItem("colormap") === undefined) {
+        // eslint-disable-next-line
+        alert("localStorage colormap was undefined. Please set one colormap;");
+        return;
+      }
 
       // localStorage.setItem("scanConfig", JSON.stringify(this.config));
       this.worker.postMessage(

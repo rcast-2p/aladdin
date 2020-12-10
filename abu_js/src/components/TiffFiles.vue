@@ -71,8 +71,13 @@
       <canvas ref="canvas" width="512" height="512" />
     </v-row>
     <v-row no-gutters>
-      <v-textarea v-model="configJson"></v-textarea>
+      <v-text-field label="description" v-model="description"></v-text-field>
+      <v-btn @click="writeJsonFile">write</v-btn>
     </v-row>
+    <v-row no-gutters>
+      <v-textarea label="json" v-model="configJson"></v-textarea>
+    </v-row>
+    <v-snackbar v-model="snackbar.show" v-text="snackbar.txt" />
   </div>
 </template>
 <script>
@@ -97,9 +102,14 @@ export default {
       filename: "",
       fileList: [],
       configJson: "",
+      description: "",
       imgMax: 0,
       imgMin: 0,
       windowId: 0,
+      snackbar: {
+        show: false,
+        txt: "",
+      },
     };
   },
   watch: {
@@ -216,6 +226,24 @@ export default {
       this.tiffifd = decoded;
       this.tiff2canvas();
     },
+    async writeJsonFile() {
+      try {
+        const axres = await axios.post("http://localhost:8070/json/write", {
+          description: this.description,
+          filename: this.filename.replace("tiff", "json"),
+        });
+        this.snackbar = {
+          show: true,
+          text: `ファイル ${this.filename}への書き込みに成功しました。${axres.description}`,
+        };
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: `ファイル ${this.filename}への書き込みエラーが発生しました。`,
+        };
+        console.error(e);
+      }
+    },
     async getJsonFile() {
       const axres = await axios.get("http://localhost:8070/tiff/file", {
         params: {
@@ -227,7 +255,9 @@ export default {
       });
       const blob = new Blob([axres.data]);
       const configJson = await blob.text();
-      this.configJson = JSON.stringify(JSON.parse(configJson), null, 2);
+      const parsedJson = JSON.parse(configJson);
+      this.description = parsedJson.description;
+      this.configJson = JSON.stringify(parsedJson, null, 2);
     },
   },
 };

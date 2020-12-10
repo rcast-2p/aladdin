@@ -154,8 +154,8 @@ export default {
       docs.forEach((doc) => {
         if (doc.command === "scan") {
           rectArr.push({
-            left: `${pos.x * this.magnification}px`,
-            top: `${pos.y * this.magnification}px`,
+            left: `${pos.x}px`,
+            top: `${pos.y}px`,
             width: `${doc.lengthX * this.magnification}px`,
             height: `${doc.lengthY * this.magnification}px`,
             "border-color": colors[rectCount],
@@ -180,6 +180,7 @@ export default {
       reader.readAsDataURL(this.file);
     },
     clearData() {
+      // eslint-disable-next-line
       const deleteOk = window.confirm("Is it OK to delete all log?");
       if (deleteOk) {
         const { db } = this.$store.state;
