@@ -346,7 +346,9 @@ export default {
       const onePlaneXPulseNum = (this.xFSteps + this.xBSteps) * this.yFSteps;
 
       return (
-        (onePlaneXPulseNum * this.sSpeed.x + this.yBSteps * this.sSpeed.y) /
+        (onePlaneXPulseNum * this.sSpeed.x +
+          (this.yFSteps * this.yPrevEverySteps + this.yBSteps) *
+            this.sSpeed.y) /
         1000
       );
     },
