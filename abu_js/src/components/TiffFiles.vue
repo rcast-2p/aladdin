@@ -16,7 +16,9 @@
       <v-col cols="4">
         <v-btn @click="increment" icon><v-icon>mdi-plus</v-icon></v-btn>
         <v-btn @click="increment(false)" icon><v-icon>mdi-minus</v-icon></v-btn>
+
         {{ pageIndex + 1 }}/{{ pageNum }}
+        <v-btn @click="resetImgMaxMin" icon><v-icon>mdi-refresh</v-icon></v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters>
@@ -125,6 +127,10 @@ export default {
     this.colormap = new Uint32Array(new Uint8Array(cjso).buffer);
   },
   methods: {
+    resetImgMaxMin() {
+      this.maximum = this.imgMax;
+      this.minimum = this.imgMin;
+    },
     increment(positive = true) {
       if (positive) {
         this.pageIndex = (this.pageIndex + 1) % this.pageNum;

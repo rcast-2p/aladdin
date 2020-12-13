@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+  </head>
+  <body>
+    <style>
+      #time-box {
+        background-color: blue;
+        height: 10px;
+        transition: all 10000ms 0s ease;
+      }
+      #time-box-bottom {
+        background-color: navy;
+        height: 10px;
+        width: 200px;
+      }
+      .inactive {
+        width: 200px;
+      }
+      .active {
+        width: 0px;
+      }
+    </style>
+    <div id="time-box" class="inactive"></div>
+    <div id="time-box-bottom"></div>
+    <button type="button" id="narrow">narrow</button>
+    <script>
+      const narrow = document.getElementById("narrow");
+      console.log(narrow);
+      narrow.onclick = () => {
+        console.log("narrow was clicked!");
+        const timeBox = document.getElementById("time-box");
+        timeBox.classList.remove("inactive");
+        timeBox.classList.add("active");
+      };
+    </script>
+  </body>
+</html>

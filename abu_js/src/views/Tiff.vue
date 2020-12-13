@@ -6,6 +6,12 @@
     <v-col cols="6">
       <tiff-files />
     </v-col>
+    <v-col cols="6">
+      <tiff-files />
+    </v-col>
+    <v-col cols="6">
+      <tiff-files />
+    </v-col>
   </v-row>
 </template>
 <script>

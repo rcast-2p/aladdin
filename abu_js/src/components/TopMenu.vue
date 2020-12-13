@@ -35,6 +35,7 @@ export default {
         { icon: "mdi-pulse", text: "Oscillo", to: "oscillo" },
         { icon: "mdi-image", text: "Tiff", to: "tiff" },
         { icon: "mdi-camera", text: "Camera", to: "camera" },
+        { icon: "mdi-view-list", text: "ListTiff", to: "list-tiff" },
       ],
     };
   },

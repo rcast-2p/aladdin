@@ -502,6 +502,7 @@ export default {
       sendC.zFESteps = this.zFESteps;
       sendC.zFPlaneNum = this.zFPlaneNum;
       sendC.zBSteps = this.zBSteps;
+      sendC.description = this.$refs.viewer.description;
       // localStorage.setItem("scanConfig", JSON.stringify(this.config));
       this.loading = true;
       const { db } = this.$store.state;

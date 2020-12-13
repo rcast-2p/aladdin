@@ -32,6 +32,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "Tiff" */ "../views/Tiff.vue"),
   },
   {
+    path: "/list-tiff",
+    name: "ListTiff",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "ListTiff" */ "../views/ListTiff.vue"),
+  },
+  {
     path: "/camera",
     name: "Camera",
     // eslint-disable-next-line
