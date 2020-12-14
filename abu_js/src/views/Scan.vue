@@ -453,10 +453,11 @@ export default {
     },
     async scanNReceive() {
       const uuid = AbuCommon.getDateString();
+      const sendData = this.createScanSendData(0.5);
       try {
         const retvals = await Promise.all([
-          this.scan2BBAI(uuid, 0.5),
-          this.$refs.viewer.receiverConfig(uuid),
+          this.scan2BBAI(uuid, sendData),
+          this.$refs.viewer.receiverConfig(uuid, sendData),
           this.$refs.viewer.prudaqServe(uuid),
         ]);
         console.log(retvals);
@@ -478,8 +479,9 @@ export default {
     },
     async scanOnly() {
       const uuid = AbuCommon.getDateString();
+      const sendData = this.createScanSendData(0);
       try {
-        const retval = await this.scan2BBAI(uuid, 0);
+        const retval = await this.scan2BBAI(uuid, sendData);
         this.resultItem = retval.data.retarr;
       } catch (e) {
         console.error(e);
@@ -490,7 +492,7 @@ export default {
         this.loading = false;
       }
     },
-    scan2BBAI(uuid, delay = 0) {
+    createScanSendData(delay) {
       const sendC = {};
       sendC.lengthX = this.sLength.scanXLength;
       sendC.lengthY = this.sLength.scanYLength;
@@ -504,8 +506,6 @@ export default {
       sendC.zBSteps = this.zBSteps;
       sendC.description = this.$refs.viewer.description;
       // localStorage.setItem("scanConfig", JSON.stringify(this.config));
-      this.loading = true;
-      const { db } = this.$store.state;
 
       const baseData = AbuCommon.commonScanConfig({
         sCom: this.sCom,
@@ -520,6 +520,11 @@ export default {
         delay,
         ...this.sCom,
       };
+      return sendData;
+    },
+    scan2BBAI(uuid, sendData) {
+      this.loading = true;
+      const { db } = this.$store.state;
       db.commands.insert(sendData, (err) => {
         if (err !== null) {
           console.error(err);

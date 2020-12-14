@@ -35,7 +35,13 @@ const routes = [
     path: "/list-tiff",
     name: "ListTiff",
     // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "ListTiff" */ "../views/ListTiff.vue"),
+    component: () => import(/* webpackChunkName: "ListTiff" */ "../views/Tiff.vue"),
+  },
+  {
+    path: "/list-json",
+    name: "ListJson",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "ListTiff" */ "../views/ListJson.vue"),
   },
   {
     path: "/camera",

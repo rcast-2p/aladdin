@@ -702,7 +702,7 @@ export default {
         this.loading = false;
       }
     },
-    receiverConfig(uuid) {
+    receiverConfig(uuid, scanData = {}) {
       const { udp, image, fileSave, websocket, verbosity, description } = this;
       image.sizeX = this.sizeX;
       image.sizeY = this.sizeY;
@@ -716,6 +716,7 @@ export default {
         uuid,
         verbosity,
         description,
+        scanData,
       };
       // localStorage.setItem("recvConfig", JSON.stringify(data));
       return axios({
