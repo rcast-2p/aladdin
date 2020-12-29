@@ -2,13 +2,15 @@
   <div>
     <v-row no-gutters>
       <v-col cols="3">
-        <v-text-field label="maximum" v-model="maximum" />
+        <v-text-field label="maximum" type="number" v-model.number="maximum" />
+        <v-slider v-model="maximumSli" max="65536" min="0" step="1"></v-slider>
       </v-col>
       <v-col cols="1">
         {{ imgMax }}
       </v-col>
       <v-col cols="3">
-        <v-text-field label="minimum" v-model="minimum" />
+        <v-text-field label="minimum" type="number" v-model.number="minimum" />
+        <v-slider v-model="minimumSli" max="65536" min="0" step="1"></v-slider>
       </v-col>
       <v-col cols="1">
         {{ imgMin }}
@@ -70,10 +72,15 @@
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <canvas ref="canvas" width="512" height="512" />
+      <canvas ref="canvas" :style="canvasStyle" />
     </v-row>
     <v-row no-gutters>
       <v-text-field label="description" v-model="description"></v-text-field>
+      <v-text-field
+        label="canvasHeight"
+        v-model.number="canvasHeight"
+        type="number"
+      ></v-text-field>
       <v-btn @click="writeJsonFile">write</v-btn>
     </v-row>
     <v-row no-gutters>
@@ -96,7 +103,9 @@ export default {
       height: 512,
       tiffifd: {},
       maximum: 65536,
+      maximumSli: 65536,
       minimum: 65000,
+      minimumSli: 65000,
       colormap: [],
       pageIndex: 0,
       pageNum: 1,
@@ -112,19 +121,44 @@ export default {
         show: false,
         txt: "",
       },
+      canvasHeight: 512,
     };
   },
   watch: {
-    maximum() {
+    maximum(val) {
+      if (this.maximumSli !== val) {
+        this.maximumSli = val;
+      }
       this.imageLoad();
     },
-    minimum() {
+    minimum(val) {
+      if (this.minimumSli !== val) {
+        this.minimumSli = val;
+      }
       this.imageLoad();
+    },
+    maximumSli(val) {
+      if (this.maximum !== val) {
+        this.maximum = val;
+      }
+    },
+    minimumSli(val) {
+      if (this.minimum !== val) {
+        this.minimum = val;
+      }
     },
   },
   mounted() {
     const cjso = JSON.parse(localStorage.getItem("colormap"));
     this.colormap = new Uint32Array(new Uint8Array(cjso).buffer);
+  },
+  computed: {
+    canvasStyle() {
+      return {
+        width: "512px",
+        height: `${this.canvasHeight}px`,
+      };
+    },
   },
   methods: {
     resetImgMaxMin() {

@@ -44,9 +44,6 @@ socket.addEventListener("message", (event) => {
     volMin = 65537;
     volMax = 0;
   }
-  if (yBegin1 === 19) {
-    console.log(19, new Uint16Array(event.data));
-  }
   for (let pI = 0; pI < sentDataSize1; pI += 1) {
     voltageView[pI + width * yBegin1] = vpView1[pI];
     rgba[pI + width * yBegin1] =
@@ -74,7 +71,9 @@ socket.addEventListener("message", (event) => {
     }
   }
   const arr = new Uint8ClampedArray(imgBuffer, 0, 4 * height * width);
-  plusImageData = new ImageData(arr, width);
+  if (arr.length > 0) {
+    plusImageData = new ImageData(arr, width);
+  }
   let sum = 0;
   const [sx, sy, sw, sh] = pos;
   for (let y = sy; y < sy + sh; y += 1) {
@@ -107,7 +106,6 @@ self.addEventListener("message", (event) => {
     voltageBuffer = new ArrayBuffer(width * height * 2);
     imgBuffer = new ArrayBuffer(width * height * 4);
   } else if (event.data.maximum) {
-    console.log("reflect?");
     maximum = event.data.maximum * 64;
     minimum = event.data.minimum * 64;
     const imageArea = height * width;

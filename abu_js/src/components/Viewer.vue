@@ -494,7 +494,7 @@ export default {
         minimum: 0,
         average: 0,
       },
-      showRoiGraph: true,
+      showRoiGraph: false,
       roiStyle: {
         top: "20px",
         left: "20px",
@@ -601,57 +601,62 @@ export default {
         this.count += 1;
       };
 
-      canvas.addEventListener("mousedown", (e) => {
-        const rect = e.target.getBoundingClientRect();
-        const xpos = this.mouse.state * 2 + 0;
-        const ypos = this.mouse.state * 2 + 1;
-        const xdoublepos = e.clientX - rect.left;
-        const ydoublepos = e.clientY - rect.top;
-        this.mouse.pos[xpos] = xdoublepos;
-        this.mouse.pos[ypos] = ydoublepos;
-        let sx;
-        let sy;
-        let sw;
-        let sh;
-        if (this.mouse.state === 1) {
-          if (this.mouse.pos[0] < this.mouse.pos[2]) {
-            // eslint-disable-next-line
-            sx = this.mouse.pos[0];
-            sw = this.mouse.pos[2] - this.mouse.pos[0];
-          } else {
-            // eslint-disable-next-line
-            sx = this.mouse.pos[2];
-            sw = this.mouse.pos[0] - this.mouse.pos[1];
+      canvas.addEventListener(
+        "mousedown",
+        (e) => {
+          const rect = e.target.getBoundingClientRect();
+          const xpos = this.mouse.state * 2 + 0;
+          const ypos = this.mouse.state * 2 + 1;
+          const xdoublepos = e.clientX - rect.left;
+          const ydoublepos = e.clientY - rect.top;
+          this.mouse.pos[xpos] = xdoublepos;
+          this.mouse.pos[ypos] = ydoublepos;
+          let sx;
+          let sy;
+          let sw;
+          let sh;
+          if (this.mouse.state === 1) {
+            if (this.mouse.pos[0] < this.mouse.pos[2]) {
+              // eslint-disable-next-line
+              sx = this.mouse.pos[0];
+              sw = this.mouse.pos[2] - this.mouse.pos[0];
+            } else {
+              // eslint-disable-next-line
+              sx = this.mouse.pos[2];
+              sw = this.mouse.pos[0] - this.mouse.pos[1];
+            }
+            if (this.mouse.pos[1] < this.mouse.pos[3]) {
+              // eslint-disable-next-line
+              sy = this.mouse.pos[1];
+              sh = this.mouse.pos[3] - this.mouse.pos[1];
+            } else {
+              // eslint-disable-next-line
+              sy = this.mouse.pos[3];
+              sh = this.mouse.pos[1] - this.mouse.pos[3];
+            }
+            this.roiStyle = {
+              top: `${sy}px`,
+              left: `${sx}px`,
+              width: `${sw}px`,
+              height: `${sh}px`,
+            };
+            sx = Math.floor((sx * canvas.width) / 512);
+            sy = Math.floor((sy * canvas.height) / 512);
+            sw = Math.floor((sw * canvas.width) / 512);
+            sh = Math.floor((sh * canvas.height) / 512);
+            if (sw === 0) {
+              sw = 1;
+            }
+            if (sh === 0) {
+              sh = 1;
+            }
+            this.worker.postMessage([sx, sy, sw, sh]);
           }
-          if (this.mouse.pos[1] < this.mouse.pos[3]) {
-            // eslint-disable-next-line
-            sy = this.mouse.pos[1];
-            sh = this.mouse.pos[3] - this.mouse.pos[1];
-          } else {
-            // eslint-disable-next-line
-            sy = this.mouse.pos[3];
-            sh = this.mouse.pos[1] - this.mouse.pos[3];
-          }
-          this.roiStyle = {
-            top: `${sy}px`,
-            left: `${sx}px`,
-            width: `${sw}px`,
-            height: `${sh}px`,
-          };
-          sx = Math.floor((sx * canvas.width) / 512);
-          sy = Math.floor((sy * canvas.height) / 512);
-          sw = Math.floor((sw * canvas.width) / 512);
-          sh = Math.floor((sh * canvas.height) / 512);
-          if (sw === 0) {
-            sw = 1;
-          }
-          if (sh === 0) {
-            sh = 1;
-          }
-          this.worker.postMessage([sx, sy, sw, sh]);
-        }
-        this.mouse.state = (this.mouse.state + 1) % 2;
-      });
+          this.mouse.state = (this.mouse.state + 1) % 2;
+        },
+        // eslint-disable-next-line comma-dangle
+        { passive: true }
+      );
     },
     prudaqServe(uuid) {
       this.loading = true;
@@ -718,6 +723,13 @@ export default {
         description,
         scanData,
       };
+      const { db } = this.$store.state;
+      db.commands.insert(data, (err) => {
+        if (err !== null) {
+          console.error(err);
+        }
+      });
+
       // localStorage.setItem("recvConfig", JSON.stringify(data));
       return axios({
         baseURL: this.recvBaseURL,

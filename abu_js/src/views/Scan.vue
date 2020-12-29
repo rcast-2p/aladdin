@@ -356,7 +356,7 @@ export default {
       const zMoveDuration =
         ((this.zFSteps + this.zBSteps) * this.sSpeed.z) / 1000;
       const totalDuration =
-        (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zPageNum +
+        (this.onePlaneDuration * this.sCom.xyRepeatNum * this.zPageNum +
           zMoveDuration) *
         this.sCom.xyzRepeatNum;
       const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
@@ -367,18 +367,26 @@ export default {
       return Number(packetPlus);
     },
     scanOverview() {
-      const { xFSteps, xBSteps, yFSteps, yBSteps, zFSteps, zBSteps } = this;
+      const {
+        xFSteps,
+        xBSteps,
+        yFSteps,
+        yBSteps,
+        yPrevEverySteps,
+        zFSteps,
+        zBSteps,
+      } = this;
       const zMoveDuration = ((zFSteps + zBSteps) * this.sSpeed.z) / 1000;
       const totalDuration =
-        (this.onePlaneDuration * this.sCom.xyzRepeatNum * this.zPageNum +
+        (this.onePlaneDuration * this.sCom.xyRepeatNum * this.zPageNum +
           zMoveDuration) *
         this.sCom.xyzRepeatNum;
       const totalMin = (totalDuration / 60000).toFixed(1);
       const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
       return [
-        `single xy: ((${xFSteps}+${xBSteps}) x ${yFSteps} x ${this.sSpeed.x} + ${yBSteps} x ${this.sSpeed.y}) / 1000=${this.onePlaneDuration} ms`,
+        `single xy: ((${xFSteps}+${xBSteps}) x ${yFSteps} x ${this.sSpeed.x} + (${yPrevEverySteps} x ${yFSteps}+ ${yBSteps})x ${this.sSpeed.y}) / 1000=${this.onePlaneDuration} ms`,
         `z plane num: ${this.zPageNum} (${this.zFPlaneNum})`,
-        `      total: (${this.onePlaneDuration} x ${this.sCom.xyzRepeatNum} x ${this.zFPlaneNum} + ${zMoveDuration}) x ${this.sCom.xyzRepeatNum} =  ${totalDuration} ms (${totalMin} min)`,
+        `      total: (${this.onePlaneDuration} x ${this.sCom.xyRepeatNum} x ${this.zPageNum} + ${zMoveDuration}) x ${this.sCom.xyzRepeatNum} =  ${totalDuration} ms (${totalMin} min)`,
         `${packets.toFixed(1)} packets (${this.packetNum}) `,
       ];
     },
@@ -524,12 +532,6 @@ export default {
     },
     scan2BBAI(uuid, sendData) {
       this.loading = true;
-      const { db } = this.$store.state;
-      db.commands.insert(sendData, (err) => {
-        if (err !== null) {
-          console.error(err);
-        }
-      });
       return axios({
         baseURL: this.bbBaseURL,
         url: "/stage/scan",
