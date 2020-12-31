@@ -28,18 +28,16 @@
 
       <v-col cols="3">
         max
-        <span class="red--text text--darken-4 infofont">{{
-          (info.maximum / 64).toFixed(1)
-        }}</span
+        <span class="red--text text--darken-4 infofont">{{ info.maximum }}</span
         ><br />
         min
         <span class="red--text text--lighten-2 infofont">{{
-          (info.minimum / 64).toFixed(1)
+          info.minimum
         }}</span
         ><br />
         ave
         <span class="pink--text text--darken-2 infofont">{{
-          (info.average / 64).toFixed(1)
+          info.average
         }}</span
         ><br />
         x0
@@ -431,7 +429,7 @@ export default {
         state: 0,
       },
       colormap: {
-        maximum: 1023,
+        maximum: 28160,
         minimum: 0,
         maxauto: false,
         minauto: false,

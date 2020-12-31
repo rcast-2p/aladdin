@@ -98,16 +98,16 @@ self.addEventListener("message", (event) => {
     width = event.data.width;
     height = event.data.height;
     colormap = new Uint32Array(new Uint8Array(event.data.colormap).buffer);
-    minimum = event.data.minimum * 64;
-    maximum = event.data.maximum * 64;
+    minimum = event.data.minimum;
+    maximum = event.data.maximum;
     ctx = canvas.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     requestAnimationFrame(step);
     voltageBuffer = new ArrayBuffer(width * height * 2);
     imgBuffer = new ArrayBuffer(width * height * 4);
   } else if (event.data.maximum) {
-    maximum = event.data.maximum * 64;
-    minimum = event.data.minimum * 64;
+    maximum = event.data.maximum;
+    minimum = event.data.minimum;
     const imageArea = height * width;
     const voltageView = new Uint16Array(voltageBuffer);
     const rgba = new Uint32Array(imgBuffer);
