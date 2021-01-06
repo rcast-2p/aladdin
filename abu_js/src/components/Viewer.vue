@@ -447,7 +447,7 @@ export default {
       image: {
         width: this.sizeX,
         height: this.sizeY,
-        threshold: 0,
+        threshold: 100,
         refactoryPeriod: 0,
         dataChan: 0,
         fileName: "",
