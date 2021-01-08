@@ -50,6 +50,18 @@ const routes = [
     component: () => import(/* webpackChunkName: "Camera" */ "../views/Camera.vue"),
   },
   {
+    path: "/galvo",
+    name: "Galvo",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Galvo" */ "@/views/Galvo.vue"),
+  },
+  {
+    path: "/stimuli",
+    name: "Stimuli",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Stimuli" */ "@/views/Stimuli.vue"),
+  },
+  {
     path: "*",
     redirect: "/scan",
   },
