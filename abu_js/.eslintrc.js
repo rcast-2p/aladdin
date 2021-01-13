@@ -29,5 +29,6 @@ module.exports = {
         ignoreGlobals: false,
       },
     ],
+    "comma-dangle": "off",
   },
 };

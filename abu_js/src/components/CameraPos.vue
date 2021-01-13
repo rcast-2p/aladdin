@@ -43,32 +43,74 @@
       />
     </v-row>
     <v-text-field v-model.number="rotate" type="number" />
-    <v-data-table :headers="headers" :items="history">
+    <v-row>
+      <v-col cols="4">
+        <v-text-field
+          label="origin x"
+          v-model.number="origin.x"
+          type="number"
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field
+          label="origin y"
+          v-model.number="origin.y"
+          type="number"
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-text-field
+          label="origin z"
+          v-model.number="origin.z"
+          type="number"
+        />
+      </v-col>
+    </v-row>
+    <v-data-table :headers="headers" :items="history" :custom-sort="customSort">
       <template v-slot:[`item.command`]="{ item }">
         <v-chip v-if="item.command === 'move'" color="blue lighten-4">
           <v-icon v-text="computeIcon(item)" />
           {{ item.command }}:{{ dirArr[item.direction] }} {{ item.moveLength }}
         </v-chip>
-        <v-chip v-else-if="item.command === 'scan'" color="red lighten-4">
-          {{ item.command }}:{{ dirArr[item.direction] }} {{ item.lengthX }} x
-          {{ item.lengthY }}
+        <v-chip v-else-if="item.scanData !== undefined" color="red lighten-4">
+          scan:{{ item.scanData.lengthX }} x {{ item.scanData.lengthY }} x ({{
+            item.scanData.zFESteps
+          }}
+          x {{ item.scanData.zFPlaneNum }})
+        </v-chip>
+        <v-chip v-else color="grey lighten-4">
+          {{ item.command }}
         </v-chip>
       </template>
     </v-data-table>
     <v-btn @click="getAllData"><v-icon>mdi-refresh</v-icon></v-btn>
     <a target="_blank" :href="dlUrl">download data</a>
-    <v-btn color="blue" @click="getAllData">fetch log</v-btn>
     <v-btn color="red" @click="clearData">delete log</v-btn>
+    <v-textarea label="history load" v-model="historyLoadStr" />
+    <v-btn color="blue" @click="loadData">load log</v-btn>
+    <v-dialog v-model="dialog.show">
+      <v-card>
+        <v-card-title>{{ dialog.title }}</v-card-title>
+        <v-card-text>{{ dialog.text }}</v-card-text>
+        <v-card-actions
+          ><v-btn @click="dialog.show = false">Close</v-btn></v-card-actions
+        >
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
+      origin: { x: 0, y: 0, z: 0 },
       history: [],
       headers: [
         { text: "uuid", value: "uuid" },
         { text: "command", value: "command" },
+        { text: "x", value: "x" },
+        { text: "y", value: "y" },
+        { text: "z", value: "z" },
       ],
       cameraImage: "",
       dirArr: ["x", "y", "z"],
@@ -79,6 +121,12 @@ export default {
       yOffset: 0,
       rotate: 0,
       dlUrl: "",
+      historyLoadStr: [],
+      dialog: {
+        show: false,
+        title: "",
+        text: "",
+      },
     };
   },
   mounted() {
@@ -102,8 +150,19 @@ export default {
     },
   },
   methods: {
+    customSort(items, _, isDesc) {
+      console.log(items);
+      items.sort((a, b) => {
+        const aDate = Number(a.uuid.slice(2, 10) + a.uuid.slice(11, 17));
+        const bDate = Number(b.uuid.slice(2, 10) + b.uuid.slice(11, 17));
+        if (!isDesc) {
+          return aDate - bDate;
+        }
+        return bDate - aDate;
+      });
+      return items;
+    },
     computeIcon(item) {
-      console.log(item);
       if (item.moveLength > 0) {
         switch (item.direction) {
           case 0: {
@@ -189,17 +248,68 @@ export default {
         });
       }
     },
+    loadData() {
+      try {
+        const historyLoad = JSON.parse(this.historyLoadStr);
+        const { db } = this.$store.state;
+        console.log(historyLoad.data);
+        db.commands.insert(historyLoad.data, (err, newDoc) => {
+          if (err !== null) {
+            this.dialog = { show: true, title: "nedb error", text: err };
+          } else {
+            this.getAllData();
+            console.log(newDoc.length);
+          }
+        });
+      } catch (e) {
+        if (e instanceof SyntaxError) {
+          this.dialog = { show: true, title: "json parse error", text: e };
+        }
+      }
+    },
+    addAbsolutePos(docs) {
+      docs.sort((a, b) => {
+        const aDate = Number(a.uuid.slice(2, 10) + a.uuid.slice(11, 17));
+        const bDate = Number(b.uuid.slice(2, 10) + b.uuid.slice(11, 17));
+        return aDate - bDate;
+      });
+      const retDocs = [];
+      const currentOrigin = { ...this.origin };
+
+      docs.forEach((ele) => {
+        const newEle = { ...ele };
+        if (ele.command === "move") {
+          if (ele.direction === 0) {
+            currentOrigin.x += ele.moveLength;
+          } else if (ele.direction === 1) {
+            currentOrigin.y += ele.moveLength;
+          } else {
+            currentOrigin.z += ele.moveLength;
+          }
+        }
+        if (ele.scanData !== undefined) {
+          newEle.x = currentOrigin.x;
+          newEle.y = currentOrigin.y;
+          newEle.z = currentOrigin.z;
+        }
+        retDocs.push({ ...newEle });
+      });
+      return retDocs;
+    },
     getAllData() {
       const { db } = this.$store.state;
       db.commands.find({}, (err, docs) => {
         if (err !== null) {
           console.error(err);
         } else {
-          this.history = docs;
+          this.history = this.addAbsolutePos(docs);
           this.rectArr = this.createRectArr(docs);
-          this.dlUrl = URL.createObjectURL(new Blob([JSON.stringify(docs)]), {
-            type: "text/plain",
-          });
+          this.dlUrl = URL.createObjectURL(
+            new Blob([JSON.stringify({ data: docs })]),
+            {
+              type: "text/plain",
+            }
+          );
         }
       });
     },
