@@ -47,9 +47,6 @@
           dense
         />
       </v-col>
-      <v-col cols="4">
-        <v-btn dark>reflect</v-btn>
-      </v-col>
     </v-row>
   </div>
 </template>

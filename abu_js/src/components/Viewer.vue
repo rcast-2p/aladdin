@@ -40,6 +40,11 @@
           info.average
         }}</span
         ><br />
+        z
+        <span class="green--text text--darken-2 infofont">{{
+          info.pageIndex
+        }}</span
+        ><br />
         x0
         <span class="blue--text text--lighten-2 infofont">{{
           mouse.pos[0]
@@ -75,7 +80,7 @@
         />
       </v-col>
       <v-col cols="6" offset="2">
-        <v-btn @click="reflect">reflect</v-btn>
+        <v-btn @click="update">update</v-btn>
       </v-col>
       <v-col cols="2">
         <v-text-field
@@ -491,6 +496,7 @@ export default {
         maximum: 0,
         minimum: 0,
         average: 0,
+        pageIndex: 0,
       },
       showRoiGraph: false,
       roiStyle: {
@@ -535,7 +541,7 @@ export default {
     },
   },
   methods: {
-    reflect() {
+    update() {
       this.worker.postMessage(this.colormap);
     },
     reset() {
@@ -595,6 +601,7 @@ export default {
           maximum: e.data.volMax,
           minimum: e.data.volMin,
           average: e.data.average,
+          pageIndex: e.data.pageIndex,
         };
         this.count += 1;
       };

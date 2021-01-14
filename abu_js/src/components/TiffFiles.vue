@@ -2,18 +2,18 @@
   <div>
     <v-row no-gutters>
       <v-col cols="3">
-        <v-text-field label="maximum" type="number" v-model.number="maximum" />
-        <v-slider v-model="maximumSli" max="65536" min="0" step="1"></v-slider>
-      </v-col>
-      <v-col cols="1">
-        {{ imgMax }}
-      </v-col>
-      <v-col cols="3">
         <v-text-field label="minimum" type="number" v-model.number="minimum" />
         <v-slider v-model="minimumSli" max="65536" min="0" step="1"></v-slider>
       </v-col>
       <v-col cols="1">
         {{ imgMin }}
+      </v-col>
+      <v-col cols="3">
+        <v-text-field label="maximum" type="number" v-model.number="maximum" />
+        <v-slider v-model="maximumSli" max="65536" min="0" step="1"></v-slider>
+      </v-col>
+      <v-col cols="1">
+        {{ imgMax }}
       </v-col>
       <v-col cols="4">
         <v-btn @click="increment" icon><v-icon>mdi-plus</v-icon></v-btn>

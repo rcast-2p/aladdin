@@ -27,6 +27,7 @@ socket.addEventListener("open", () => {
 });
 let plusImageData = new ImageData(new Uint8ClampedArray([0, 0, 0, 0]), 1);
 let colormap = [];
+let pageIndex = 0;
 // メッセージの待ち受け
 socket.addEventListener("message", (event) => {
   const view = new DataView(event.data, 0, 8);
@@ -40,9 +41,10 @@ socket.addEventListener("message", (event) => {
   const vpView2 = new Uint16Array(event.data, sentDataSize1 + 8, sentDataSize2);
   const voltageView = new Uint16Array(voltageBuffer);
   const rgba = new Uint32Array(imgBuffer);
-  if (yBegin1 === 0) {
+  if (yBegin1 === 0 || yBegin2 === 0) {
     volMin = 65537;
     volMax = 0;
+    pageIndex += 1;
   }
   for (let pI = 0; pI < sentDataSize1; pI += 1) {
     voltageView[pI + width * yBegin1] = vpView1[pI];
@@ -82,7 +84,7 @@ socket.addEventListener("message", (event) => {
     }
   }
   const average = sum / (sw * sh);
-  postMessage({ volMax, volMin, average });
+  postMessage({ volMax, volMin, average, pageIndex });
 });
 
 function step() {

@@ -5,6 +5,7 @@
       label="File input"
       prepend-icon="mdi-paperclip"
       @change="fileLoad"
+      accept="image/*"
     />
     <div class="rect-mother">
       <img :src="cameraImage" :style="rotateStyle" />
@@ -86,6 +87,15 @@
     <v-btn @click="getAllData"><v-icon>mdi-refresh</v-icon></v-btn>
     <a target="_blank" :href="dlUrl">download data</a>
     <v-btn color="red" @click="clearData">delete log</v-btn>
+
+    <v-file-input
+      v-model="logJsonFile"
+      placeholder="Upload log json file"
+      label="File input"
+      prepend-icon="mdi-paperclip"
+      accept="text/json"
+      @change="jsonFileLoad"
+    />
     <v-textarea label="history load" v-model="historyLoadStr" />
     <v-btn color="blue" @click="loadData">load log</v-btn>
     <v-dialog v-model="dialog.show">
@@ -119,7 +129,7 @@ export default {
       magnification: 1.0,
       xOffset: 0,
       yOffset: 0,
-      rotate: 0,
+      rotate: 180,
       dlUrl: "",
       historyLoadStr: [],
       dialog: {
@@ -127,6 +137,7 @@ export default {
         title: "",
         text: "",
       },
+      logJsonFile: {},
     };
   },
   mounted() {
@@ -150,6 +161,15 @@ export default {
     },
   },
   methods: {
+    jsonFileLoad() {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const { result } = e.target;
+        this.historyLoadStr = result;
+        this.loadData();
+      };
+      reader.readAsText(this.logJsonFile);
+    },
     customSort(items, _, isDesc) {
       console.log(items);
       items.sort((a, b) => {
