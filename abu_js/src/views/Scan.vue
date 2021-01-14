@@ -356,7 +356,7 @@ export default {
       const zMoveDuration =
         ((this.zFSteps + this.zBSteps) * this.sSpeed.z) / 1000;
       const totalDuration =
-        (this.onePlaneDuration * this.sCom.xyRepeatNum * this.zPageNum +
+        (this.onePlaneDuration * this.zPageNum +
           zMoveDuration) *
         this.sCom.xyzRepeatNum;
       const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
