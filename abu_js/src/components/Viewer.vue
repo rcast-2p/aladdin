@@ -47,22 +47,22 @@
         ><br />
         x0
         <span class="blue--text text--lighten-2 infofont">{{
-          mouse.pos[0]
+          mouse.showPos[0]
         }}</span
         ><br />
         y0
         <span class="blue--text text--lighten-2 infofont">{{
-          mouse.pos[1]
+          mouse.showPos[1]
         }}</span
         ><br />
         x1
         <span class="blue--text text--lighten-2 infofont">{{
-          mouse.pos[2]
+          mouse.showPos[2]
         }}</span
         ><br />
         y1
         <span class="blue--text text--lighten-2 infofont">{{
-          mouse.pos[3]
+          mouse.showPos[3]
         }}</span
         ><br />
       </v-col>
@@ -204,8 +204,8 @@
           </v-col>
           <v-col cols="3">
             <v-text-field
-              label="file name"
-              v-model.number="image.fileName"
+              label="pixel data num"
+              v-model.number="image.pixelDataNum"
               outlined
               hide-details="auto"
               dense
@@ -303,12 +303,7 @@
             />
           </v-col>
           <v-col cols="3">
-            <v-switch
-              label="png save"
-              v-model="fileSave.pngSave"
-              outlined
-              dense
-            />
+            <v-switch label="galvo mode" v-model="galvo" outlined dense />
           </v-col>
           <v-col cols="3">
             <v-switch
@@ -393,6 +388,51 @@
         </v-row>
       </v-col>
     </v-row>
+
+    <v-row no-gutters>
+      <v-col cols="2">DA server</v-col>
+      <v-col cols="10">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <v-text-field
+              label="DA host"
+              v-model="daServer.host"
+              outlined
+              hide-details="auto"
+              dense
+            />
+          </v-col>
+          <v-col cols="3">
+            <v-text-field
+              label="DA port"
+              v-model="daServer.port"
+              outlined
+              hide-details="auto"
+              dense
+              type="number"
+            />
+          </v-col>
+          <v-col cols="3">
+            <v-text-field
+              label="DA path"
+              v-model="daServer.path"
+              outlined
+              hide-details="auto"
+              dense
+            />
+          </v-col>
+          <v-col cols="3">
+            <v-switch
+              label="DA thread"
+              v-model="daServer.enabled"
+              outlined
+              dense
+              color="orange darken-4"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="12">
         <v-data-table :headers="resultHeader" :items="resultItem">
@@ -431,6 +471,7 @@ export default {
     return {
       mouse: {
         pos: [0, 0, 10, 10],
+        showPos: [0, 0, 10, 10],
         state: 0,
       },
       colormap: {
@@ -449,6 +490,7 @@ export default {
         inputFile: "",
         homeAddress: "192.168.2.100",
       },
+      galvo: false,
       image: {
         width: this.sizeX,
         height: this.sizeY,
@@ -458,6 +500,7 @@ export default {
         fileName: "",
         pixelMax: -1,
         pixelMin: 32767,
+        pixelDataNum: 10,
       },
       websocket: {
         address: "0.0.0.0",
@@ -470,8 +513,14 @@ export default {
         rawDataSave: false,
         debug: "octo_test/",
         pngSave: false,
-        tiffSave: false,
+        tiffSave: true,
         enabled: true,
+      },
+      daServer: {
+        host: "0.0.0.0",
+        port: 9090,
+        path: "/da/mock",
+        enabled: false,
       },
       verbosity: false,
       prudaq: {
@@ -525,6 +574,11 @@ export default {
       this.description = recvConfig.description;
     }
     this.udp.count = this.packetNum;
+    const da = new Date();
+    const daStr = da.toISOString();
+    const savePath = `octo_test/${daStr.slice(5, 7) + daStr.slice(8, 10)}/`;
+    this.fileSave.debug = savePath;
+    this.fileSave.rawData = savePath;
   },
   computed: {
     recvBaseURL() {
@@ -616,47 +670,55 @@ export default {
           const ydoublepos = e.clientY - rect.top;
           this.mouse.pos[xpos] = xdoublepos;
           this.mouse.pos[ypos] = ydoublepos;
+          this.mouse.showPos[xpos] = (
+            (xdoublepos / rect.width) *
+            this.sizeX
+          ).toFixed(0);
+          this.mouse.showPos[ypos] = (
+            (ydoublepos / rect.height) *
+            this.lengthY
+          ).toFixed(0);
           let sx;
           let sy;
           let sw;
           let sh;
-          if (this.mouse.state === 1) {
-            if (this.mouse.pos[0] < this.mouse.pos[2]) {
-              // eslint-disable-next-line
-              sx = this.mouse.pos[0];
-              sw = this.mouse.pos[2] - this.mouse.pos[0];
-            } else {
-              // eslint-disable-next-line
-              sx = this.mouse.pos[2];
-              sw = this.mouse.pos[0] - this.mouse.pos[1];
-            }
-            if (this.mouse.pos[1] < this.mouse.pos[3]) {
-              // eslint-disable-next-line
-              sy = this.mouse.pos[1];
-              sh = this.mouse.pos[3] - this.mouse.pos[1];
-            } else {
-              // eslint-disable-next-line
-              sy = this.mouse.pos[3];
-              sh = this.mouse.pos[1] - this.mouse.pos[3];
-            }
-            this.roiStyle = {
-              top: `${sy}px`,
-              left: `${sx}px`,
-              width: `${sw}px`,
-              height: `${sh}px`,
-            };
-            sx = Math.floor((sx * canvas.width) / 512);
-            sy = Math.floor((sy * canvas.height) / 512);
-            sw = Math.floor((sw * canvas.width) / 512);
-            sh = Math.floor((sh * canvas.height) / 512);
-            if (sw === 0) {
-              sw = 1;
-            }
-            if (sh === 0) {
-              sh = 1;
-            }
-            this.worker.postMessage([sx, sy, sw, sh]);
+          // if (this.mouse.state === 1) {
+          if (this.mouse.pos[0] < this.mouse.pos[2]) {
+            // eslint-disable-next-line
+            sx = this.mouse.pos[0];
+            sw = this.mouse.pos[2] - this.mouse.pos[0];
+          } else {
+            // eslint-disable-next-line
+            sx = this.mouse.pos[2];
+            sw = this.mouse.pos[0] - this.mouse.pos[2];
           }
+          if (this.mouse.pos[1] < this.mouse.pos[3]) {
+            // eslint-disable-next-line
+            sy = this.mouse.pos[1];
+            sh = this.mouse.pos[3] - this.mouse.pos[1];
+          } else {
+            // eslint-disable-next-line
+            sy = this.mouse.pos[3];
+            sh = this.mouse.pos[1] - this.mouse.pos[3];
+          }
+          this.roiStyle = {
+            top: `${sy}px`,
+            left: `${sx}px`,
+            width: `${sw}px`,
+            height: `${sh}px`,
+          };
+          sx = Math.floor((sx * canvas.width) / 512);
+          sy = Math.floor((sy * canvas.height) / 512);
+          sw = Math.floor((sw * canvas.width) / 512);
+          sh = Math.floor((sh * canvas.height) / 512);
+          if (sw === 0) {
+            sw = 1;
+          }
+          if (sh === 0) {
+            sh = 1;
+          }
+          this.worker.postMessage([sx, sy, sw, sh]);
+          // }
           this.mouse.state = (this.mouse.state + 1) % 2;
         },
         // eslint-disable-next-line comma-dangle
@@ -713,7 +775,16 @@ export default {
       }
     },
     receiverConfig(uuid, scanData = {}) {
-      const { udp, image, fileSave, websocket, verbosity, description } = this;
+      const {
+        udp,
+        image,
+        fileSave,
+        websocket,
+        verbosity,
+        description,
+        daServer,
+        galvo,
+      } = this;
       image.sizeX = this.sizeX;
       image.sizeY = this.sizeY;
       image.xFSteps = this.xFSteps;
@@ -727,6 +798,8 @@ export default {
         verbosity,
         description,
         scanData,
+        daServer,
+        galvo,
       };
       const { db } = this.$store.state;
       db.commands.insert(data, (err) => {

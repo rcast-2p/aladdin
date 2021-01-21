@@ -2,7 +2,7 @@
   <div id="chart" class="orange lighten-4">
     <apexchart
       type="line"
-      height="150"
+      height="300"
       ref="chart"
       :options="chartOptions"
       :series="series"
@@ -14,26 +14,20 @@
       <v-col cols="3">
         <v-text-field
           label="min"
-          v-model="minimum"
+          v-model.number="minimum"
           :disabled="minauto"
           hide-details="auto"
           dense
         />
       </v-col>
-      <v-col cols="2">
-        <v-switch v-model="minauto" label="min auto" />
-      </v-col>
       <v-col cols="3">
         <v-text-field
           label="max"
-          v-model="maximum"
+          v-model.number="maximum"
           :disabled="maxauto"
           hide-details="auto"
           dense
         />
-      </v-col>
-      <v-col cols="2">
-        <v-switch v-model="maxauto" label="max auto" />
       </v-col>
       <v-col cols="2">
         <v-chip dark>X</v-chip>
@@ -60,8 +54,8 @@ export default {
     return {
       maximum: 1023,
       minimum: 0,
-      maxauto: true,
-      minauto: true,
+      maxauto: false,
+      minauto: false,
       daqSec: 10,
       x: 0,
       chartData: [],
@@ -91,6 +85,7 @@ export default {
           zoom: {
             enabled: false,
           },
+          yaxis: {},
         },
         dataLabels: {
           enabled: false,
@@ -150,6 +145,24 @@ export default {
     },
     daqSec() {
       this.updateXRange();
+    },
+    maximum(val) {
+      console.log(val);
+      this.$refs.chart.updateOptions({
+        yaxis: {
+          max: val,
+          min: this.minimum,
+        },
+      });
+    },
+    minimum(val) {
+      console.log(val);
+      this.$refs.chart.updateOptions({
+        yaxis: {
+          max: this.maximum,
+          min: val,
+        },
+      });
     },
     maxauto() {},
     minauto() {},
