@@ -270,7 +270,7 @@ export default {
         { text: "stdout", value: "stdout" },
         { text: "stderr", value: "stderr" },
       ],
-      tab: null,
+      tab: "scan",
       bbai: {
         address: "192.168.2.101",
         port: 8070,

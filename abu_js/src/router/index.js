@@ -62,6 +62,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "Stimuli" */ "@/views/Stimuli.vue"),
   },
   {
+    path: "/table",
+    name: "Table",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Table" */ "@/views/Table.vue"),
+  },
+  {
     path: "*",
     redirect: "/scan",
   },

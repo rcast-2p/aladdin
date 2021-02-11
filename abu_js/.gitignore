@@ -21,3 +21,5 @@ yarn-error.log*
 *.sln
 *.sw?
 
+public/tifflistup.json
+src/small_test/low_pass.png

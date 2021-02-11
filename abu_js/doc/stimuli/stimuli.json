@@ -1,0 +1,33 @@
+{
+  "chan1": {
+    "name": "bombykol",
+    "on": [
+      [0, 200],
+      [500, 600]
+    ],
+    "period": 1000,
+    "repeat": 3,
+    "unit": "ms"
+  },
+  "chan2": {
+    "name": "air",
+    "on": [
+      [0, 150],
+      [500, 600],
+      [700, 800]
+    ],
+    "period": 1000,
+    "repeat": 3,
+    "unit": "ms"
+  },
+  "chan3": {
+    "name": "air",
+    "on": [[0, 550]],
+    "period": 1000,
+    "repeat": 5,
+    "unit": "ms"
+  },
+  "config": {
+    "gcd": 100000
+  }
+}

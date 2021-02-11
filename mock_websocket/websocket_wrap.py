@@ -28,9 +28,12 @@ class WebsocketWrap:
         parser.add_argument("--savefile", type=str, default=self.savefile)
         parser.add_argument("--input-file", type=str, default=self.input_file)
         parser.add_argument("--count", type=int, default=self.count)
-        parser.add_argument("--frequency", type=int,
-                            default=self.frequency, help="video rate: 60")
-        parser.add_argument("--pixel-dwell-time", type=float,
+        parser.add_argument("--frequency",
+                            type=int,
+                            default=self.frequency,
+                            help="video rate: 60")
+        parser.add_argument("--pixel-dwell-time",
+                            type=float,
                             default=self.pixel_dwell_time)
         parsed = parser.parse_args()
         print(repr(parsed))
@@ -61,30 +64,35 @@ class WebsocketWrap:
         Returns
         -------
         y_coords : list
-            [y_begin1, y_end1, y_begin2, y_end2, z_index1, z_index2]
+            [y_begin1, y_end1, y_begin2, y_end2, z_index1]
         """
         (width, height) = size
         packet_num = width*height * \
             self.frequency//(1000000*self.pixel_dwell_time)
         if packet_num == 0:
             return [0, height, -1, -1, 1]
-        pixel_num = (1000000/self.pixel_dwell_time)/self.frequency
-        y_begin_accm = math.floor(websocket_i*pixel_num/width)
-        y_end_accm = math.floor((websocket_i+1)*pixel_num/width)
+        pixel_num = (1000000 / self.pixel_dwell_time) / self.frequency
+        y_begin_accm = math.floor(websocket_i * pixel_num / width)
+        y_end_accm = math.floor((websocket_i + 1) * pixel_num / width)
 
         new_z = 0
-        if y_begin_accm % height > (y_end_accm-1) % height:
-            return [y_begin_accm % height, height, 0, y_end_accm % height, new_z]
+        if y_begin_accm % height > (y_end_accm - 1) % height:
+            return [
+                y_begin_accm % height, height, 0, y_end_accm % height, new_z
+            ]
 
         if websocket_i > 0:
-            z_current_index = math.floor(websocket_i*pixel_num/(width*height))
+            z_current_index = math.floor(websocket_i * pixel_num /
+                                         (width * height))
             z_previous_index = math.floor(
-                (websocket_i-1)*pixel_num/(width*height))
+                (websocket_i - 1) * pixel_num / (width * height))
             if z_previous_index < z_current_index:
                 new_z = 1
         else:
             new_z = 1
-        return [y_begin_accm % height, (y_end_accm-1) % height+1, -1, -1, new_z]
+        return [
+            y_begin_accm % height, (y_end_accm - 1) % height + 1, -1, -1, new_z
+        ]
 
     # pylint: disable=too-many-locals
     async def send_img_data(self, websocket, _):
@@ -107,23 +115,22 @@ class WebsocketWrap:
             imgbytes = bytes(np.array(y_coord[:4], dtype=np.uint16))
             print(y_coord)
             if y_coord[4] == 1:
-                f_i = (f_i+1) % n_frames
+                f_i = (f_i + 1) % n_frames
                 tiff_img.seek(f_i)
                 ui32arr = np.asarray(tiff_img, dtype=np.uint16)
             print(ui32arr.size)
             imgbytes += bytes(ui32arr[y_coord[0]:y_coord[1], :])
             if y_coord[2] != -1:
-                f_i = (f_i+1) % n_frames
+                f_i = (f_i + 1) % n_frames
                 tiff_img.seek(f_i)
                 ui32arr2 = np.asarray(tiff_img, dtype=np.uint16)
-                imgbytes2 = bytes(
-                    ui32arr2[y_coord[2]:y_coord[3], :])
+                imgbytes2 = bytes(ui32arr2[y_coord[2]:y_coord[3], :])
                 imgbytes += imgbytes2
             print(len(imgbytes))
             await websocket.send(imgbytes)
             time_end = time.perf_counter()
-            print(time_end-time_start)
-            time.sleep(max(self.duration-time_end+time_start, 0))
+            print(time_end - time_start)
+            time.sleep(max(self.duration - time_end + time_start, 0))
 
     async def recv_img_data(self):
         """
