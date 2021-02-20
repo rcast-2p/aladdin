@@ -22,30 +22,39 @@ let imgBuffer;
 let voltageBuffer;
 let volMin = 65537;
 let volMax = 0;
+let yBegin1 = 0;
+let yBegin2 = 0;
 socket.addEventListener("open", () => {
   socket.send("Hello Server!");
 });
-let plusImageData = new ImageData(new Uint8ClampedArray([0, 0, 0, 0]), 1);
+// why this initialization?
+let plusImageData1 = new ImageData(new Uint8ClampedArray([0, 0, 0, 0]), 1);
+let plusImageData2 = new ImageData(new Uint8ClampedArray([0, 0, 0, 0]), 1);
 let colormap = [];
-let pageIndex = 0;
+let zIndex = 0;
+const headerSize = 12;
 // メッセージの待ち受け
 socket.addEventListener("message", (event) => {
-  const view = new DataView(event.data, 0, 8);
-  const yBegin1 = view.getInt16(0, true);
+  const view = new DataView(event.data, 0, headerSize);
+  yBegin1 = view.getInt16(0, true); // 0 offset (byte)
   const yEnd1 = view.getInt16(2, true);
-  const yBegin2 = view.getInt16(4, true);
+  yBegin2 = view.getInt16(4, true);
   const yEnd2 = view.getInt16(6, true);
+  zIndex = view.getInt32(8, true);
   const sentDataSize1 = width * (yEnd1 - yBegin1);
   const sentDataSize2 = width * (yEnd2 - yBegin2);
-  const vpView1 = new Uint16Array(event.data, 8, sentDataSize1);
-  const vpView2 = new Uint16Array(event.data, sentDataSize1 + 8, sentDataSize2);
+  const vpView1 = new Uint16Array(event.data, headerSize, sentDataSize1);
+  const vpView2 = new Uint16Array(
+    event.data,
+    2 * sentDataSize1 + headerSize,
+    sentDataSize2
+  );
   const voltageView = new Uint16Array(voltageBuffer);
   const rgba = new Uint32Array(imgBuffer);
   // console.log(yBegin1, yEnd1, yBegin2, yEnd2, vpView1, vpView2);
   if (yBegin1 === 0 && sentDataSize1 > 0) {
     volMin = 65537;
     volMax = 0;
-    pageIndex += 1;
   }
   for (let pI = 0; pI < sentDataSize1; pI += 1) {
     voltageView[pI + width * yBegin1] = vpView1[pI];
@@ -58,26 +67,39 @@ socket.addEventListener("message", (event) => {
       volMax = vpView1[pI];
     }
   }
+  const arr1 = new Uint8ClampedArray(
+    imgBuffer,
+    4 * width * yBegin1,
+    4 * sentDataSize1
+  );
+  plusImageData1 = new ImageData(arr1, width);
   if (yBegin2 !== -1 && sentDataSize2 > 0) {
     volMin = 65537;
     volMax = 0;
-    pageIndex += 1;
+    console.log(vpView2.length);
+    console.log(vpView2[0], sentDataSize1, sentDataSize2, headerSize);
+    console.log(yBegin1, yEnd1, yBegin2, yEnd2);
     for (let pI = 0; pI < sentDataSize2; pI += 1) {
       voltageView[pI + width * yBegin2] = vpView2[pI];
       rgba[pI + width * yBegin2] =
         colormap[clamp256(vpView2[pI], maximum, minimum)];
-      if (vpView1[pI] < volMin) {
-        volMin = vpView1[pI];
+      if (vpView2[pI] < volMin) {
+        volMin = vpView2[pI];
       }
-      if (vpView1[pI] > volMax) {
-        volMax = vpView1[pI];
+      if (vpView2[pI] > volMax) {
+        volMax = vpView2[pI];
       }
     }
+
+    console.log(yBegin2);
+    const arr2 = new Uint8ClampedArray(
+      imgBuffer,
+      4 * width * yBegin2,
+      4 * sentDataSize2
+    );
+    plusImageData2 = new ImageData(arr2, width);
   }
-  const arr = new Uint8ClampedArray(imgBuffer, 0, 4 * height * width);
-  if (arr.length > 0) {
-    plusImageData = new ImageData(arr, width);
-  }
+
   let sum = 0;
   const [sx, sy, sw, sh] = pos;
   for (let y = sy; y < sy + sh; y += 1) {
@@ -86,12 +108,19 @@ socket.addEventListener("message", (event) => {
     }
   }
   const average = sum / (sw * sh);
-  postMessage({ volMax, volMin, average, pageIndex });
+  postMessage({ volMax, volMin, average, zIndex });
 });
 
 function step() {
   // TODO こんなに全部貼らなくていいような。
-  ctx.putImageData(plusImageData, 0, 0);
+  if (plusImageData1.height === height) {
+    ctx.putImageData(plusImageData1, 0, 0);
+  } else {
+    // ctx.putImageData(plusImageData1, 0, yBegin1);
+  }
+  if (yBegin2 > -1) {
+    ctx.putImageData(plusImageData2, 0, yBegin2);
+  }
   requestAnimationFrame(step);
 }
 
@@ -119,7 +148,7 @@ self.addEventListener("message", (event) => {
       rgba[pI] = colormap[clamp256(voltageView[pI], maximum, minimum)];
     }
     const arr = new Uint8ClampedArray(imgBuffer, 0, 4 * height * width);
-    plusImageData = new ImageData(arr, width);
+    plusImageData1 = new ImageData(arr, width);
   } else {
     pos = event.data;
   }

@@ -42,7 +42,7 @@
         ><br />
         z
         <span class="green--text text--darken-2 infofont">{{
-          info.pageIndex
+          info.zIndex
         }}</span
         ><br />
         x0
@@ -545,7 +545,7 @@ export default {
         maximum: 0,
         minimum: 0,
         average: 0,
-        pageIndex: 0,
+        zIndex: 0,
       },
       showRoiGraph: false,
       roiStyle: {
@@ -655,7 +655,7 @@ export default {
           maximum: e.data.volMax,
           minimum: e.data.volMin,
           average: e.data.average,
-          pageIndex: e.data.pageIndex,
+          zIndex: e.data.zIndex,
         };
         this.count += 1;
       };
