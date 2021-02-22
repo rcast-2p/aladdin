@@ -167,8 +167,8 @@
           </v-col>
           <v-col cols="3">
             <v-text-field
-              label="home address"
-              v-model.number="udp.homeAddress"
+              label="host"
+              v-model.number="udp.host"
               outlined
               hide-details="auto"
               dense
@@ -238,8 +238,8 @@
         <v-row no-gutters>
           <v-col cols="3">
             <v-text-field
-              label="address"
-              v-model="websocket.address"
+              label="host"
+              v-model="websocket.host"
               outlined
               hide-details="auto"
               dense
@@ -349,8 +349,8 @@
         <v-row no-gutters>
           <v-col cols="3">
             <v-text-field
-              label="BBB address"
-              v-model="prudaq.address"
+              label="BBB host"
+              v-model="prudaq.host"
               outlined
               hide-details="auto"
               dense
@@ -368,8 +368,8 @@
           </v-col>
           <v-col cols="3">
             <v-text-field
-              label="receiver address"
-              v-model="receiver.address"
+              label="receiver host"
+              v-model="receiver.host"
               outlined
               hide-details="auto"
               dense
@@ -388,51 +388,7 @@
         </v-row>
       </v-col>
     </v-row>
-
-    <v-row no-gutters>
-      <v-col cols="2">DA server</v-col>
-      <v-col cols="10">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <v-text-field
-              label="DA host"
-              v-model="daServer.host"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="DA port"
-              v-model="daServer.port"
-              outlined
-              hide-details="auto"
-              dense
-              type="number"
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="DA path"
-              v-model="daServer.path"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-switch
-              label="DA thread"
-              v-model="daServer.enabled"
-              outlined
-              dense
-              color="orange darken-4"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+    <da-server />
     <v-row>
       <v-col cols="12">
         <v-data-table :headers="resultHeader" :items="resultItem">
@@ -456,6 +412,7 @@ import axios from "@/plugins/axios";
 import Roi from "@/components/Roi.vue";
 import ShowColorMap from "@/components/ShowColorMap.vue";
 import AbuCommon from "@/assets/js/abu_common";
+import DaServer from "@/components/DAServer.vue";
 
 export default {
   props: {
@@ -466,7 +423,7 @@ export default {
     packetNum: Number,
     xFSteps: Number,
   },
-  components: { Roi, ShowColorMap },
+  components: { Roi, ShowColorMap, DaServer },
   data() {
     return {
       mouse: {
@@ -488,7 +445,7 @@ export default {
         bufferNum: 4096,
         enabled: true,
         inputFile: "",
-        homeAddress: "192.168.2.100",
+        host: "192.168.2.100",
       },
       galvo: false,
       image: {
@@ -503,7 +460,7 @@ export default {
         pixelDataNum: 10,
       },
       websocket: {
-        address: "0.0.0.0",
+        host: "0.0.0.0",
         port: 8072,
         interval: 100.0,
         enabled: true,
@@ -524,11 +481,11 @@ export default {
       },
       verbosity: false,
       prudaq: {
-        address: "192.168.2.104",
+        host: "192.168.2.104",
         port: 8070,
       },
       receiver: {
-        address: "0.0.0.0",
+        host: "0.0.0.0",
         port: 8070,
       },
       workerOn: false,
@@ -582,10 +539,10 @@ export default {
   },
   computed: {
     recvBaseURL() {
-      return `http://${this.receiver.address}:${this.receiver.port}`;
+      return `http://${this.receiver.host}:${this.receiver.port}`;
     },
     prudaqURL() {
-      return `http://${this.prudaq.address}:${this.prudaq.port}`;
+      return `http://${this.prudaq.host}:${this.prudaq.port}`;
     },
   },
 
@@ -732,7 +689,7 @@ export default {
         baseURL: this.prudaqURL,
         url: "prudaq",
         data: {
-          address: this.udp.homeAddress,
+          host: this.udp.host,
           udpPort: this.udp.port,
           count: this.udp.count,
           bufferSize,

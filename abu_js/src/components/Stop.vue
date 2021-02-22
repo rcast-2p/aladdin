@@ -18,7 +18,7 @@ export default {
     async killLite() {
       const retval = await axios({
         data: {},
-        baseURL: "http://192.168.2.104:8070", // FIXME
+        baseURL: "http://0.0.0.0:8090", // FIXME
         url: "/prudaq/kill-lite",
       });
       console.log(retval);

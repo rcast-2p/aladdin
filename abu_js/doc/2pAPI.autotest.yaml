@@ -49,24 +49,6 @@ paths:
       summary: /prudaq
       tags:
       - stage-scan
-  /prudaq/kill-lite:
-    post:
-      description: prudaq kill usend process
-      operationId: prudaq-killlite
-      requestBody:
-        content:
-          application/json:
-            examples:
-              example-1:
-                value: {}
-            schema:
-              type: object
-      responses:
-        '200':
-          description: OK
-      summary: /prudaq/kill-lite
-      tags:
-      - stage-scan
   /receiver:
     post:
       description: control ./receiver_main
@@ -435,6 +417,7 @@ paths:
       summary: /receiver/signal
       tags:
       - stage-scan
+      - ctrl-PC
   /stage/aom:
     post:
       description: toggle aom on and off
@@ -743,7 +726,6 @@ paths:
       - stage-scan
   /stage/stop:
     post:
-      summary: stage-stop
       description: stop the stage scan
       operationId: stage-stop
       requestBody:
@@ -754,7 +736,7 @@ paths:
                 value:
                   aomOpenHl: 1
                   command: stop
-                  goBack: 1
+                  goBack: 0
                   invert: 0
                   pinConfig:
                   - name: plsPin1
@@ -776,7 +758,7 @@ paths:
                   speedX: 75
                   speedY: 500
                   speedZ: 500
-                  uuid: ow20210222-131248
+                  uuid: zy20210222-125324
             schema:
               properties:
                 aomOpenHl:
@@ -818,5 +800,3 @@ paths:
               - speedZ
               - uuid
               type: object
-      tags:
-      - stage-scan

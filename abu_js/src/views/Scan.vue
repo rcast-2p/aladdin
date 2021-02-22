@@ -127,89 +127,7 @@
               :config="{ sCom, sSpeed, pinConfig }"
               :bbBaseURL="bbBaseURL"
             />
-            <v-expansion-panels>
-              <v-expansion-panel>
-                <v-expansion-panel-header
-                  >other configuration</v-expansion-panel-header
-                >
-                <v-expansion-panel-content>
-                  <h2>resolution & invert</h2>
-                  <v-row>
-                    <v-col cols="3" v-for="(_, sI) in sReso" :key="sI">
-                      <v-select
-                        :label="sI"
-                        v-model="sReso[sI]"
-                        :items="resolutionOptions"
-                        outlined
-                        hide-details="auto"
-                        dense
-                      />
-                    </v-col>
-                    <v-col cols="3">
-                      <v-select
-                        label="invert"
-                        v-model.number="sCom.invert"
-                        :items="invertOptions"
-                        type="number"
-                        outlined
-                        hide-details="auto"
-                        dense
-                      />
-                    </v-col>
-                    <v-col cols="3">
-                      <v-select
-                        label="aom open"
-                        :items="[
-                          { text: 'high', value: 1 },
-                          { text: 'low', value: 0 },
-                        ]"
-                        v-model.number="sCom.aomOpenHl"
-                        outlined
-                        type="number"
-                        hide-details="auto"
-                        dense
-                      />
-                    </v-col>
-                  </v-row>
-                  <h2>pin & address</h2>
-                  <v-row>
-                    <v-col
-                      v-for="(pin, pkey) in pinConfig"
-                      :key="pkey"
-                      cols="2"
-                    >
-                      <v-text-field
-                        :label="pin.name"
-                        type="number"
-                        v-model.number="pin.value"
-                        hide-details="auto"
-                        dense
-                        outlined
-                      />
-                    </v-col>
-                    <v-col cols="4">
-                      <v-text-field
-                        label="BBAI address"
-                        v-model="bbai.address"
-                        hide-details="auto"
-                        dense
-                        outlined
-                      />
-                    </v-col>
-                    <v-col cols="4">
-                      <v-text-field
-                        label="BBAI port"
-                        v-model.number="bbai.port"
-                        hide-details="auto"
-                        dense
-                        outlined
-                        type="number"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
+            <scan-config />
             <v-row no-gutters class="py-2">
               <v-col cols="12">
                 <v-data-table :headers="resultHeader" :items="resultItem">
@@ -258,7 +176,9 @@ import CameraPos from "@/components/CameraPos.vue";
 import axios from "@/plugins/axios";
 import Viewer from "@/components/Viewer.vue";
 import Aom from "@/components/Aom.vue";
+import ScanConfig from "@/components/ScanConfig.vue";
 import AbuCommon from "@/assets/js/abu_common";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -271,17 +191,6 @@ export default {
         { text: "stderr", value: "stderr" },
       ],
       tab: "scan",
-      bbai: {
-        address: "192.168.2.101",
-        port: 8070,
-      },
-      sCom: {
-        invert: 1,
-        aomOpenUs: 1.0,
-        aomOpenHl: 1,
-        xyRepeatNum: 1,
-        xyzRepeatNum: 1,
-      },
       sSpeed: {
         x: 500,
         y: 500,
@@ -294,45 +203,20 @@ export default {
         scanZLength: 100,
         scanZELength: 100,
       },
-      sReso: {
-        xFResolution: 1.0,
-        xBResolution: 1.0,
-        yFResolution: 1.0,
-        yBResolution: 1.0,
-        zFResolution: 1.0,
-        zBResolution: 1.0,
-      },
       config: {
         samplingRate: 6.25,
       },
-      pinConfig: [
-        { name: "plsPin1", value: 1 },
-        { name: "dirPin1", value: 2 },
-        { name: "plsPin2", value: 3 },
-        { name: "dirPin2", value: 4 },
-        { name: "plsPin3", value: 5 },
-        { name: "dirPin3", value: 6 },
-        { name: "aomPin", value: 7 },
-        { name: "aomRef", value: 8 },
-      ],
-      resolutionOptions: [
-        { text: "0.2 um (10 div 6)", value: 0.2 },
-        { text: "0.25 um (8 div 5)", value: 0.25 },
-        { text: "0.4 um (5 div 4)", value: 0.4 },
-        { text: "0.5 um (4 div 3)", value: 0.5 },
-        { text: "0.8 um (2.5 div 2)", value: 0.8 },
-        { text: "1.0 um (2 div 1)", value: 1.0 },
-        { text: "2.0 um (1 div 0)", value: 2.0 },
-      ],
-      invertOptions: [
-        { text: "false", value: 0 },
-        { text: "true", value: 1 },
-      ],
       loading: false,
       dialog: { show: false, text: "", title: "" },
     };
   },
   computed: {
+    ...mapState({
+      bbai: (state) => state.scanConfig.bbai,
+      sCom: (state) => state.scanConfig.sCom,
+      sReso: (state) => state.scanConfig.sReso,
+      pinConfig: (state) => state.scanConfig.pinConfig,
+    }),
     sizeX() {
       return this.sLength.scanXLength;
     },
@@ -545,6 +429,6 @@ export default {
       };
     },
   },
-  components: { MoveCtrl, CameraPos, StopCtrl, Viewer, Aom },
+  components: { MoveCtrl, CameraPos, StopCtrl, Viewer, Aom, ScanConfig },
 };
 </script>

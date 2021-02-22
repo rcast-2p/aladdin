@@ -1,0 +1,10 @@
+version: "2"
+services:
+  swagger:
+    image: swaggerapi/swagger-ui:v3.33.0
+    volumes:
+      - ./2pAPI.v1.yaml:/usr/share/nginx/html/2papi.yaml
+    environment:
+      API_URL: 2papi.yaml
+    ports:
+      - "8050:8080"
