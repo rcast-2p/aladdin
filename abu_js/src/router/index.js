@@ -44,10 +44,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "ListTiff" */ "../views/ListJson.vue"),
   },
   {
-    path: "/camera",
-    name: "Camera",
+    path: "/ome",
+    name: "ome",
     // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "Camera" */ "../views/Camera.vue"),
+    component: () => import(/* webpackChunkName: "Camera" */ "../views/Ome.vue"),
   },
   {
     path: "/galvo",

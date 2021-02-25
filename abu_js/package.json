@@ -28,7 +28,8 @@
     "vue-worker": "^1.2.1",
     "vuetify": "^2.4.4",
     "vuex": "^3.6.2",
-    "worker-loader": "^3.0.8"
+    "worker-loader": "^3.0.8",
+    "xsd2jsonschema": "^0.3.7"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.11",

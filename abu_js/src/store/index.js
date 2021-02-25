@@ -47,8 +47,13 @@ export default new Vuex.Store({
   },
   mutations: {
     connect(state) {
-      state.db.commands = new DataStore("commands.db");
+      state.db.commands = new DataStore({
+        filename: "commands.db",
+        timestampData: true,
+      });
+      state.db.ome = new DataStore({ filename: "ome.db", timestampData: true });
       state.db.commands.loadDatabase();
+      state.db.ome.loadDatabase();
     },
     setObject(state, key, objstr) {
       state[key] = JSON.parse(objstr);
