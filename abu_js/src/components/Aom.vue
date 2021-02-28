@@ -6,7 +6,7 @@
     <v-btn @click="aom(0)" dark color="yellow darken-4" :loading="loading"
       >AOM OFF</v-btn
     >
-    <v-switch v-model="aomOnoff" />
+    <v-switch v-model="aomOnoff" readonly />
   </v-row>
 </template>
 <script>
@@ -14,13 +14,15 @@ import axios from "@/plugins/axios";
 import AbuCommon from "@/assets/js/abu_common";
 
 export default {
-  props: { config: Object, bbBaseURL: String },
   data() {
     return { loading: false, aomOnoff: false };
   },
   methods: {
     async aom(aomOnoff) {
-      const baseData = AbuCommon.commonScanConfig(this.config);
+      const { bbaiBaseURL, baseData } = AbuCommon.commonScanConfig(
+        this.$store.state
+      );
+      const path = "/stage/aom";
       try {
         this.loading = true;
         const retval = await axios({
@@ -28,16 +30,19 @@ export default {
             ...baseData,
             aomOnoff,
           },
-          baseURL: this.bbBaseURL,
-          url: "/stage/aom",
+          bbaiBaseURL,
+          url: path,
         });
         console.log(retval.data);
         this.resultItem = retval.data.retarr;
         this.aomOnoff = aomOnoff === 1;
       } catch (e) {
+        this.$emit("error-dialog", {
+          title: bbaiBaseURL + path,
+          show: true,
+          text: JSON.stringify(e, null, "\t"),
+        });
         console.error(e);
-        this.error.text = JSON.stringify(e, null, "\t");
-        this.error.show = true;
       } finally {
         this.loading = false;
       }

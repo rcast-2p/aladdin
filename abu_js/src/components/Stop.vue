@@ -10,23 +10,29 @@ import axios from "@/plugins/axios";
 import AbuCommon from "@/assets/js/abu_common";
 
 export default {
-  props: { config: Object, bbBaseURL: String },
   data() {
     return { loading: false };
   },
+  computed: {
+    baseURL() {
+      return `http://${this.$store.state.prudaq.host}:${this.$store.state.prudaq.port}`;
+    },
+  },
   methods: {
     async killLite() {
+      const path = "/prudaq/kill-lite";
       const retval = await axios({
         data: {},
-        baseURL: "http://0.0.0.0:8090", // FIXME
-        url: "/prudaq/kill-lite",
+        baseURL: this.baseURL,
+        url: path,
       });
       console.log(retval);
     },
     async stop(goBack) {
+      const path = "/stage/stop";
       try {
         this.loading = true;
-        const baseData = AbuCommon.commonScanConfig(this.config);
+        const baseData = AbuCommon.commonScanConfig(this.$store.state);
         this.killLite();
         const retval = await axios({
           data: {
@@ -34,15 +40,18 @@ export default {
             ...baseData,
             goBack,
           },
-          baseURL: this.bbBaseURL,
-          url: "/stage/stop",
+          baseURL: this.baseURL,
+          url: path,
         });
         console.log(retval.data);
         this.resultItem = retval.data.retarr;
       } catch (e) {
+        this.$emit("error-dialog", {
+          title: this.baseURL + path,
+          show: true,
+          text: JSON.stringify(e, null, "\t"),
+        });
         console.error(e);
-        this.error.text = JSON.stringify(e, null, "\t");
-        this.error.show = true;
       } finally {
         this.loading = false;
       }

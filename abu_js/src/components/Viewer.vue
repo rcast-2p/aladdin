@@ -102,292 +102,11 @@
     </v-row>
     <v-switch v-model="showRoiGraph" />
     <roi :average="info.average" :count="count" v-if="showRoiGraph" />
-    <v-row no-gutters class="py-2">
-      <v-col cols="1">UDP</v-col>
-      <v-col cols="11">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <v-text-field
-              label="udp port"
-              v-model.number="udp.port"
-              type="number"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="bufferSize"
-              v-model.number="udp.bufferSize"
-              type="number"
-              suffix="byte"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="bufferNum"
-              v-model.number="udp.bufferNum"
-              type="number"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-switch
-              label="udp thread"
-              v-model="udp.enabled"
-              outlined
-              dense
-              disabled
-              color="red darken-4"
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="inputFile"
-              v-model="udp.inputFile"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="count"
-              v-model.number="udp.count"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="host"
-              v-model.number="udp.host"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-
-    <v-row no-gutters class="py-2">
-      <v-col cols="1">Image</v-col>
-      <v-col cols="11">
-        <v-row no-gutters>
-          <v-col cols="2">
-            <v-text-field
-              label="threshold"
-              v-model.number="image.threshold"
-              type="number"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="data channel"
-              v-model.number="image.dataChan"
-              type="number"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="pixel data num"
-              v-model.number="image.pixelDataNum"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="2">
-            <v-text-field
-              label="pixel max"
-              v-model.number="image.pixelMax"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="2">
-            <v-text-field
-              label="pixel min"
-              v-model.number="image.pixelMin"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="2">WebSocket</v-col>
-      <v-col cols="10">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <v-text-field
-              label="host"
-              v-model="websocket.host"
-              outlined
-              hide-details="auto"
-              dense
-              disabled
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="port"
-              v-model.number="websocket.port"
-              type="number"
-              outlined
-              hide-details="auto"
-              dense
-              disabled
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="interval (float)"
-              v-model.number="websocket.interval"
-              type="number"
-              outlined
-              hide-details="auto"
-              suffix="msec"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-switch
-              label="websocket thread"
-              v-model="websocket.enabled"
-              outlined
-              dense
-              color="red darken-4"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col cols="2">raw data</v-col>
-      <v-col cols="10">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <v-text-field
-              label="raw data"
-              v-model="fileSave.rawData"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="debug"
-              v-model="fileSave.debug"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-switch label="galvo mode" v-model="galvo" outlined dense />
-          </v-col>
-          <v-col cols="3">
-            <v-switch
-              label="tiff save"
-              v-model="fileSave.tiffSave"
-              outlined
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-switch
-              label="raw data save"
-              v-model="fileSave.rawDataSave"
-              outlined
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-switch
-              label="save thread"
-              v-model="fileSave.enabled"
-              outlined
-              dense
-              disabled
-              color="red darken-4"
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-switch
-              label="verbosity"
-              v-model="verbosity"
-              outlined
-              dense
-              color="blue darken-4"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col cols="2">Servers</v-col>
-      <v-col cols="10">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <v-text-field
-              label="BBB host"
-              v-model="prudaq.host"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="BBB port"
-              v-model="prudaq.port"
-              outlined
-              hide-details="auto"
-              dense
-              type="number"
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="receiver host"
-              v-model="receiver.host"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-text-field
-              label="receiver port"
-              v-model="receiver.port"
-              outlined
-              hide-details="auto"
-              dense
-              type="number"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+    <udp />
+    <image />
+    <websocket />
+    <raw-data />
+    <servers />
     <da-server />
     <v-row>
       <v-col cols="12">
@@ -412,7 +131,11 @@ import axios from "@/plugins/axios";
 import Roi from "@/components/Roi.vue";
 import ShowColorMap from "@/components/ShowColorMap.vue";
 import AbuCommon from "@/assets/js/abu_common";
+import Udp from "@/components/Udp.vue";
 import DaServer from "@/components/DAServer.vue";
+import Websocket from "@/components/Websocket.vue";
+import RawData from "@/components/RawData.vue";
+import Servers from "@/components/Servers.vue";
 
 export default {
   props: {
@@ -423,7 +146,7 @@ export default {
     packetNum: Number,
     xFSteps: Number,
   },
-  components: { Roi, ShowColorMap, DaServer },
+  components: { Roi, ShowColorMap, Udp, DaServer, Websocket, RawData, Servers },
   data() {
     return {
       mouse: {
@@ -438,15 +161,6 @@ export default {
         minauto: false,
       },
       loading: false,
-      udp: {
-        port: 60000,
-        bufferSize: 64020,
-        count: 0,
-        bufferNum: 4096,
-        enabled: true,
-        inputFile: "",
-        host: "192.168.2.100",
-      },
       galvo: false,
       image: {
         width: this.sizeX,
@@ -523,7 +237,6 @@ export default {
     const recvConfigText = localStorage.getItem("recvConfig") || null;
     if (recvConfigText) {
       const recvConfig = JSON.parse(recvConfigText);
-      this.udp = recvConfig.udp;
       this.image = recvConfig.image;
       this.fileSave = recvConfig.fileSave;
       this.websocket = recvConfig.websocket;

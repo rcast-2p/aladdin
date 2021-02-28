@@ -11,20 +11,24 @@ export default class AbuCommon {
     return `${hashLetter0}${hashLetter1}${day}-${timeStr}`;
   }
 
-  static commonScanConfig(config) {
+  static commonScanConfig(state) {
     const uuid = this.getDateString();
-    const speedX = config.sSpeed.x;
-    const speedY = config.sSpeed.y;
-    const speedZ = config.sSpeed.z;
-    const { aomOpenHl, invert } = config.sCom;
+    const { speedX, speedY, speedZ } = state.scanConfig;
+    const { aomOpenHl, invert } = state.scanDetailedConfig;
+
+    const { bbai } = state.scanDetailedConfig;
+    const bbaiBaseURL = `http://${bbai.host}:${bbai.port}`;
     return {
-      uuid,
-      invert,
-      speedX,
-      speedY,
-      speedZ,
-      aomOpenHl,
-      pinConfig: config.pinConfig,
+      bbaiBaseURL,
+      baseData: {
+        uuid,
+        invert,
+        speedX,
+        speedY,
+        speedZ,
+        aomOpenHl,
+        pinConfig: state.scanDetailedConfig.pinConfig,
+      },
     };
   }
 }

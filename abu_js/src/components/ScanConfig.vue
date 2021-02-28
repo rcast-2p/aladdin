@@ -1,104 +1,141 @@
 <template>
-  <v-expansion-panels>
-    <v-expansion-panel>
-      <v-expansion-panel-header>other configuration</v-expansion-panel-header>
-      <v-expansion-panel-content>
-        <h2>resolution & invert</h2>
-        <v-row>
-          <v-col cols="3" v-for="(_, sI) in scanConfig.sReso" :key="sI">
-            <v-select
-              :label="sI"
-              v-model="scanConfig.sReso[sI]"
-              :items="resolutionOptions"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-select
-              label="invert"
-              v-model.number="scanConfig.sCom.invert"
-              :items="invertOptions"
-              type="number"
-              outlined
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-          <v-col cols="3">
-            <v-select
-              label="aom open"
-              :items="[
-                { text: 'high', value: 1 },
-                { text: 'low', value: 0 },
-              ]"
-              v-model.number="scanConfig.sCom.aomOpenHl"
-              outlined
-              type="number"
-              hide-details="auto"
-              dense
-            />
-          </v-col>
-        </v-row>
-        <h2>pin & address</h2>
-        <v-row>
-          <v-col
-            v-for="(pin, pkey) in scanConfig.pinConfig"
-            :key="pkey"
-            cols="2"
-          >
-            <v-text-field
-              :label="pin.name"
-              type="number"
-              v-model.number="pin.value"
-              hide-details="auto"
-              dense
-              outlined
-            />
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              label="BBAI address"
-              v-model="scanConfig.bbai.address"
-              hide-details="auto"
-              dense
-              outlined
-            />
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              label="BBAI port"
-              v-model.number="scanConfig.bbai.port"
-              hide-details="auto"
-              dense
-              outlined
-              type="number"
-            />
-          </v-col>
-        </v-row>
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
+  <v-row no-gutters class="py-2">
+    <v-col cols="1">space </v-col>
+    <v-col cols="11">
+      <v-row no-gutters>
+        <v-col cols="2">
+          <v-text-field
+            label="lengthX"
+            v-model.number="scanConfig.lengthX"
+            suffix="um"
+            type="number"
+            outlined
+            hide-details="auto"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="lengthY"
+            v-model.number="scanConfig.lengthY"
+            suffix="um"
+            type="number"
+            outlined
+            hide-details="auto"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="yPrevEveryLength"
+            v-model.number="scanConfig.yPrevEveryLength"
+            suffix="um"
+            type="number"
+            outlined
+            hide-details="auto"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="scanZLength"
+            v-model.number="scanConfig.scanZLength"
+            suffix="um"
+            type="number"
+            outlined
+            hide-details="auto"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="scanZELength"
+            v-model.number="scanConfig.scanZELength"
+            suffix="um"
+            type="number"
+            outlined
+            hide-details="auto"
+            dense
+          />
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col cols="1">time</v-col>
+    <v-col cols="11">
+      <v-row no-gutters>
+        <v-col cols="2">
+          <v-text-field
+            label="xyRepeatNum"
+            v-model.number="scanConfig.xyRepeatNum"
+            type="number"
+            outlined
+            hide-details="auto"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="xyzRepeatNum"
+            v-model.number="scanConfig.xyzRepeatNum"
+            type="number"
+            outlined
+            hide-details="auto"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="aomOpenUs"
+            v-model.number="scanConfig.aomOpenUs"
+            type="number"
+            outlined
+            hide-details="auto"
+            suffix="us"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="speedX"
+            v-model.number="scanConfig.speedX"
+            type="number"
+            outlined
+            hide-details="auto"
+            suffix="us"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="speedY"
+            v-model.number="scanConfig.speedY"
+            type="number"
+            outlined
+            hide-details="auto"
+            suffix="us"
+            dense
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            label="speedZ"
+            v-model.number="scanConfig.speedZ"
+            type="number"
+            outlined
+            hide-details="auto"
+            suffix="us"
+            dense
+          />
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 <script>
 export default {
   data() {
     return {
-      scanConfig: { sCom: {}, sReso: {}, pinConfig: [], bbai: {} },
-      resolutionOptions: [
-        { text: "0.2 um (10 div 6)", value: 0.2 },
-        { text: "0.25 um (8 div 5)", value: 0.25 },
-        { text: "0.4 um (5 div 4)", value: 0.4 },
-        { text: "0.5 um (4 div 3)", value: 0.5 },
-        { text: "0.8 um (2.5 div 2)", value: 0.8 },
-        { text: "1.0 um (2 div 1)", value: 1.0 },
-        { text: "2.0 um (1 div 0)", value: 2.0 },
-      ],
-      invertOptions: [
-        { text: "false", value: 0 },
-        { text: "true", value: 1 },
-      ],
+      scanConfig: {},
     };
   },
   mounted() {
@@ -106,7 +143,7 @@ export default {
   },
   methods: {
     updateState() {
-      console.log(this.daServer);
+      console.log(this.scanConfig);
       this.$store.commit(
         "setObject",
         "scanConfig",

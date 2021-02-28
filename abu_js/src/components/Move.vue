@@ -51,7 +51,6 @@ import axios from "@/plugins/axios";
 import AbuCommon from "@/assets/js/abu_common";
 
 export default {
-  props: { config: Object, bbBaseURL: String },
   data() {
     return {
       moveLength: 0,
@@ -69,31 +68,43 @@ export default {
       this.absolutePos = this.fix.slice(); // clone
     },
     async move(direction) {
+      const { bbaiBaseURL, baseData } = AbuCommon.commonScanConfig(
+        this.$store.state
+      );
+      const path = "/stage/move";
       try {
         this.loading = true;
         let steps = 0;
+        const {
+          xFResolution,
+          xBResolution,
+          yFResolution,
+          yBResolution,
+          zFResolution,
+          zBResolution,
+        } = this.$store.state.scanDetailedConfig.sReso;
         switch (direction) {
           case 0: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.config.sReso.xFResolution;
+              steps = this.moveLength / xFResolution;
             } else {
-              steps = this.moveLength / this.config.sReso.xBResolution;
+              steps = this.moveLength / xBResolution;
             }
             break;
           }
           case 1: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.config.sReso.yFResolution;
+              steps = this.moveLength / yFResolution;
             } else {
-              steps = this.moveLength / this.config.sReso.yBResolution;
+              steps = this.moveLength / yBResolution;
             }
             break;
           }
           case 2: {
             if (this.moveLength > 0) {
-              steps = this.moveLength / this.config.sReso.zFResolution;
+              steps = this.moveLength / zFResolution;
             } else {
-              steps = this.moveLength / this.config.sReso.zBResolution;
+              steps = this.moveLength / zBResolution;
             }
             break;
           }
@@ -101,7 +112,7 @@ export default {
             break;
           }
         }
-        const baseData = AbuCommon.commonScanConfig(this.config);
+
         const sendData = {
           command: "move",
           ...baseData,
@@ -117,16 +128,19 @@ export default {
         });
         const retval = await axios({
           data: sendData,
-          baseURL: this.bbBaseURL,
-          url: "/stage/move",
+          baseURL: bbaiBaseURL,
+          url: path,
         });
         console.log(retval.data);
         this.absolutePos[direction] += this.moveLength;
         this.resultItem = retval.data.retarr;
       } catch (e) {
+        this.$emit("error-dialog", {
+          title: bbaiBaseURL + path,
+          show: true,
+          text: JSON.stringify(e, null, "\t"),
+        });
         console.error(e);
-        this.error.text = JSON.stringify(e, null, "\t");
-        this.error.show = true;
       } finally {
         this.loading = false;
       }

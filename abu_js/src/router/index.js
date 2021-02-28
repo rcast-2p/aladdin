@@ -11,7 +11,7 @@ const routes = [
   {
     path: "/scan",
     name: "Scan",
-    component: () => import(/* webpackChunkName: "Scan" */ "../views/Scan.vue"),
+    component: () => import(/* webpackChunkName: "Scan" */ "../views/Main.vue"),
   },
   {
     path: "/colormap",

@@ -86,25 +86,19 @@ paths:
                   fileSave:
                     debug: octo_test/0220/
                     enabled: true
-                    pngSave: false
                     rawData: octo_test/0220/
                     rawDataSave: false
                     tiffSave: true
                   galvo: false
                   image:
                     dataChan: 0
-                    fileName: ''
-                    height: 100
-                    pixelMax: -1
-                    pixelMin: 32767
-                    refactoryPeriod: 0
+                    pixelDataNum: 5
                     sizeX: 1024
                     sizeY: 1024
+                    sizeZ: 5
                     threshold: 100
-                    width: 100
                     xFSteps: 4096
                     yFSteps: 100
-                    zPages: 300
                   scanData:
                     aomOpenHl: 1
                     aomOpenUs: 50
@@ -150,13 +144,12 @@ paths:
                     bufferSize: 64020
                     count: 73849954
                     enabled: true
-                    homeAddress: 192.168.2.100
-                    inputFile: ''
+                    host: 192.168.2.100
                     port: 60000
                   uuid: bp20210222-125315
                   verbosity: false
                   websocket:
-                    address: 0.0.0.0
+                    host: 0.0.0.0
                     enabled: true
                     interval: 100
                     port: 8072
@@ -186,8 +179,6 @@ paths:
                       type: string
                     enabled:
                       type: boolean
-                    pngSave:
-                      type: boolean
                     rawData:
                       type: string
                     rawDataSave:
@@ -197,7 +188,6 @@ paths:
                   required:
                   - debug
                   - enabled
-                  - pngSave
                   - rawData
                   - rawDataSave
                   - tiffSave
@@ -208,44 +198,29 @@ paths:
                   properties:
                     dataChan:
                       type: integer
-                    fileName:
-                      type: string
-                    height:
-                      type: integer
-                    pixelMax:
-                      type: integer
-                    pixelMin:
-                      type: integer
-                    refactoryPeriod:
+                    pixelDataNum:
                       type: integer
                     sizeX:
                       type: integer
                     sizeY:
                       type: integer
-                    threshold:
+                    sizeZ:
                       type: integer
-                    width:
+                    threshold:
                       type: integer
                     xFSteps:
                       type: integer
                     yFSteps:
                       type: integer
-                    zPages:
-                      type: integer
+
                   required:
                   - dataChan
-                  - fileName
-                  - height
-                  - pixelMax
-                  - pixelMin
-                  - refactoryPeriod
+                  - pixelDataNum
                   - sizeX
                   - sizeY
+                  - sizeZ
                   - threshold
-                  - width
                   - xFSteps
-                  - yFSteps
-                  - zPages
                   type: object
                 scanData:
                   properties:
@@ -340,9 +315,7 @@ paths:
                       type: integer
                     enabled:
                       type: boolean
-                    homeAddress:
-                      type: string
-                    inputFile:
+                    host:
                       type: string
                     port:
                       type: integer
@@ -351,8 +324,7 @@ paths:
                   - bufferSize
                   - count
                   - enabled
-                  - homeAddress
-                  - inputFile
+                  - host
                   - port
                   type: object
                 uuid:
@@ -361,31 +333,29 @@ paths:
                   type: boolean
                 websocket:
                   properties:
-                    address:
-                      type: string
                     enabled:
                       type: boolean
+                    host:
+                      type: string
                     interval:
                       type: integer
                     port:
                       type: integer
                   required:
-                  - address
                   - enabled
+                  - host
                   - interval
                   - port
                   type: object
               required:
               - daServer
-              - description
               - fileSave
-              - galvo
               - image
-              - scanData
               - udp
+              - websocket
+              - galvo
               - uuid
               - verbosity
-              - websocket
               type: object
       responses:
         '200':
