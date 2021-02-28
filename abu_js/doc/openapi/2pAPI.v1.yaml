@@ -7,6 +7,11 @@ info:
   title: 2pAPI
   version: '1.0'
 openapi: 3.0.0
+tags:
+  - name: stage-scan
+servers:
+  - url: 192.168.2.100
+  - url: 192.168.2.104
 paths:
   /prudaq:
     post:
@@ -36,11 +41,7 @@ paths:
                 uuid:
                   type: string
               required:
-              - address
-              - bufferSize
-              - count
-              - udpPort
-              - uuid
+                - count
               type: object
         description: ''
       responses:
@@ -48,7 +49,7 @@ paths:
           description: OK
       summary: /prudaq
       tags:
-      - stage-scan
+        - stage-scan
   /prudaq/kill-lite:
     post:
       description: prudaq kill usend process
@@ -66,7 +67,7 @@ paths:
           description: OK
       summary: /prudaq/kill-lite
       tags:
-      - stage-scan
+        - stage-scan
   /receiver:
     post:
       description: control ./receiver_main
@@ -109,22 +110,22 @@ paths:
                     lengthX: 1024
                     lengthY: 1024
                     pinConfig:
-                    - name: plsPin1
-                      value: 1
-                    - name: dirPin1
-                      value: 2
-                    - name: plsPin2
-                      value: 3
-                    - name: dirPin2
-                      value: 4
-                    - name: plsPin3
-                      value: 5
-                    - name: dirPin3
-                      value: 6
-                    - name: aomPin
-                      value: 7
-                    - name: aomRef
-                      value: 8
+                      - name: plsPin1
+                        value: 1
+                      - name: dirPin1
+                        value: 2
+                      - name: plsPin2
+                        value: 3
+                      - name: dirPin2
+                        value: 4
+                      - name: plsPin3
+                        value: 5
+                      - name: dirPin3
+                        value: 6
+                      - name: aomPin
+                        value: 7
+                      - name: aomRef
+                        value: 8
                     speedX: 75
                     speedY: 500
                     speedZ: 500
@@ -166,10 +167,10 @@ paths:
                     port:
                       type: integer
                   required:
-                  - enabled
-                  - host
-                  - path
-                  - port
+                    - enabled
+                    - host
+                    - path
+                    - port
                   type: object
                 description:
                   type: string
@@ -186,11 +187,11 @@ paths:
                     tiffSave:
                       type: boolean
                   required:
-                  - debug
-                  - enabled
-                  - rawData
-                  - rawDataSave
-                  - tiffSave
+                    - debug
+                    - enabled
+                    - rawData
+                    - rawDataSave
+                    - tiffSave
                   type: object
                 galvo:
                   type: boolean
@@ -212,15 +213,14 @@ paths:
                       type: integer
                     yFSteps:
                       type: integer
-
                   required:
-                  - dataChan
-                  - pixelDataNum
-                  - sizeX
-                  - sizeY
-                  - sizeZ
-                  - threshold
-                  - xFSteps
+                    - dataChan
+                    - pixelDataNum
+                    - sizeX
+                    - sizeY
+                    - sizeZ
+                    - threshold
+                    - xFSteps
                   type: object
                 scanData:
                   properties:
@@ -248,8 +248,8 @@ paths:
                           value:
                             type: integer
                         required:
-                        - name
-                        - value
+                          - name
+                          - value
                         type: object
                       type: array
                     speedX:
@@ -281,29 +281,29 @@ paths:
                     zFPlaneNum:
                       type: integer
                   required:
-                  - aomOpenHl
-                  - aomOpenUs
-                  - command
-                  - delay
-                  - description
-                  - invert
-                  - lengthX
-                  - lengthY
-                  - pinConfig
-                  - speedX
-                  - speedY
-                  - speedZ
-                  - uuid
-                  - xBSteps
-                  - xFSteps
-                  - xyRepeatNum
-                  - xyzRepeatNum
-                  - yBSteps
-                  - yFSteps
-                  - yPrevEverySteps
-                  - zBSteps
-                  - zFESteps
-                  - zFPlaneNum
+                    - aomOpenHl
+                    - aomOpenUs
+                    - command
+                    - delay
+                    - description
+                    - invert
+                    - lengthX
+                    - lengthY
+                    - pinConfig
+                    - speedX
+                    - speedY
+                    - speedZ
+                    - uuid
+                    - xBSteps
+                    - xFSteps
+                    - xyRepeatNum
+                    - xyzRepeatNum
+                    - yBSteps
+                    - yFSteps
+                    - yPrevEverySteps
+                    - zBSteps
+                    - zFESteps
+                    - zFPlaneNum
                   type: object
                 udp:
                   properties:
@@ -320,12 +320,12 @@ paths:
                     port:
                       type: integer
                   required:
-                  - bufferNum
-                  - bufferSize
-                  - count
-                  - enabled
-                  - host
-                  - port
+                    - bufferNum
+                    - bufferSize
+                    - count
+                    - enabled
+                    - host
+                    - port
                   type: object
                 uuid:
                   type: string
@@ -342,27 +342,27 @@ paths:
                     port:
                       type: integer
                   required:
-                  - enabled
-                  - host
-                  - interval
-                  - port
+                    - enabled
+                    - host
+                    - interval
+                    - port
                   type: object
               required:
-              - daServer
-              - fileSave
-              - image
-              - udp
-              - websocket
-              - galvo
-              - uuid
-              - verbosity
+                - daServer
+                - fileSave
+                - image
+                - udp
+                - websocket
+                - galvo
+                - uuid
+                - verbosity
               type: object
       responses:
         '200':
           description: OK
       summary: /receiver
       tags:
-      - stage-scan
+        - stage-scan
   /receiver/ps:
     post:
       description: get ps of ./receiver_main.out
@@ -380,7 +380,7 @@ paths:
           description: OK
       summary: /receiver/ps
       tags:
-      - stage-scan
+        - stage-scan
   /receiver/signal:
     post:
       description: send signal to ./receiver_main.out
@@ -397,14 +397,14 @@ paths:
                 signum:
                   type: integer
               required:
-              - signum
+                - signum
               type: object
       responses:
         '200':
           description: OK
       summary: /receiver/signal
       tags:
-      - stage-scan
+        - stage-scan
   /stage/aom:
     post:
       description: toggle aom on and off
@@ -419,70 +419,79 @@ paths:
                   aomOpenHl: 1
                   invert: 0
                   pinConfig:
-                  - name: plsPin1
-                    value: 1
-                  - name: dirPin1
-                    value: 2
-                  - name: plsPin2
-                    value: 3
-                  - name: dirPin2
-                    value: 4
-                  - name: plsPin3
-                    value: 5
-                  - name: dirPin3
-                    value: 6
-                  - name: aomPin
-                    value: 7
-                  - name: aomRef
-                    value: 8
+                    - name: plsPin1
+                      value: 1
+                    - name: dirPin1
+                      value: 2
+                    - name: plsPin2
+                      value: 3
+                    - name: dirPin2
+                      value: 4
+                    - name: plsPin3
+                      value: 5
+                    - name: dirPin3
+                      value: 6
+                    - name: aomPin
+                      value: 7
+                    - name: aomRef
+                      value: 8
                   speedX: 75
                   speedY: 500
                   speedZ: 500
                   uuid: yb20210222-130053
             schema:
               properties:
-                aomOnoff:
-                  type: integer
-                aomOpenHl:
-                  type: integer
-                invert:
-                  type: integer
                 pinConfig:
+                  type: array
                   items:
+                    type: object
                     properties:
                       name:
                         type: string
                       value:
                         type: integer
                     required:
-                    - name
-                    - value
-                    type: object
-                  type: array
+                      - name
+                      - value
+                command:
+                  type: string
+                  description: '0'
+                invert:
+                  type: integer
+                  description: '1'
                 speedX:
                   type: integer
+                  description: '2'
                 speedY:
                   type: integer
+                  description: '3'
                 speedZ:
                   type: integer
+                  description: '4'
+                aomOpenHl:
+                  type: integer
+                  description: '5'
+                aomOnoff:
+                  type: integer
+                  description: '6'
                 uuid:
                   type: string
               required:
-              - aomOnoff
-              - aomOpenHl
-              - invert
-              - pinConfig
-              - speedX
-              - speedY
-              - speedZ
-              - uuid
+                - command
+                - aomOnoff
+                - aomOpenHl
+                - invert
+                - pinConfig
+                - speedX
+                - speedY
+                - speedZ
               type: object
       responses:
         '200':
           description: OK
       summary: /stage/aom
       tags:
-      - stage-scan
+        - stage-scan
   /stage/move:
     post:
       description: control stage move
@@ -499,22 +508,22 @@ paths:
                   invert: 0
                   moveLength: 0
                   pinConfig:
-                  - name: plsPin1
-                    value: 1
-                  - name: dirPin1
-                    value: 2
-                  - name: plsPin2
-                    value: 3
-                  - name: dirPin2
-                    value: 4
-                  - name: plsPin3
-                    value: 5
-                  - name: dirPin3
-                    value: 6
-                  - name: aomPin
-                    value: 7
-                  - name: aomRef
-                    value: 8
+                    - name: plsPin1
+                      value: 1
+                    - name: dirPin1
+                      value: 2
+                    - name: plsPin2
+                      value: 3
+                    - name: dirPin2
+                      value: 4
+                    - name: plsPin3
+                      value: 5
+                    - name: dirPin3
+                      value: 6
+                    - name: aomPin
+                      value: 7
+                    - name: aomRef
+                      value: 8
                   speedX: 75
                   speedY: 500
                   speedZ: 500
@@ -522,16 +531,6 @@ paths:
                   uuid: cf20210222-125331
             schema:
               properties:
-                aomOpenHl:
-                  type: integer
-                command:
-                  type: string
-                direction:
-                  type: integer
-                invert:
-                  type: integer
-                moveLength:
-                  type: integer
                 pinConfig:
                   items:
                     properties:
@@ -540,39 +539,55 @@ paths:
                       value:
                         type: integer
                     required:
-                    - name
-                    - value
+                      - name
+                      - value
                     type: object
                   type: array
+                command:
+                  type: string
+                  description: '0'
+                invert:
+                  type: integer
+                  description: '1'
                 speedX:
                   type: integer
+                  description: '2'
                 speedY:
                   type: integer
+                  description: '3'
                 speedZ:
                   type: integer
+                  description: '4'
+                aomOpenHl:
+                  type: integer
+                  description: '5'
+                direction:
+                  type: integer
+                  description: '6'
                 steps:
+                  type: integer
+                  description: '7'
+                moveLength:
                   type: integer
                 uuid:
                   type: string
               required:
-              - aomOpenHl
-              - command
-              - direction
-              - invert
-              - moveLength
-              - pinConfig
-              - speedX
-              - speedY
-              - speedZ
-              - steps
-              - uuid
+                - aomOpenHl
+                - command
+                - direction
+                - invert
+                - pinConfig
+                - speedX
+                - speedY
+                - speedZ
+                - steps
               type: object
       responses:
         '200':
           description: OK
       summary: /stage/move
       tags:
-      - stage-scan
+        - stage-scan
   /stage/scan:
     post:
       description: control stage scan
@@ -592,22 +607,22 @@ paths:
                   lengthX: 1024
                   lengthY: 1024
                   pinConfig:
-                  - name: plsPin1
-                    value: 1
-                  - name: dirPin1
-                    value: 2
-                  - name: plsPin2
-                    value: 3
-                  - name: dirPin2
-                    value: 4
-                  - name: plsPin3
-                    value: 5
-                  - name: dirPin3
-                    value: 6
-                  - name: aomPin
-                    value: 7
-                  - name: aomRef
-                    value: 8
+                    - name: plsPin1
+                      value: 1
+                    - name: dirPin1
+                      value: 2
+                    - name: plsPin2
+                      value: 3
+                    - name: dirPin2
+                      value: 4
+                    - name: plsPin3
+                      value: 5
+                    - name: dirPin3
+                      value: 6
+                    - name: aomPin
+                      value: 7
+                    - name: aomRef
+                      value: 8
                   speedX: 75
                   speedY: 500
                   speedZ: 500
@@ -623,94 +638,106 @@ paths:
                   zFESteps: 1
                   zFPlaneNum: 1
             schema:
+              type: object
               properties:
-                aomOpenHl:
-                  type: integer
-                aomOpenUs:
-                  type: integer
-                command:
-                  type: string
-                delay:
-                  type: integer
-                description:
-                  type: string
-                invert:
-                  type: integer
-                lengthX:
-                  type: integer
-                lengthY:
-                  type: integer
                 pinConfig:
+                  type: array
                   items:
+                    type: object
                     properties:
                       name:
                         type: string
                       value:
                         type: integer
                     required:
-                    - name
-                    - value
-                    type: object
-                  type: array
+                      - name
+                      - value
+                command:
+                  type: string
+                  description: '0'
+                invert:
+                  type: integer
+                  description: '1'
                 speedX:
                   type: integer
+                  description: '2'
                 speedY:
                   type: integer
+                  description: '3'
                 speedZ:
+                  type: integer
+                  description: '4'
+                aomOpenHl:
+                  type: integer
+                  description: '5'
+                aomOpenUs:
+                  type: integer
+                  description: '6'
+                xFSteps:
+                  type: integer
+                  description: '7'
+                xBSteps:
+                  type: integer
+                  description: '8'
+                yFSteps:
+                  type: integer
+                  description: '9'
+                yBSteps:
+                  type: integer
+                  description: '10'
+                zFESteps:
+                  type: integer
+                  description: '11'
+                zFPlaneNum:
+                  type: integer
+                  description: '12'
+                zBSteps:
+                  type: integer
+                  description: '13'
+                xyRepeatNum:
+                  type: integer
+                  description: '14'
+                xyzRepeatNum:
+                  type: integer
+                  description: '15'
+                yPrevEverySteps:
+                  type: integer
+                  description: '16'
+                delay:
+                  type: integer
+                description:
+                  type: string
+                lengthX:
+                  type: integer
+                lengthY:
                   type: integer
                 uuid:
                   type: string
-                xBSteps:
-                  type: integer
-                xFSteps:
-                  type: integer
-                xyRepeatNum:
-                  type: integer
-                xyzRepeatNum:
-                  type: integer
-                yBSteps:
-                  type: integer
-                yFSteps:
-                  type: integer
-                yPrevEverySteps:
-                  type: integer
-                zBSteps:
-                  type: integer
-                zFESteps:
-                  type: integer
-                zFPlaneNum:
-                  type: integer
               required:
-              - aomOpenHl
-              - aomOpenUs
-              - command
-              - delay
-              - description
-              - invert
-              - lengthX
-              - lengthY
-              - pinConfig
-              - speedX
-              - speedY
-              - speedZ
-              - uuid
-              - xBSteps
-              - xFSteps
-              - xyRepeatNum
-              - xyzRepeatNum
-              - yBSteps
-              - yFSteps
-              - yPrevEverySteps
-              - zBSteps
-              - zFESteps
-              - zFPlaneNum
-              type: object
+                - aomOpenHl
+                - aomOpenUs
+                - command
+                - invert
+                - pinConfig
+                - speedX
+                - speedY
+                - speedZ
+                - xBSteps
+                - xFSteps
+                - xyRepeatNum
+                - xyzRepeatNum
+                - yBSteps
+                - yFSteps
+                - yPrevEverySteps
+                - zBSteps
+                - zFESteps
+                - zFPlaneNum
       responses:
         '200':
           description: OK
       summary: /stage/scan
       tags:
-      - stage-scan
+        - stage-scan
   /stage/stop:
     post:
       summary: stage-stop
@@ -727,66 +754,72 @@ paths:
                   goBack: 1
                   invert: 0
                   pinConfig:
-                  - name: plsPin1
-                    value: 1
-                  - name: dirPin1
-                    value: 2
-                  - name: plsPin2
-                    value: 3
-                  - name: dirPin2
-                    value: 4
-                  - name: plsPin3
-                    value: 5
-                  - name: dirPin3
-                    value: 6
-                  - name: aomPin
-                    value: 7
-                  - name: aomRef
-                    value: 8
+                    - name: plsPin1
+                      value: 1
+                    - name: dirPin1
+                      value: 2
+                    - name: plsPin2
+                      value: 3
+                    - name: dirPin2
+                      value: 4
+                    - name: plsPin3
+                      value: 5
+                    - name: dirPin3
+                      value: 6
+                    - name: aomPin
+                      value: 7
+                    - name: aomRef
+                      value: 8
                   speedX: 75
                   speedY: 500
                   speedZ: 500
                   uuid: ow20210222-131248
             schema:
               properties:
-                aomOpenHl:
-                  type: integer
-                command:
-                  type: string
-                goBack:
-                  type: integer
-                invert:
-                  type: integer
                 pinConfig:
+                  type: array
                   items:
+                    type: object
                     properties:
                       name:
                         type: string
                       value:
                         type: integer
                     required:
-                    - name
-                    - value
-                    type: object
-                  type: array
+                      - name
+                      - value
+                command:
+                  type: string
+                  description: '0'
+                invert:
+                  type: integer
+                  description: '1'
                 speedX:
                   type: integer
+                  description: '2'
                 speedY:
                   type: integer
+                  description: '3'
                 speedZ:
                   type: integer
+                  description: '4'
+                aomOpenHl:
+                  type: integer
+                  description: '5'
+                goBack:
+                  type: integer
+                  description: '6'
                 uuid:
                   type: string
               required:
-              - aomOpenHl
-              - command
-              - goBack
-              - invert
-              - pinConfig
-              - speedX
-              - speedY
-              - speedZ
-              - uuid
+                - aomOpenHl
+                - command
+                - goBack
+                - invert
+                - pinConfig
+                - speedX
+                - speedY
+                - speedZ
               type: object
       tags:
-      - stage-scan
+        - stage-scan

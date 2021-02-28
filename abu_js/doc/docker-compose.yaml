@@ -3,8 +3,8 @@ services:
   swagger:
     image: swaggerapi/swagger-ui:v3.33.0
     volumes:
-      - ./2pAPI.v1.yaml:/usr/share/nginx/html/2papi.yaml
+      - ./openapi:/usr/share/nginx/html/openapi
     environment:
-      API_URL: 2papi.yaml
+      API_URL: openapi/2pAPI.v1.yaml
     ports:
       - "8050:8080"
