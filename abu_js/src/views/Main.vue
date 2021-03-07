@@ -13,6 +13,7 @@
           </v-tab-item>
           <v-tab-item value="scan">
             <scan-config />
+            <scan-over-view />
             <circuit-config />
             <aom @error-dialog="errorDialog" />
             <move-ctrl @error-dialog="errorDialog" />
@@ -39,13 +40,21 @@ import StopCtrl from "@/components/Stop.vue";
 import Aom from "@/components/Aom.vue";
 import CircuitConfig from "@/components/CircuitConfig.vue";
 import ScanConfig from "@/components/ScanConfig.vue";
+import ScanOverView from "../components/ScanOverView.vue";
 
 // import ScanConfig from "@/components/ScanConfig.vue";
 // import AbuCommon from "@/assets/js/abu_common";
 // import { mapState } from "vuex";
 
 export default {
-  components: { Aom, CircuitConfig, MoveCtrl, ScanConfig, StopCtrl },
+  components: {
+    Aom,
+    CircuitConfig,
+    MoveCtrl,
+    ScanConfig,
+    StopCtrl,
+    ScanOverView,
+  },
   data() {
     return {
       // resultItem: [],

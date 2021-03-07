@@ -13,7 +13,7 @@ export default class AbuCommon {
 
   static commonScanConfig(state) {
     const uuid = this.getDateString();
-    const { speedX, speedY, speedZ } = state.scanConfig;
+    const { stepPeriodX, stepPeriodY, stepPeriodZ } = state.scanConfig;
     const { aomOpenHl, invert } = state.scanDetailedConfig;
 
     const { bbai } = state.scanDetailedConfig;
@@ -23,9 +23,9 @@ export default class AbuCommon {
       baseData: {
         uuid,
         invert,
-        speedX,
-        speedY,
-        speedZ,
+        stepPeriodX,
+        stepPeriodY,
+        stepPeriodZ,
         aomOpenHl,
         pinConfig: state.scanDetailedConfig.pinConfig,
       },

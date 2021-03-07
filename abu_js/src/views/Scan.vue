@@ -136,24 +136,24 @@ export default {
       return this.sLength.scanXLength;
     },
     sizeY() {
-      return this.sLength.scanYLength / this.sLength.yPrevEveryLength;
+      return this.sLength.scanYLength / this.sLength.yFLengthPerSeq;
     },
     zPageNum() {
       return this.zFPlaneNum * this.sCom.xyRepeatNum * this.sCom.xyzRepeatNum;
     },
     onePlaneDuration() {
-      const onePlaneXPulseNum = (this.xFSteps + this.xBSteps) * this.yFSteps;
+      const onePlaneXPulseNum = (this.xFSteps + this.xBSteps) * this.yFStepSeqs;
 
       return (
         (onePlaneXPulseNum * this.sSpeed.x +
-          (this.yFSteps * this.yPrevEverySteps + this.yBSteps) *
+          (this.yFStepSeqs * this.yFStepSeqsPerSeq + this.yBSteps) *
             this.sSpeed.y) /
         1000
       );
     },
     packetNum() {
       const zMoveDuration =
-        ((this.zFSteps + this.zBSteps) * this.sSpeed.z) / 1000;
+        ((this.zFStepSeqs + this.zBSteps) * this.sSpeed.z) / 1000;
       const totalDuration =
         (this.onePlaneDuration * this.zPageNum + zMoveDuration) *
         this.sCom.xyzRepeatNum;
@@ -168,20 +168,20 @@ export default {
       const {
         xFSteps,
         xBSteps,
-        yFSteps,
+        yFStepSeqs,
         yBSteps,
-        yPrevEverySteps,
-        zFSteps,
+        yFStepSeqsPerSeq,
+        zFStepSeqs,
         zBSteps,
       } = this;
-      const zMoveDuration = ((zFSteps + zBSteps) * this.sSpeed.z) / 1000;
+      const zMoveDuration = ((zFStepSeqs + zBSteps) * this.sSpeed.z) / 1000;
       const totalDuration =
         (this.onePlaneDuration * this.zPageNum + zMoveDuration) *
         this.sCom.xyzRepeatNum;
       const totalMin = (totalDuration / 60000).toFixed(1);
       const packets = (totalDuration * this.config.samplingRate * 1000) / 16000;
       return [
-        `single xy: ((${xFSteps}+${xBSteps}) x ${yFSteps} x ${this.sSpeed.x} + (${yPrevEverySteps} x ${yFSteps}+ ${yBSteps})x ${this.sSpeed.y}) / 1000=${this.onePlaneDuration} ms`,
+        `single xy: ((${xFSteps}+${xBSteps}) x ${yFStepSeqs} x ${this.sSpeed.x} + (${yFStepSeqsPerSeq} x ${yFStepSeqs}+ ${yBSteps})x ${this.sSpeed.y}) / 1000=${this.onePlaneDuration} ms`,
         `z plane num: ${this.zPageNum} (${this.zFPlaneNum})`,
         `      total: (${this.onePlaneDuration} x ${this.zPageNum} + ${zMoveDuration}) x ${this.sCom.xyzRepeatNum} =  ${totalDuration} ms (${totalMin} min)`,
         `${packets.toFixed(1)} packets (${this.packetNum}) `,
@@ -196,26 +196,26 @@ export default {
     xBSteps() {
       return this.sLength.scanXLength / this.sReso.xBResolution;
     },
-    yFSteps() {
-      return this.sLength.scanYLength / this.sLength.yPrevEveryLength;
+    yFStepSeqs() {
+      return this.sLength.scanYLength / this.sLength.yFLengthPerSeq;
     },
     yBSteps() {
       return this.sLength.scanYLength / this.sReso.yBResolution;
     },
-    yPrevEverySteps() {
-      return this.sLength.yPrevEveryLength / this.sReso.yFResolution;
+    yFStepSeqsPerSeq() {
+      return this.sLength.yFLengthPerSeq / this.sReso.yFResolution;
     },
-    zFSteps() {
+    zFStepSeqs() {
       return this.sLength.scanZLength / this.sReso.zFResolution;
     },
     zBSteps() {
       return this.sLength.scanZLength / this.sReso.zBResolution;
     },
     zFESteps() {
-      return this.sLength.scanZELength / this.sReso.zFResolution;
+      return this.sLength.zFLengthPerSeq / this.sReso.zFResolution;
     },
     zFPlaneNum() {
-      return this.sLength.scanZLength / this.sLength.scanZELength;
+      return this.sLength.scanZLength / this.sLength.zFLengthPerSeq;
     },
   },
   created() {
@@ -303,9 +303,9 @@ export default {
       sendC.lengthY = this.sLength.scanYLength;
       sendC.xFSteps = this.xFSteps;
       sendC.xBSteps = this.xBSteps;
-      sendC.yFSteps = this.yFSteps;
+      sendC.yFStepSeqs = this.yFStepSeqs;
       sendC.yBSteps = this.yBSteps;
-      sendC.yPrevEverySteps = this.yPrevEverySteps;
+      sendC.yFStepSeqsPerSeq = this.yFStepSeqsPerSeq;
       sendC.zFESteps = this.zFESteps;
       sendC.zFPlaneNum = this.zFPlaneNum;
       sendC.zBSteps = this.zBSteps;

@@ -1,0 +1,58 @@
+{
+  "aomOpenHl": 1,
+  "aomOpenUs": 50,
+  "command": "scan",
+  "delay": 0,
+  "description": "gain50",
+  "invert": 0,
+  "lengthX": 1024,
+  "lengthY": 1024,
+  "pinConfig": [
+    {
+      "name": "plsPin1",
+      "value": 1
+    },
+    {
+      "name": "dirPin1",
+      "value": 2
+    },
+    {
+      "name": "plsPin2",
+      "value": 3
+    },
+    {
+      "name": "dirPin2",
+      "value": 4
+    },
+    {
+      "name": "plsPin3",
+      "value": 5
+    },
+    {
+      "name": "dirPin3",
+      "value": 6
+    },
+    {
+      "name": "aomPin",
+      "value": 7
+    },
+    {
+      "name": "aomRef",
+      "value": 8
+    }
+  ],
+  "periodX": 75,
+  "periodY": 500,
+  "periodZ": 500,
+  "uuid": "kd20210222-130129",
+  "xBSteps": 4096,
+  "xFSteps": 4096,
+  "xyRepeatNum": 300,
+  "xyzRepeatNum": 1,
+  "yBSteps": 1024,
+  "yFSteps": 1024,
+  "yPrevEverySteps": 1,
+  "zBSteps": 1,
+  "zFESteps": 1,
+  "zFPlaneNum": 1
+}

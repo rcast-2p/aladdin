@@ -99,7 +99,7 @@ paths:
                     sizeZ: 5
                     threshold: 100
                     xFSteps: 4096
-                    yFSteps: 100
+                    yFStepSeqs: 100
                   scanData:
                     aomOpenHl: 1
                     aomOpenUs: 50
@@ -126,20 +126,20 @@ paths:
                         value: 7
                       - name: aomRef
                         value: 8
-                    speedX: 75
-                    speedY: 500
-                    speedZ: 500
+                    stepPeriodX: 75
+                    stepPeriodY: 500
+                    stepPeriodZ: 500
                     uuid: bp20210222-125315
                     xBSteps: 4096
                     xFSteps: 4096
                     xyRepeatNum: 300
                     xyzRepeatNum: 1
                     yBSteps: 1024
-                    yFSteps: 1024
-                    yPrevEverySteps: 1
+                    yFStepSeqs: 1024
+                    yFStepsPerSeq: 1
                     zBSteps: 1
-                    zFESteps: 1
-                    zFPlaneNum: 1
+                    zFStepsPerSeq: 1
+                    zFStepSeqs: 1
                   udp:
                     bufferNum: 4096
                     bufferSize: 64020
@@ -211,7 +211,7 @@ paths:
                       type: integer
                     xFSteps:
                       type: integer
-                    yFSteps:
+                    yFStepSeqs:
                       type: integer
                   required:
                     - dataChan
@@ -252,11 +252,11 @@ paths:
                           - value
                         type: object
                       type: array
-                    speedX:
+                    stepPeriodX:
                       type: integer
-                    speedY:
+                    stepPeriodY:
                       type: integer
-                    speedZ:
+                    stepPeriodZ:
                       type: integer
                     uuid:
                       type: string
@@ -270,15 +270,15 @@ paths:
                       type: integer
                     yBSteps:
                       type: integer
-                    yFSteps:
+                    yFStepSeqs:
                       type: integer
-                    yPrevEverySteps:
+                    yFStepsPerSeq:
                       type: integer
                     zBSteps:
                       type: integer
-                    zFESteps:
+                    zFStepsPerSeq:
                       type: integer
-                    zFPlaneNum:
+                    zFStepSeqs:
                       type: integer
                   required:
                     - aomOpenHl
@@ -290,20 +290,20 @@ paths:
                     - lengthX
                     - lengthY
                     - pinConfig
-                    - speedX
-                    - speedY
-                    - speedZ
+                    - stepPeriodX
+                    - stepPeriodY
+                    - stepPeriodZ
                     - uuid
                     - xBSteps
                     - xFSteps
                     - xyRepeatNum
                     - xyzRepeatNum
                     - yBSteps
-                    - yFSteps
-                    - yPrevEverySteps
+                    - yFStepSeqs
+                    - yFStepsPerSeq
                     - zBSteps
-                    - zFESteps
-                    - zFPlaneNum
+                    - zFStepsPerSeq
+                    - zFStepSeqs
                   type: object
                 udp:
                   properties:
@@ -435,9 +435,9 @@ paths:
                       value: 7
                     - name: aomRef
                       value: 8
-                  speedX: 75
-                  speedY: 500
-                  speedZ: 500
+                  stepPeriodX: 75
+                  stepPeriodY: 500
+                  stepPeriodZ: 500
                   uuid: yb20210222-130053
             schema:
               properties:
@@ -459,13 +459,13 @@ paths:
                 invert:
                   type: integer
                   description: '1'
-                speedX:
+                stepPeriodX:
                   type: integer
                   description: '2'
-                speedY:
+                stepPeriodY:
                   type: integer
                   description: '3'
-                speedZ:
+                stepPeriodZ:
                   type: integer
                   description: '4'
                 aomOpenHl:
@@ -482,9 +482,9 @@ paths:
                 - aomOpenHl
                 - invert
                 - pinConfig
-                - speedX
-                - speedY
-                - speedZ
+                - stepPeriodX
+                - stepPeriodY
+                - stepPeriodZ
               type: object
       responses:
         '200':
@@ -524,9 +524,9 @@ paths:
                       value: 7
                     - name: aomRef
                       value: 8
-                  speedX: 75
-                  speedY: 500
-                  speedZ: 500
+                  stepPeriodX: 75
+                  stepPeriodY: 500
+                  stepPeriodZ: 500
                   steps: 0
                   uuid: cf20210222-125331
             schema:
@@ -549,13 +549,13 @@ paths:
                 invert:
                   type: integer
                   description: '1'
-                speedX:
+                stepPeriodX:
                   type: integer
                   description: '2'
-                speedY:
+                stepPeriodY:
                   type: integer
                   description: '3'
-                speedZ:
+                stepPeriodZ:
                   type: integer
                   description: '4'
                 aomOpenHl:
@@ -577,9 +577,9 @@ paths:
                 - direction
                 - invert
                 - pinConfig
-                - speedX
-                - speedY
-                - speedZ
+                - stepPeriodX
+                - stepPeriodY
+                - stepPeriodZ
                 - steps
               type: object
       responses:
@@ -593,6 +593,7 @@ paths:
       description: control stage scan
       operationId: stage-scan
       requestBody:
+        description: "pinConfig:16 bit * 12, 0-: 32 bit"
         content:
           application/json:
             examples:
@@ -623,20 +624,20 @@ paths:
                       value: 7
                     - name: aomRef
                       value: 8
-                  speedX: 75
-                  speedY: 500
-                  speedZ: 500
+                  stepPeriodX: 75
+                  stepPeriodY: 500
+                  stepPeriodZ: 500
                   uuid: kd20210222-130129
                   xBSteps: 4096
                   xFSteps: 4096
                   xyRepeatNum: 300
                   xyzRepeatNum: 1
                   yBSteps: 1024
-                  yFSteps: 1024
-                  yPrevEverySteps: 1
+                  yFStepSeqs: 1024
+                  yFStepsPerSeq: 1
                   zBSteps: 1
-                  zFESteps: 1
-                  zFPlaneNum: 1
+                  zFStepsPerSeq: 1
+                  zFStepSeqs: 1
             schema:
               type: object
               properties:
@@ -658,13 +659,13 @@ paths:
                 invert:
                   type: integer
                   description: '1'
-                speedX:
+                stepPeriodX:
                   type: integer
                   description: '2'
-                speedY:
+                stepPeriodY:
                   type: integer
                   description: '3'
-                speedZ:
+                stepPeriodZ:
                   type: integer
                   description: '4'
                 aomOpenHl:
@@ -679,28 +680,28 @@ paths:
                 xBSteps:
                   type: integer
                   description: '8'
-                yFSteps:
+                yFStepSeqs:
                   type: integer
                   description: '9'
-                yBSteps:
+                yFStepsPerSeq:
                   type: integer
                   description: '10'
-                zFESteps:
+                yBSteps:
                   type: integer
                   description: '11'
-                zFPlaneNum:
+                zFStepSeqs:
                   type: integer
                   description: '12'
-                zBSteps:
+                zFStepsPerSeq:
                   type: integer
                   description: '13'
-                xyRepeatNum:
+                zBSteps:
                   type: integer
                   description: '14'
-                xyzRepeatNum:
+                xyRepeatNum:
                   type: integer
                   description: '15'
-                yPrevEverySteps:
+                xyzRepeatNum:
                   type: integer
                   description: '16'
                 delay:
@@ -719,19 +720,19 @@ paths:
                 - command
                 - invert
                 - pinConfig
-                - speedX
-                - speedY
-                - speedZ
+                - stepPeriodX
+                - stepPeriodY
+                - stepPeriodZ
                 - xBSteps
                 - xFSteps
                 - xyRepeatNum
                 - xyzRepeatNum
                 - yBSteps
-                - yFSteps
-                - yPrevEverySteps
+                - yFStepSeqs
+                - yFStepsPerSeq
                 - zBSteps
-                - zFESteps
-                - zFPlaneNum
+                - zFStepsPerSeq
+                - zFStepSeqs
       responses:
         '200':
           description: OK
@@ -770,9 +771,9 @@ paths:
                       value: 7
                     - name: aomRef
                       value: 8
-                  speedX: 75
-                  speedY: 500
-                  speedZ: 500
+                  stepPeriodX: 75
+                  stepPeriodY: 500
+                  stepPeriodZ: 500
                   uuid: ow20210222-131248
             schema:
               properties:
@@ -794,13 +795,13 @@ paths:
                 invert:
                   type: integer
                   description: '1'
-                speedX:
+                stepPeriodX:
                   type: integer
                   description: '2'
-                speedY:
+                stepPeriodY:
                   type: integer
                   description: '3'
-                speedZ:
+                stepPeriodZ:
                   type: integer
                   description: '4'
                 aomOpenHl:
@@ -817,9 +818,12 @@ paths:
                 - goBack
                 - invert
                 - pinConfig
-                - speedX
-                - speedY
-                - speedZ
+                - stepPeriodX
+                - stepPeriodY
+                - stepPeriodZ
               type: object
+      responses:
+        '200':
+          description: OK
       tags:
         - stage-scan

@@ -32,14 +32,14 @@ export default new Vuex.Store({
       dataChan: 0, // fixed by circuit
       pixelDataNum: 10,
       sizeX: 100, // currently the same as lengthX
-      sizeY: 100, // calculated from lengthY, yFResolution, yPrevEveryLength
-      sizeZ: 5, // calculated from scanZLength and scanZELength
+      sizeY: 100, // calculated from lengthY, yFResolution, yFLengthPerSeq
+      sizeZ: 5, // calculated from scanZLength and zFLengthPerSeq
       threshold: 100,
       xFSteps: 400, // calculated from lengthX and xFResolution
       xBSteps: 400, // calculated from lengthX and xBResolution
-      yFSteps: 400, // calculated from lengthY and yFResolution
+      yFStepSeqs: 400, // calculated from lengthY, yFResolution and yFLengthPerSeq
       yBSteps: 400, // calculated from lengthY and yBResolution
-      zFSteps: 400, // calculated from lengthZ and zFResolution
+      zFStepSeqs: 400, // calculated from lengthZ and zFResolution
       zBSteps: 400, // calculated from lengthZ and zBResolution
     },
     websocket: {
@@ -51,15 +51,15 @@ export default new Vuex.Store({
     scanConfig: {
       lengthX: 100,
       lengthY: 100,
-      yPrevEveryLength: 5,
       lengthZ: 100,
-      scanZELength: 100,
+      yFLengthPerSeq: 5,
+      zFLengthPerSeq: 100,
       xyRepeatNum: 1,
       xyzRepeatNum: 1,
       aomOpenUs: 1.0,
-      speedX: 75,
-      speedY: 500,
-      speedZ: 500,
+      stepPeriodX: 75,
+      stepPeriodY: 500,
+      stepPeriodZ: 500,
     },
     scanDetailedConfig: {
       bbai: {

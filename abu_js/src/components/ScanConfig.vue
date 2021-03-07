@@ -27,8 +27,8 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
-            label="yPrevEveryLength"
-            v-model.number="scanConfig.yPrevEveryLength"
+            label="yFLengthPerSeq"
+            v-model.number="scanConfig.yFLengthPerSeq"
             suffix="um"
             type="number"
             outlined
@@ -38,8 +38,8 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
-            label="scanZLength"
-            v-model.number="scanConfig.scanZLength"
+            label="lengthZ"
+            v-model.number="scanConfig.lengthZ"
             suffix="um"
             type="number"
             outlined
@@ -49,8 +49,8 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
-            label="scanZELength"
-            v-model.number="scanConfig.scanZELength"
+            label="zFLengthPerSeq"
+            v-model.number="scanConfig.zFLengthPerSeq"
             suffix="um"
             type="number"
             outlined
@@ -96,8 +96,8 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
-            label="speedX"
-            v-model.number="scanConfig.speedX"
+            label="stepPeriodX"
+            v-model.number="scanConfig.stepPeriodX"
             type="number"
             outlined
             hide-details="auto"
@@ -107,8 +107,8 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
-            label="speedY"
-            v-model.number="scanConfig.speedY"
+            label="stepPeriodY"
+            v-model.number="scanConfig.stepPeriodY"
             type="number"
             outlined
             hide-details="auto"
@@ -118,8 +118,8 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
-            label="speedZ"
-            v-model.number="scanConfig.speedZ"
+            label="stepPeriodZ"
+            v-model.number="scanConfig.stepPeriodZ"
             type="number"
             outlined
             hide-details="auto"
