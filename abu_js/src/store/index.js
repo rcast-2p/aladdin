@@ -125,8 +125,13 @@ export default new Vuex.Store({
         timestampData: true,
       });
       state.db.ome = new DataStore({ filename: "ome.db", timestampData: true });
+      state.db.mechanics = new DataStore({
+        filename: "mechanics.db",
+        timestampData: true,
+      });
       state.db.commands.loadDatabase();
       state.db.ome.loadDatabase();
+      state.db.mechanics.loadDatabase();
     },
     setObject(state, obj) {
       state[obj.key] = JSON.parse(obj.content);

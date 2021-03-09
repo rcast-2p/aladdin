@@ -14,7 +14,7 @@
               <v-select
                 :label="sI"
                 v-model="scanDetailedConfig.sReso[sI]"
-                :items="resolutionOptions"
+                :items="resolutionOptions[sI.slice(0, 1)]"
                 outlined
                 hide-details="auto"
                 dense
@@ -82,6 +82,19 @@
               />
             </v-col>
           </v-row>
+          <h2>range</h2>
+          <v-row>
+            <v-col cols="8">
+              <ul>
+                <li><b>x</b> {{ limits.x.min }} - {{ limits.x.max }} [um]</li>
+                <li><b>y</b> {{ limits.y.min }} - {{ limits.x.max }} [um]</li>
+                <li><b>z</b> {{ limits.z.min }} - {{ limits.x.max }} [um]</li>
+              </ul>
+            </v-col>
+            <v-col cols="4">
+              <v-btn to="hwconfig">HW config</v-btn>
+            </v-col>
+          </v-row>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -92,15 +105,12 @@ export default {
   data() {
     return {
       scanDetailedConfig: { sReso: {}, pinConfig: [], bbai: {} },
-      resolutionOptions: [
-        { text: "0.2 um (10 div 6)", value: 0.2 },
-        { text: "0.25 um (8 div 5)", value: 0.25 },
-        { text: "0.4 um (5 div 4)", value: 0.4 },
-        { text: "0.5 um (4 div 3)", value: 0.5 },
-        { text: "0.8 um (2.5 div 2)", value: 0.8 },
-        { text: "1.0 um (2 div 1)", value: 1.0 },
-        { text: "2.0 um (1 div 0)", value: 2.0 },
-      ],
+      resolutionOptions: { x: [], y: [], z: [] },
+      limits: {
+        x: { min: 0, max: 100 },
+        y: { min: 0, max: 100 },
+        z: { min: 0, max: 100 },
+      },
       invertOptions: [
         { text: "false", value: 0 },
         { text: "true", value: 1 },
@@ -109,6 +119,9 @@ export default {
   },
   mounted() {
     this.scanDetailedConfig = this.$store.state.scanDetailedConfig;
+    const stageHwConfig = JSON.parse(localStorage.getItem("stageHwConfig"));
+    this.resolutionOptions = stageHwConfig.resolutionOptions;
+    this.limits = stageHwConfig.limits;
   },
   methods: {
     updateState() {
@@ -121,4 +134,12 @@ export default {
     },
   },
 };
+
+// { text: "0.2 um (10 div 6)", value: 0.2 },
+// { text: "0.25 um (8 div 5)", value: 0.25 },
+// { text: "0.4 um (5 div 4)", value: 0.4 },
+// { text: "0.5 um (4 div 3)", value: 0.5 },
+// { text: "0.8 um (2.5 div 2)", value: 0.8 },
+// { text: "1.0 um (2 div 1)", value: 1.0 },
+// { text: "2.0 um (1 div 0)", value: 2.0 },
 </script>

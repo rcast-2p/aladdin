@@ -12,6 +12,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="4" offset="1">
@@ -23,6 +24,9 @@
             outlined
             hide-details="auto"
             dense
+            :error="yError"
+            :messages="yMessages"
+            @change="validationY"
           />
         </v-col>
         <v-col cols="3">
@@ -34,6 +38,9 @@
             outlined
             hide-details="auto"
             dense
+            :error="yError"
+            :messages="yMessages"
+            @change="validationY"
           />
         </v-col>
         <v-col cols="4" offset="5">
@@ -45,6 +52,9 @@
             outlined
             hide-details="auto"
             dense
+            :error="zError"
+            :messages="zMessages"
+            @change="validationZ"
           />
         </v-col>
         <v-col cols="3">
@@ -56,6 +66,9 @@
             outlined
             hide-details="auto"
             dense
+            :error="zError"
+            :messages="zMessages"
+            @change="validationZ"
           />
         </v-col>
       </v-row>
@@ -71,6 +84,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -81,6 +95,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="4" offset="1">
@@ -92,6 +107,9 @@
             hide-details="auto"
             suffix="us"
             dense
+            :error="aomError"
+            :messages="aomMessages"
+            @change="validationAom"
           />
         </v-col>
         <v-col cols="4">
@@ -103,6 +121,9 @@
             hide-details="auto"
             suffix="us"
             dense
+            :error="aomError"
+            :messages="aomMessages"
+            @change="validationAom"
           />
         </v-col>
         <v-col cols="4">
@@ -114,6 +135,7 @@
             hide-details="auto"
             suffix="us"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="4">
@@ -125,6 +147,7 @@
             hide-details="auto"
             suffix="us"
             dense
+            @change="updateState"
           />
         </v-col>
       </v-row>
@@ -136,19 +159,54 @@ export default {
   data() {
     return {
       scanConfig: {},
+      yMessages: [""],
+      yError: false,
+      zMessages: [""],
+      zError: false,
+      aomMessages: [""],
+      aomError: false,
     };
   },
   mounted() {
-    this.scanConfig = this.$store.state.scanConfig;
+    this.scanConfig = JSON.parse(JSON.stringify(this.$store.state.scanConfig));
   },
   methods: {
+    validationY() {
+      if (this.scanConfig.lengthY % this.scanConfig.yFLengthPerSeq !== 0) {
+        this.yError = true;
+        this.yMessages = ["Division Error"];
+        return;
+      }
+      this.yError = false;
+      this.yMessages = [""];
+      this.updateState();
+    },
+    validationZ() {
+      if (this.scanConfig.lengthZ % this.scanConfig.zFLengthPerSeq !== 0) {
+        this.zError = true;
+        this.zMessages = ["Division Error"];
+        return;
+      }
+      this.zError = false;
+      this.zMessages = [""];
+      this.updateState();
+    },
+    validationAom() {
+      if (this.scanConfig.aomOpenUs > this.scanConfig.stepPeriodX) {
+        this.aomError = true;
+        this.aomMessages = ["Value Error"];
+        return;
+      }
+      this.aomError = false;
+      this.aomMessages = [""];
+      this.updateState();
+    },
     updateState() {
       console.log(this.scanConfig);
-      this.$store.commit(
-        "setObject",
-        "scanConfig",
-        JSON.stringify(this.scanConfig)
-      );
+      this.$store.commit("setObject", {
+        key: "scanConfig",
+        content: JSON.stringify(this.scanConfig),
+      });
     },
   },
 };

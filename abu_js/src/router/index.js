@@ -68,6 +68,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "Table" */ "@/views/Table.vue"),
   },
   {
+    path: "/hwconfig",
+    name: "Hwconfig",
+    // eslint-disable-next-line
+    component: () => import(/* webpackChunkName: "Config" */ "@/views/Config.vue"),
+  },
+  {
     path: "*",
     redirect: "/scan",
   },
