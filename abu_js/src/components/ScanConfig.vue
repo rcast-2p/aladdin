@@ -3,7 +3,7 @@
     <v-col cols="1">space </v-col>
     <v-col cols="11">
       <v-row no-gutters>
-        <v-col cols="2">
+        <v-col cols="4">
           <v-text-field
             label="lengthX"
             v-model.number="scanConfig.lengthX"
@@ -14,7 +14,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4" offset="1">
           <v-text-field
             label="lengthY"
             v-model.number="scanConfig.lengthY"
@@ -25,7 +25,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="3">
           <v-text-field
             label="yFLengthPerSeq"
             v-model.number="scanConfig.yFLengthPerSeq"
@@ -36,7 +36,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4" offset="5">
           <v-text-field
             label="lengthZ"
             v-model.number="scanConfig.lengthZ"
@@ -47,7 +47,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="3">
           <v-text-field
             label="zFLengthPerSeq"
             v-model.number="scanConfig.zFLengthPerSeq"
@@ -63,7 +63,7 @@
     <v-col cols="1">time</v-col>
     <v-col cols="11">
       <v-row no-gutters>
-        <v-col cols="2">
+        <v-col cols="4">
           <v-text-field
             label="xyRepeatNum"
             v-model.number="scanConfig.xyRepeatNum"
@@ -73,7 +73,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="3">
           <v-text-field
             label="xyzRepeatNum"
             v-model.number="scanConfig.xyzRepeatNum"
@@ -83,7 +83,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4" offset="1">
           <v-text-field
             label="aomOpenUs"
             v-model.number="scanConfig.aomOpenUs"
@@ -94,7 +94,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4">
           <v-text-field
             label="stepPeriodX"
             v-model.number="scanConfig.stepPeriodX"
@@ -105,7 +105,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4">
           <v-text-field
             label="stepPeriodY"
             v-model.number="scanConfig.stepPeriodY"
@@ -116,7 +116,7 @@
             dense
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4">
           <v-text-field
             label="stepPeriodZ"
             v-model.number="scanConfig.stepPeriodZ"

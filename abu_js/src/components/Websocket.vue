@@ -11,6 +11,7 @@
             hide-details="auto"
             dense
             disabled
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -22,6 +23,7 @@
             hide-details="auto"
             dense
             disabled
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -33,6 +35,7 @@
             hide-details="auto"
             suffix="msec"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -42,6 +45,7 @@
             outlined
             dense
             color="red darken-4"
+            @change="updateState"
           />
         </v-col>
       </v-row>
@@ -52,11 +56,11 @@
 export default {
   data() {
     return {
-      image: {},
+      websocket: {},
     };
   },
   mounted() {
-    this.image = this.$store.state.image;
+    this.websocket = this.$store.state.websocket;
   },
   // computed: {
   //   count() {
@@ -70,8 +74,10 @@ export default {
   // },
   methods: {
     updateState() {
-      console.log(this.image);
-      this.$store.commit("setObject", "image", JSON.stringify(this.image));
+      this.$store.commit("setObject", {
+        key: "websocket",
+        content: JSON.stringify(this.image),
+      });
     },
   },
 };

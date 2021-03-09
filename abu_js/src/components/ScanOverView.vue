@@ -111,6 +111,18 @@ export default {
         xyzRepeatNum;
       return wholeUs;
     },
+    samplingRate() {
+      return this.$store.state.udp.samplingRate;
+    },
+    bufferSize() {
+      return this.$store.state.udp.bufferSize;
+    },
+    extraCount() {
+      return this.$store.state.udp.extraCount;
+    },
+    packetCount() {
+      return Math.ceil((this.wholeUs * this.samplingRate) / this.bufferSize);
+    },
     wholeScan() {
       const {
         stepPeriodZ,
@@ -121,11 +133,44 @@ export default {
       const wholeMin = (this.wholeUs / 60000000).toFixed(2);
       let retstr = `((${this.durationUs} x ${xyRepeatNum} + ${stepPeriodZ} x ${this.zFStepsPerSeq})`;
       retstr += ` x ${this.zFStepSeqs} + ${this.zBSteps} x ${stepPeriodZ}) x ${xyzRepeatNum} = ${wholeSec} [s] (${wholeMin} [min])`;
+      retstr += ` ${this.packetCount} packets`;
       return retstr;
     },
   },
 
+  watch: {
+    wholeScan() {
+      this.setImageCalc();
+    },
+  },
+  mounted() {
+    this.setImageCalc();
+  },
   methods: {
+    setImageCalc() {
+      const imageCalc = {
+        sizeX: this.sizeX,
+        sizeY: this.sizeY,
+        sizeZ: this.sizeZ,
+        xFSteps: this.xFSteps,
+        xBSteps: this.xBSteps,
+        yFStepSeqs: this.yFStepSeqs,
+        yFStepsPerSeq: this.yFStepsPerSeq,
+        yBSteps: this.yBSteps,
+        zFStepSeqs: this.zFStepSeqs,
+        zFStepsPerSeq: this.zFStepsPerSeq,
+        zBSteps: this.zBSteps,
+      };
+      this.$store.commit("setObject", {
+        key: "imageCalc",
+        content: JSON.stringify(imageCalc),
+      });
+      this.$store.commit("setScalar", {
+        key0: "udp",
+        key1: "count",
+        content: this.packetCount + this.extraCount,
+      });
+    },
     // scanOverview() {
     //   const { yFLengthPerSeq } = this.$store.state.scanConfig;
     //   const zMoveDuration = ((zFStepSeqs + zBSteps) * this.sSpeed.z) / 1000;

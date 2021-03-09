@@ -10,6 +10,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -20,6 +21,7 @@
             hide-details="auto"
             dense
             type="number"
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -29,6 +31,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -39,6 +42,7 @@
             hide-details="auto"
             dense
             type="number"
+            @change="updateState"
           />
         </v-col>
       </v-row>
@@ -69,13 +73,14 @@ export default {
   // },
   methods: {
     updateState() {
-      console.log(this.servers);
-      this.$store.commit("setObject", "prudaq", JSON.stringify(this.prudaq));
-      this.$store.commit(
-        "setObject",
-        "receiver",
-        JSON.stringify(this.receiver)
-      );
+      this.$store.commit("setObject", {
+        key: "prudaq",
+        content: JSON.stringify(this.prudaq),
+      });
+      this.$store.commit("setObject", {
+        key: "receiver",
+        content: JSON.stringify(this.receiver),
+      });
     },
   },
 };

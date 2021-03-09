@@ -21,7 +21,14 @@
           </v-tab-item>
         </v-tabs-items>
       </v-col>
-      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6"> </v-col>
+      <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
+        <udp />
+        <images />
+        <websocket />
+        <raw-data />
+        <servers />
+        <d-a-server />
+      </v-col>
     </v-row>
     <v-dialog v-model="dialog.show"
       ><v-card
@@ -38,9 +45,15 @@ import StopCtrl from "@/components/Stop.vue";
 // import axios from "@/plugins/axios";
 // import Viewer from "@/components/Viewer.vue";
 import Aom from "@/components/Aom.vue";
+import DAServer from "@/components/DAServer.vue";
 import CircuitConfig from "@/components/CircuitConfig.vue";
+import Images from "@/components/Image.vue";
+import Servers from "@/components/Servers.vue";
 import ScanConfig from "@/components/ScanConfig.vue";
-import ScanOverView from "../components/ScanOverView.vue";
+import ScanOverView from "@/components/ScanOverView.vue";
+import Udp from "@/components/Udp.vue";
+import Websocket from "@/components/Websocket.vue";
+import RawData from "../components/RawData.vue";
 
 // import ScanConfig from "@/components/ScanConfig.vue";
 // import AbuCommon from "@/assets/js/abu_common";
@@ -50,10 +63,16 @@ export default {
   components: {
     Aom,
     CircuitConfig,
+    DAServer,
     MoveCtrl,
+    Images,
     ScanConfig,
+    Servers,
     StopCtrl,
     ScanOverView,
+    Udp,
+    Websocket,
+    RawData,
   },
   data() {
     return {

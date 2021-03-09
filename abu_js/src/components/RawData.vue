@@ -10,6 +10,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -19,10 +20,17 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
-          <v-switch label="galvo mode" v-model="galvo" outlined dense />
+          <v-switch
+            label="galvo mode"
+            v-model="globalConfig.galvo"
+            outlined
+            dense
+            @change="updateGlobalConfig"
+          />
         </v-col>
         <v-col cols="3">
           <v-switch
@@ -30,6 +38,7 @@
             v-model="fileSave.tiffSave"
             outlined
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -38,6 +47,7 @@
             v-model="fileSave.rawDataSave"
             outlined
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -48,15 +58,17 @@
             dense
             disabled
             color="red darken-4"
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
           <v-switch
             label="verbosity"
-            v-model="verbosity"
+            v-model="globalConfig.verbosity"
             outlined
             dense
             color="blue darken-4"
+            @change="updateGlobalConfig"
           />
         </v-col>
       </v-row>
@@ -67,11 +79,13 @@
 export default {
   data() {
     return {
-      rawdata: {},
+      fileSave: {},
+      globalConfig: {},
     };
   },
   mounted() {
-    this.rawdata = this.$store.state.rawdata;
+    this.globalConfig = this.$store.state.globalConfig;
+    this.fileSave = this.$store.state.fileSave;
   },
   // computed: {
   //   count() {
@@ -84,9 +98,17 @@ export default {
   //   },
   // },
   methods: {
+    updateGlobalConfig() {
+      this.$store.commit("setObject", {
+        key: "globalConfig",
+        content: JSON.stringify(this.globalConfig),
+      });
+    },
     updateState() {
-      console.log(this.rawdata);
-      this.$store.commit("setObject", "rawdata", JSON.stringify(this.rawdata));
+      this.$store.commit("setObject", {
+        key: "fileSave",
+        content: JSON.stringify(this.fileSave),
+      });
     },
   },
 };

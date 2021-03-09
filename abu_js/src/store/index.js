@@ -20,6 +20,8 @@ export default new Vuex.Store({
       enabled: true,
       host: "192.168.2.100",
       port: 60000,
+      samplingRate: 6.25,
+      extraCount: 300,
     },
     fileSave: {
       debug: "octo_test/0220/",
@@ -28,18 +30,26 @@ export default new Vuex.Store({
       rawDataSave: false,
       tiffSave: true,
     },
+    globalConfig: {
+      verbosity: false,
+      galvo: false,
+    },
     image: {
       dataChan: 0, // fixed by circuit
       pixelDataNum: 10,
+      threshold: 100,
+    },
+    imageCalc: {
       sizeX: 100, // currently the same as lengthX
       sizeY: 100, // calculated from lengthY, yFResolution, yFLengthPerSeq
-      sizeZ: 5, // calculated from scanZLength and zFLengthPerSeq
-      threshold: 100,
+      sizeZ: 5, // calculated from lengthZ and zFLengthPerSeq
       xFSteps: 400, // calculated from lengthX and xFResolution
       xBSteps: 400, // calculated from lengthX and xBResolution
-      yFStepSeqs: 400, // calculated from lengthY, yFResolution and yFLengthPerSeq
+      yFStepSeqs: 400, // calculated from lengthY and yFLengthPerSeq
+      yFStepsPerSeq: 400, // calculated from yFResolution and yFLengthPerSeq
       yBSteps: 400, // calculated from lengthY and yBResolution
       zFStepSeqs: 400, // calculated from lengthZ and zFResolution
+      zFStepsPerSeq: 400, // calculated from lengthZ and zFResolution
       zBSteps: 400, // calculated from lengthZ and zBResolution
     },
     websocket: {
@@ -118,8 +128,11 @@ export default new Vuex.Store({
       state.db.commands.loadDatabase();
       state.db.ome.loadDatabase();
     },
-    setObject(state, key, objstr) {
-      state[key] = JSON.parse(objstr);
+    setObject(state, obj) {
+      state[obj.key] = JSON.parse(obj.content);
+    },
+    setScalar(state, obj) {
+      state[obj.key0][obj.key1] = obj.content;
     },
   },
   getters: {},

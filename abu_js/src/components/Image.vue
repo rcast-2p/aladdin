@@ -11,6 +11,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -21,6 +22,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -30,24 +32,7 @@
             outlined
             hide-details="auto"
             dense
-          />
-        </v-col>
-        <v-col cols="2">
-          <v-text-field
-            label="pixel max"
-            v-model.number="image.pixelMax"
-            outlined
-            hide-details="auto"
-            dense
-          />
-        </v-col>
-        <v-col cols="2">
-          <v-text-field
-            label="pixel min"
-            v-model.number="image.pixelMin"
-            outlined
-            hide-details="auto"
-            dense
+            @change="updateState"
           />
         </v-col>
       </v-row>

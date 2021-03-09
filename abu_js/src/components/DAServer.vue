@@ -58,21 +58,13 @@ export default {
   mounted() {
     this.daServer = this.$store.state.daServer;
   },
-  // computed: {
-  //   daServer: {
-  //     get() {
-  //       return this.$store.state.daServer;
-  //     },
-  //   },
-  // },
   methods: {
     updateState() {
       console.log(this.daServer);
-      this.$store.commit(
-        "setObject",
-        "daServer",
-        JSON.stringify(this.daServer)
-      );
+      this.$store.commit("setObject", {
+        key: "daServer",
+        content: JSON.stringify(this.daServer),
+      });
     },
   },
 };

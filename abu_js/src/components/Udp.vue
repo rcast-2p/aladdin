@@ -11,6 +11,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -22,6 +23,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -32,6 +34,7 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -42,15 +45,17 @@
             dense
             disabled
             color="red darken-4"
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
           <v-text-field
-            label="count"
+            label="packet count"
             v-model.number="udp.count"
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
           />
         </v-col>
         <v-col cols="3">
@@ -60,6 +65,28 @@
             outlined
             hide-details="auto"
             dense
+            @change="updateState"
+          />
+        </v-col>
+        <v-col cols="3">
+          <v-text-field
+            label="sampling rate"
+            v-model.number="udp.samplingRate"
+            outlined
+            hide-details="auto"
+            dense
+            suffix="MHz"
+            @change="updateState"
+          />
+        </v-col>
+        <v-col cols="3">
+          <v-text-field
+            label="extra packet"
+            v-model.number="udp.extraCount"
+            outlined
+            hide-details="auto"
+            dense
+            @change="updateState"
           />
         </v-col>
       </v-row>
@@ -88,8 +115,10 @@ export default {
   },
   methods: {
     updateState() {
-      console.log(this.udp);
-      this.$store.commit("setObject", "udp", JSON.stringify(this.udp));
+      this.$store.commit("setObject", {
+        key: "udp",
+        content: JSON.stringify(this.udp),
+      });
     },
   },
 };
