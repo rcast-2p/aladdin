@@ -15,24 +15,25 @@ export default {
   },
   computed: {
     baseURL() {
-      return `http://${this.$store.state.prudaq.host}:${this.$store.state.prudaq.port}`;
+      return `http://${this.$store.state.a.prudaq.host}:${this.$store.state.a.prudaq.port}`;
     },
   },
   methods: {
     async killLite() {
       const path = "/prudaq/kill-lite";
-      const retval = await axios({
+      await axios({
         data: {},
         baseURL: this.baseURL,
         url: path,
       });
-      console.log(retval);
     },
     async stop(goBack) {
       const path = "/stage/stop";
       try {
         this.loading = true;
-        const baseData = AbuCommon.commonScanConfig(this.$store.state);
+        const { bbaiBaseURL, baseData } = AbuCommon.commonScanConfig(
+          this.$store.state.a
+        );
         this.killLite();
         const retval = await axios({
           data: {
@@ -40,10 +41,9 @@ export default {
             ...baseData,
             goBack,
           },
-          baseURL: this.baseURL,
+          baseURL: bbaiBaseURL,
           url: path,
         });
-        console.log(retval.data);
         this.resultItem = retval.data.retarr;
       } catch (e) {
         this.$emit("error-dialog", {

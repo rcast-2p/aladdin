@@ -58,8 +58,8 @@ export default {
     };
   },
   mounted() {
-    this.prudaq = this.$store.state.prudaq;
-    this.receiver = this.$store.state.receiver;
+    this.prudaq = this.$store.state.a.prudaq;
+    this.receiver = this.$store.state.a.receiver;
   },
   // computed: {
   //   count() {

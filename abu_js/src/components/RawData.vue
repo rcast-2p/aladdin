@@ -84,8 +84,13 @@ export default {
     };
   },
   mounted() {
-    this.globalConfig = this.$store.state.globalConfig;
-    this.fileSave = this.$store.state.fileSave;
+    this.globalConfig = this.$store.state.a.globalConfig;
+    this.fileSave = this.$store.state.a.fileSave;
+    const da = new Date();
+    const daStr = da.toISOString();
+    const savePath = `octo_test/${daStr.slice(5, 7) + daStr.slice(8, 10)}/`;
+    this.fileSave.debug = savePath;
+    this.fileSave.rawData = savePath;
   },
   // computed: {
   //   count() {

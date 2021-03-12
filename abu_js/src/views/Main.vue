@@ -22,6 +22,7 @@
         </v-tabs-items>
       </v-col>
       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
+        <viewer />
         <udp />
         <images />
         <websocket />
@@ -43,7 +44,7 @@ import MoveCtrl from "@/components/Move.vue";
 import StopCtrl from "@/components/Stop.vue";
 // import CameraPos from "@/components/CameraPos.vue";
 // import axios from "@/plugins/axios";
-// import Viewer from "@/components/Viewer.vue";
+import Viewer from "@/components/Viewer.vue";
 import Aom from "@/components/Aom.vue";
 import DAServer from "@/components/DAServer.vue";
 import CircuitConfig from "@/components/CircuitConfig.vue";
@@ -71,6 +72,7 @@ export default {
     StopCtrl,
     ScanOverView,
     Udp,
+    Viewer,
     Websocket,
     RawData,
   },

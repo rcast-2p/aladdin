@@ -20,9 +20,10 @@ export default {
   methods: {
     async aom(aomOnoff) {
       const { bbaiBaseURL, baseData } = AbuCommon.commonScanConfig(
-        this.$store.state
+        this.$store.state.a
       );
       const path = "/stage/aom";
+      console.log("baseData:", baseData);
       try {
         this.loading = true;
         const retval = await axios({
@@ -30,7 +31,7 @@ export default {
             ...baseData,
             aomOnoff,
           },
-          bbaiBaseURL,
+          baseURL: bbaiBaseURL,
           url: path,
         });
         console.log(retval.data);

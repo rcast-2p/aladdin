@@ -60,7 +60,7 @@ export default {
     };
   },
   mounted() {
-    this.websocket = this.$store.state.websocket;
+    this.websocket = this.$store.state.a.websocket;
   },
   // computed: {
   //   count() {

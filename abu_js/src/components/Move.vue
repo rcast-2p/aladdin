@@ -69,7 +69,7 @@ export default {
     },
     async move(direction) {
       const { bbaiBaseURL, baseData } = AbuCommon.commonScanConfig(
-        this.$store.state
+        this.$store.state.a
       );
       const path = "/stage/move";
       try {
@@ -82,7 +82,7 @@ export default {
           yBResolution,
           zFResolution,
           zBResolution,
-        } = this.$store.state.scanDetailedConfig.sReso;
+        } = this.$store.state.a.scanDetailedConfig.sReso;
         switch (direction) {
           case 0: {
             if (this.moveLength > 0) {
@@ -120,7 +120,7 @@ export default {
           steps,
           moveLength: this.moveLength,
         };
-        const { db } = this.$store.state;
+        const { db } = this.$store.state.d.db;
         db.commands.insert(sendData, (err) => {
           if (err !== null) {
             console.error(err);

@@ -32,9 +32,8 @@ export default {
       drawer: false,
       menu: [
         { icon: "mdi-crop-square", text: "Plain", to: "scan" },
-        { icon: "mdi-pulse", text: "Oscillo", to: "oscillo" },
         { icon: "mdi-image", text: "Tiff", to: "tiff" },
-        { icon: "mdi-camera", text: "Camera", to: "camera" },
+        { icon: "mdi-cog-outline", text: "Config", to: "config" },
         { icon: "mdi-view-list", text: "ListTiff", to: "list-tiff" },
       ],
     };

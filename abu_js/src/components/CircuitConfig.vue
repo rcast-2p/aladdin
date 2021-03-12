@@ -2,7 +2,12 @@
   <v-row>
     <v-expansion-panels>
       <v-expansion-panel>
-        <v-expansion-panel-header>other configuration</v-expansion-panel-header>
+        <v-expansion-panel-header
+          >other configuration
+          <span v-if="noHwConfig">
+            <v-icon color="red">mdi-alert</v-icon>please set hwconfig
+          </span>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <h2>resolution & invert</h2>
           <v-row>
@@ -115,11 +120,17 @@ export default {
         { text: "false", value: 0 },
         { text: "true", value: 1 },
       ],
+      noHwConfig: false,
     };
   },
   mounted() {
-    this.scanDetailedConfig = this.$store.state.scanDetailedConfig;
+    this.scanDetailedConfig = this.$store.state.a.scanDetailedConfig;
+
     const stageHwConfig = JSON.parse(localStorage.getItem("stageHwConfig"));
+    if (stageHwConfig === null) {
+      this.noHwConfig = true;
+      return;
+    }
     this.resolutionOptions = stageHwConfig.resolutionOptions;
     this.limits = stageHwConfig.limits;
   },

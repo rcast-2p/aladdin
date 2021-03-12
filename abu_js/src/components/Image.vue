@@ -47,7 +47,7 @@ export default {
     };
   },
   mounted() {
-    this.image = this.$store.state.image;
+    this.image = this.$store.state.a.image;
   },
   // computed: {
   //   count() {

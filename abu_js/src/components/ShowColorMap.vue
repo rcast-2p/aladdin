@@ -1,10 +1,18 @@
 <template>
-  <canvas id="show-color-map" ref="canvas"></canvas>
+  <div>
+    <span v-if="nocolormap">
+      <v-icon color="red">mdi-alert</v-icon>please set colormap
+    </span>
+    <canvas id="show-color-map" ref="canvas"></canvas>
+  </div>
 </template>
 <script>
 export default {
   data() {
-    return { ctx: {} };
+    return {
+      nocolormap: false,
+      ctx: {},
+    };
   },
   mounted() {
     const { canvas } = this.$refs;
@@ -12,6 +20,10 @@ export default {
     canvas.height = 1;
     this.ctx = canvas.getContext("2d");
     const colormap = JSON.parse(localStorage.getItem("colormap"));
+    if (colormap === null) {
+      this.nocolormap = true;
+      return;
+    }
     this.showColorMap(colormap);
   },
   methods: {

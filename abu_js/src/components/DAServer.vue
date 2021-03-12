@@ -56,7 +56,7 @@ export default {
     };
   },
   mounted() {
-    this.daServer = this.$store.state.daServer;
+    this.daServer = this.$store.state.a.daServer;
   },
   methods: {
     updateState() {

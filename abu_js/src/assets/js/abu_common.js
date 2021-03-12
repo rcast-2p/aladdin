@@ -31,4 +31,79 @@ export default class AbuCommon {
       },
     };
   }
+
+  static createScanPostData(context) {
+    const { bbai } = context.state.scanDetailedConfig;
+    const bbaiAddress = `http://${bbai.host}:${bbai.port}`;
+    const {
+      pinConfig,
+      invert,
+      aomOpenHl,
+    } = context.state.scanDetailedConfig.pinConfig;
+    const {
+      stepPeriodX,
+      stepPeriodY,
+      stepPeriodZ,
+      aomOpenUs,
+      xyRepeatNum,
+      xyzRepeatNum,
+    } = context.state.scanConfig;
+    const {
+      xFSteps,
+      xBSteps,
+      yFStepSeqs,
+      yFStepsPerSeq,
+      yBSteps,
+      zFStepSeqs,
+      zFStepsPerSeq,
+      zBSteps,
+    } = context.state.imageCalc;
+    const data = {
+      pinConfig,
+      invert,
+      stepPeriodX,
+      stepPeriodY,
+      stepPeriodZ,
+      aomOpenHl,
+      aomOpenUs,
+      xFSteps,
+      xBSteps,
+      yFStepSeqs,
+      yFStepsPerSeq,
+      yBSteps,
+      zFStepSeqs,
+      zFStepsPerSeq,
+      zBSteps,
+      xyRepeatNum,
+      xyzRepeatNum,
+      command: "scan",
+    };
+    return { address: bbaiAddress, data };
+  }
+
+  static createReceiverPostData(context) {
+    const uuid = AbuCommon.getDateString();
+    const { daServer, fileSave, udp, websocket } = context.state;
+    const receiverAddress = `http://${udp.host}:${udp.port}`;
+    const { sizeX, sizeY, sizeZ, xFSteps } = context.state.imageCalc;
+    const image = {
+      ...context.state.image,
+      sizeX,
+      sizeY,
+      sizeZ,
+      xFSteps,
+    };
+    const { galvo, verbosity } = context.state.globalConfig;
+    const data = {
+      daServer,
+      fileSave,
+      galvo,
+      image,
+      verbosity,
+      udp,
+      websocket,
+      uuid,
+    };
+    return { address: receiverAddress, data };
+  }
 }

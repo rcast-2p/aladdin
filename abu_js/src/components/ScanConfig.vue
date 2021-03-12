@@ -168,7 +168,9 @@ export default {
     };
   },
   mounted() {
-    this.scanConfig = JSON.parse(JSON.stringify(this.$store.state.scanConfig));
+    this.scanConfig = JSON.parse(
+      JSON.stringify(this.$store.state.a.scanConfig)
+    );
   },
   methods: {
     validationY() {

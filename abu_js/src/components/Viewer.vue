@@ -93,30 +93,8 @@
       </v-col>
     </v-row>
     <show-color-map />
-    <v-row no-gutters class="py-2">
-      <v-btn @click="prudaqOnly" :loading="loading">PRUDAQ</v-btn>
-      <v-btn @click="sendSignal(2)" dark color="indigo">SIGINT</v-btn>
-      <v-btn @click="sendSignal(9)">SIGKILL</v-btn>
-      <v-btn @click="showPs">PS</v-btn>
-      <v-btn @click="clearStorage">clear recvMemory</v-btn>
-    </v-row>
     <v-switch v-model="showRoiGraph" />
     <roi :average="info.average" :count="count" v-if="showRoiGraph" />
-    <udp />
-    <image />
-    <websocket />
-    <raw-data />
-    <servers />
-    <da-server />
-    <v-row>
-      <v-col cols="12">
-        <v-data-table :headers="resultHeader" :items="resultItem">
-          <template v-slot:[`item.stderr`]="{ item }">
-            <span class="red--text">{{ item.stderr }}</span>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
     <v-dialog v-model="dialog.show"
       ><v-card
         ><v-card-title>{{ dialog.title }}</v-card-title
@@ -127,15 +105,8 @@
 </template>
 <script>
 // import Worker from "worker-loader!../worker/sample.worker";
-import axios from "@/plugins/axios";
 import Roi from "@/components/Roi.vue";
 import ShowColorMap from "@/components/ShowColorMap.vue";
-import AbuCommon from "@/assets/js/abu_common";
-import Udp from "@/components/Udp.vue";
-import DaServer from "@/components/DAServer.vue";
-import Websocket from "@/components/Websocket.vue";
-import RawData from "@/components/RawData.vue";
-import Servers from "@/components/Servers.vue";
 
 export default {
   props: {
@@ -146,7 +117,7 @@ export default {
     packetNum: Number,
     xFSteps: Number,
   },
-  components: { Roi, ShowColorMap, Udp, DaServer, Websocket, RawData, Servers },
+  components: { Roi, ShowColorMap },
   data() {
     return {
       mouse: {
@@ -161,47 +132,6 @@ export default {
         minauto: false,
       },
       loading: false,
-      galvo: false,
-      image: {
-        width: this.sizeX,
-        height: this.sizeY,
-        threshold: 100,
-        refactoryPeriod: 0,
-        dataChan: 0,
-        fileName: "",
-        pixelMax: -1,
-        pixelMin: 32767,
-        pixelDataNum: 10,
-      },
-      websocket: {
-        host: "0.0.0.0",
-        port: 8072,
-        interval: 100.0,
-        enabled: true,
-      },
-      fileSave: {
-        rawData: "octo_test/",
-        rawDataSave: false,
-        debug: "octo_test/",
-        pngSave: false,
-        tiffSave: true,
-        enabled: true,
-      },
-      daServer: {
-        host: "0.0.0.0",
-        port: 9090,
-        path: "/da/mock",
-        enabled: false,
-      },
-      verbosity: false,
-      prudaq: {
-        host: "192.168.2.104",
-        port: 8070,
-      },
-      receiver: {
-        host: "0.0.0.0",
-        port: 8070,
-      },
       workerOn: false,
       worker: "",
       resultHeader: [
@@ -233,23 +163,7 @@ export default {
       },
     };
   },
-  mounted() {
-    const recvConfigText = localStorage.getItem("recvConfig") || null;
-    if (recvConfigText) {
-      const recvConfig = JSON.parse(recvConfigText);
-      this.image = recvConfig.image;
-      this.fileSave = recvConfig.fileSave;
-      this.websocket = recvConfig.websocket;
-      this.verbosity = recvConfig.verbosity;
-      this.description = recvConfig.description;
-    }
-    this.udp.count = this.packetNum;
-    const da = new Date();
-    const daStr = da.toISOString();
-    const savePath = `octo_test/${daStr.slice(5, 7) + daStr.slice(8, 10)}/`;
-    this.fileSave.debug = savePath;
-    this.fileSave.rawData = savePath;
-  },
+  mounted() {},
   computed: {
     recvBaseURL() {
       return `http://${this.receiver.host}:${this.receiver.port}`;
@@ -258,13 +172,16 @@ export default {
       return `http://${this.prudaq.host}:${this.prudaq.port}`;
     },
   },
-
-  watch: {
-    packetNum(val) {
-      this.udp.count = val;
-    },
-  },
   methods: {
+    async receiverOnly() {
+      try {
+        await this.$store.dispatch("scan");
+        console.log("succeeded");
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    prudaqOnly() {},
     update() {
       this.worker.postMessage(this.colormap);
     },
@@ -394,131 +311,6 @@ export default {
         // eslint-disable-next-line comma-dangle
         { passive: true }
       );
-    },
-    prudaqServe(uuid) {
-      this.loading = true;
-      const { bufferSize } = this.udp;
-      return axios({
-        baseURL: this.prudaqURL,
-        url: "prudaq",
-        data: {
-          host: this.udp.host,
-          udpPort: this.udp.port,
-          count: this.udp.count,
-          bufferSize,
-          uuid,
-        },
-      });
-    },
-    async prudaqOnly() {
-      const uuid = AbuCommon.getDateString();
-      try {
-        const retval = await this.prudaqServe(uuid);
-        console.log(retval.data);
-        this.resultItem = retval.data.retarr;
-      } catch (e) {
-        console.error(e);
-        this.dialog = {
-          title: "prudaq api error",
-          text: JSON.stringify(e, null, "\t"),
-          show: true,
-        };
-      } finally {
-        this.loading = false;
-      }
-    },
-    async receiverOnly() {
-      const uuid = AbuCommon.getDateString();
-      try {
-        const retval = await this.receiverConfig(uuid);
-        console.log(retval.data);
-        this.resultItem = retval.data.retarr;
-      } catch (e) {
-        console.error(e);
-        this.dialog = {
-          title: "receiver api error",
-          text: JSON.stringify(e, null, "\t"),
-          show: true,
-        };
-      } finally {
-        this.loading = false;
-      }
-    },
-    receiverConfig(uuid, scanData = {}) {
-      const {
-        udp,
-        image,
-        fileSave,
-        websocket,
-        verbosity,
-        description,
-        daServer,
-        galvo,
-      } = this;
-      image.sizeX = this.sizeX;
-      image.sizeY = this.sizeY;
-      image.xFSteps = this.xFSteps;
-      image.zPages = this.zPageNum;
-      const data = {
-        udp,
-        image,
-        fileSave,
-        websocket,
-        uuid,
-        verbosity,
-        description,
-        scanData,
-        daServer,
-        galvo,
-      };
-      const { db } = this.$store.state;
-      db.commands.insert(data, (err) => {
-        if (err !== null) {
-          console.error(err);
-        }
-      });
-
-      // localStorage.setItem("recvConfig", JSON.stringify(data));
-      return axios({
-        baseURL: this.recvBaseURL,
-        url: "receiver",
-        data,
-      });
-    },
-    async sendSignal(signum) {
-      const retval = await axios({
-        baseURL: this.recvBaseURL,
-        url: "receiver/signal",
-        data: { signum },
-      });
-      this.resultItem = retval.data.retarr;
-      this.dialog = {
-        title: "signal",
-        text: `singal ${signum}`,
-        show: true,
-      };
-    },
-    async showPs() {
-      const retval = await axios({
-        baseURL: this.recvBaseURL,
-        url: "receiver/ps",
-        data: {},
-      });
-      console.log(retval.data);
-      this.resultItem = retval.data.retarr;
-      this.dialog = {
-        title: "ps receiver_main",
-        text: JSON.stringify(this.resultItem),
-        show: true,
-      };
-    },
-    clearStorage() {
-      localStorage.removeItem("recvConfig");
-      this.dialog = {
-        title: "localStorage.recvConfig",
-        text: "cleared",
-        show: true,
-      };
     },
   },
 };
