@@ -7,7 +7,7 @@
       </v-container>
       <v-footer app dark img="@/assets/img/ikura_dark.png">
         <v-spacer></v-spacer>
-        &copy; RCAST Kanzaki Lab 2020
+        {{ version }}
       </v-footer>
     </v-main>
   </v-app>
@@ -15,10 +15,14 @@
 
 <script>
 import TopMenu from "./components/TopMenu.vue";
+import pack from "../package.json";
 
 export default {
   name: "App",
 
+  data: () => ({
+    version: pack.version,
+  }),
   components: {
     TopMenu,
   },

@@ -5,7 +5,8 @@
         <v-expansion-panel-header
           >other configuration
           <span v-if="noHwConfig">
-            <v-icon color="red">mdi-alert</v-icon>please set hwconfig
+            <v-icon color="red">mdi-alert</v-icon
+            ><a to="config">please set hwconfig</a>
           </span>
         </v-expansion-panel-header>
         <v-expansion-panel-content>

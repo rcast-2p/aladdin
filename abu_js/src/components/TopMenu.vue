@@ -31,10 +31,11 @@ export default {
     return {
       drawer: false,
       menu: [
-        { icon: "mdi-crop-square", text: "Plain", to: "scan" },
+        { icon: "mdi-crop-square", text: "Scan", to: "scan" },
         { icon: "mdi-image", text: "Tiff", to: "tiff" },
         { icon: "mdi-cog-outline", text: "Config", to: "config" },
         { icon: "mdi-view-list", text: "ListTiff", to: "list-tiff" },
+        { icon: "mdi-xml", text: "ome", to: "ome-xml" },
       ],
     };
   },

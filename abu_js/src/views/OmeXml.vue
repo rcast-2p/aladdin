@@ -7,13 +7,7 @@
     <v-btn @click="insert" v-text="'insert'" />
     <v-btn @click="deleteEntry" v-text="'delete'" />
     <v-btn @click="fetch" v-text="'fetch'" />
-    <v-data-table
-      :items="dbItems"
-      :headers="dbHeaders"
-      :single-expand="singleExpand"
-      :expanded.sync="expanded"
-      show-expand
-    >
+    <v-data-table :items="dbItems" :headers="dbHeaders" show-expand>
       <template v-slot:[`item.updatedAt`]="{ item }">
         {{ isostr(item.updatedAt) }}
       </template>
@@ -82,14 +76,14 @@ export default {
         description: this.description,
         omeXml: this.omeXml,
       };
-      this.$store.state.db.ome.insert(insertData, (err) => {
+      this.$store.state.d.db.ome.insert(insertData, (err) => {
         if (err !== null) {
           this.errorDialog(err);
         }
       });
     },
     fetch() {
-      this.$store.state.db.ome.find({}, (err, docs) => {
+      this.$store.state.d.db.ome.find({}, (err, docs) => {
         if (err !== null) {
           this.errorDialog(err);
         }
@@ -97,7 +91,7 @@ export default {
       });
     },
     deleteEntry() {
-      this.$store.state.db.ome.remove(
+      this.$store.state.d.db.ome.remove(
         { name: this.name },
         { multi: true },
         (err) => {

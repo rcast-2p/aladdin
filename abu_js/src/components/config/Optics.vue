@@ -1,17 +1,8 @@
 <template>
   <div>
-    <h1>hardware configuration</h1>
-    <v-textarea label="stage hardware config" v-model="config"> </v-textarea>
+    <h1>optics options</h1>
+    <v-textarea label="optics options" v-model="config"> </v-textarea>
     <v-btn @click="update">update</v-btn>
-
-    <h1>software configuration</h1>
-    <v-textarea label="stage software config" v-model="softwareConfig">
-    </v-textarea>
-    <v-btn @click="scUpdate">update</v-btn>
-
-    <h1>colormap</h1>
-    <color-map />
-    <optics-options />
     <v-dialog v-model="dialog.show"
       ><v-card
         ><v-card-title>{{ dialog.title }}</v-card-title
@@ -21,23 +12,17 @@
   </div>
 </template>
 <script>
-import ColorMap from "@/components/config/ColorMap.vue";
-import OpticsOptions from "@/components/config/Optics.vue";
-
 export default {
   data: () => ({
     config: "",
-    softwareConfig: "",
     dialog: { show: false, text: "", title: "" },
   }),
-  components: { ColorMap, OpticsOptions },
   mounted() {
     this.config = JSON.stringify(
-      JSON.parse(localStorage.getItem("stageHwConfig")),
+      JSON.parse(localStorage.getItem("opticsOptions")),
       null,
       "\t"
     );
-    this.softwareConfig = JSON.stringify(this.$store.state.a, null, "\t");
   },
   methods: {
     handleJsonParseError(error) {
@@ -59,26 +44,14 @@ export default {
     update() {
       try {
         localStorage.setItem(
-          "stageHwConfig",
+          "opticsOptions",
           JSON.stringify(JSON.parse(this.config))
         );
 
         this.dialog = {
           show: true,
           title: "Congratulations",
-          text: "stageHwConfig was successfully set.",
-        };
-      } catch (e) {
-        this.handleJsonParseError(e);
-      }
-    },
-    scUpdate() {
-      try {
-        this.$store.commit("setState", this.softwareConfig);
-        this.dialog = {
-          show: true,
-          title: "Congratulations",
-          text: "successfully set.",
+          text: "opticsOptions was successfully set.",
         };
       } catch (e) {
         this.handleJsonParseError(e);

@@ -32,14 +32,22 @@ export default class AbuCommon {
     };
   }
 
-  static createScanPostData(context) {
-    const { bbai } = context.state.scanDetailedConfig;
+  static createPrudaqPostData(state) {
+    const { prudaq } = state.a;
+    const address = `http://${prudaq.host}:${prudaq.port}/prudaq`;
+    const { count } = state.a.udp;
+    const data = { count };
+    return { address, data };
+  }
+
+  static createScanPostData(state) {
+    const { bbai } = state.a.scanDetailedConfig;
     const bbaiAddress = `http://${bbai.host}:${bbai.port}`;
     const {
       pinConfig,
       invert,
       aomOpenHl,
-    } = context.state.scanDetailedConfig.pinConfig;
+    } = state.a.scanDetailedConfig.pinConfig;
     const {
       stepPeriodX,
       stepPeriodY,
@@ -47,7 +55,7 @@ export default class AbuCommon {
       aomOpenUs,
       xyRepeatNum,
       xyzRepeatNum,
-    } = context.state.scanConfig;
+    } = state.a.scanConfig;
     const {
       xFSteps,
       xBSteps,
@@ -57,7 +65,7 @@ export default class AbuCommon {
       zFStepSeqs,
       zFStepsPerSeq,
       zBSteps,
-    } = context.state.imageCalc;
+    } = state.a.imageCalc;
     const data = {
       pinConfig,
       invert,
@@ -81,19 +89,46 @@ export default class AbuCommon {
     return { address: bbaiAddress, data };
   }
 
-  static createReceiverPostData(context) {
+  static async createReceiverPostData(state) {
     const uuid = AbuCommon.getDateString();
-    const { daServer, fileSave, udp, websocket } = context.state;
-    const receiverAddress = `http://${udp.host}:${udp.port}`;
-    const { sizeX, sizeY, sizeZ, xFSteps } = context.state.imageCalc;
+    const {
+      daServer,
+      fileSave,
+      omeMetaData,
+      udp,
+      websocket,
+      receiver,
+    } = state.a;
+    const { baseOme } = omeMetaData;
+    const baseOmeObj = await new Promise((resolve, reject) => {
+      state.d.db.ome.find(
+        { name: baseOme },
+        /* eslint implicit-arrow-linebreak: ["error", "below"] */
+        (err, docs) => {
+          if (err !== null) {
+            console.error("error is ", err);
+            reject(err);
+          } else {
+            resolve(docs);
+          }
+        }
+      );
+    });
+
+    const ome = {
+      omeXml: baseOmeObj[0],
+      ...omeMetaData,
+    };
+    const receiverAddress = `http://${receiver.host}:${receiver.port}/receiver`;
+    const { sizeX, sizeY, sizeZ, xFSteps } = state.a.imageCalc;
     const image = {
-      ...context.state.image,
+      ...state.a.image,
       sizeX,
       sizeY,
       sizeZ,
       xFSteps,
     };
-    const { galvo, verbosity } = context.state.globalConfig;
+    const { galvo, verbosity } = state.a.globalConfig;
     const data = {
       daServer,
       fileSave,
@@ -103,6 +138,7 @@ export default class AbuCommon {
       udp,
       websocket,
       uuid,
+      ome,
     };
     return { address: receiverAddress, data };
   }

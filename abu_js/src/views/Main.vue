@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1>Stage Scan</h1>
     <v-row>
       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
+        <h1>Stage Scan</h1>
         <v-tabs v-model="tab">
           <v-tab href="#camera"> camera </v-tab>
           <v-tab href="#scan"> scan </v-tab>
@@ -22,7 +22,8 @@
         </v-tabs-items>
       </v-col>
       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
-        <viewer />
+        <ome />
+        <viewer @error-dialog="errorDialog" />
         <udp />
         <images />
         <websocket />
@@ -40,21 +41,22 @@
   </div>
 </template>
 <script>
-import MoveCtrl from "@/components/Move.vue";
-import StopCtrl from "@/components/Stop.vue";
-// import CameraPos from "@/components/CameraPos.vue";
+import MoveCtrl from "@/components/scan/Move.vue";
+import StopCtrl from "@/components/scan/Stop.vue";
+// import CameraPos from "@/components/scan/CameraPos.vue";
 // import axios from "@/plugins/axios";
-import Viewer from "@/components/Viewer.vue";
-import Aom from "@/components/Aom.vue";
-import DAServer from "@/components/DAServer.vue";
-import CircuitConfig from "@/components/CircuitConfig.vue";
-import Images from "@/components/Image.vue";
-import Servers from "@/components/Servers.vue";
-import ScanConfig from "@/components/ScanConfig.vue";
-import ScanOverView from "@/components/ScanOverView.vue";
-import Udp from "@/components/Udp.vue";
-import Websocket from "@/components/Websocket.vue";
-import RawData from "../components/RawData.vue";
+import Viewer from "@/components/scan/Viewer.vue";
+import Aom from "@/components/scan/Aom.vue";
+import DAServer from "@/components/scan/DAServer.vue";
+import CircuitConfig from "@/components/scan/CircuitConfig.vue";
+import Images from "@/components/scan/Image.vue";
+import Ome from "@/components/scan/Ome.vue";
+import Servers from "@/components/scan/Servers.vue";
+import ScanConfig from "@/components/scan/ScanConfig.vue";
+import ScanOverView from "@/components/scan/ScanOverView.vue";
+import Udp from "@/components/scan/Udp.vue";
+import Websocket from "@/components/scan/Websocket.vue";
+import RawData from "@/components/scan/RawData.vue";
 
 // import ScanConfig from "@/components/ScanConfig.vue";
 // import AbuCommon from "@/assets/js/abu_common";
@@ -67,6 +69,7 @@ export default {
     DAServer,
     MoveCtrl,
     Images,
+    Ome,
     ScanConfig,
     Servers,
     StopCtrl,

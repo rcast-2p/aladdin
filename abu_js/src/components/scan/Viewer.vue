@@ -107,6 +107,8 @@
 // import Worker from "worker-loader!../worker/sample.worker";
 import Roi from "@/components/Roi.vue";
 import ShowColorMap from "@/components/ShowColorMap.vue";
+import AbuCommon from "@/assets/js/abu_common";
+import axios from "@/plugins/axios";
 
 export default {
   props: {
@@ -174,14 +176,35 @@ export default {
   },
   methods: {
     async receiverOnly() {
+      const { data, address } = await AbuCommon.createReceiverPostData(
+        this.$store.state
+      );
       try {
-        await this.$store.dispatch("scan");
-        console.log("succeeded");
+        await axios.post(address, data);
       } catch (e) {
+        this.$emit("error-dialog", {
+          title: address,
+          show: true,
+          text: JSON.stringify(e, null, "\t"),
+        });
         console.error(e);
       }
     },
-    prudaqOnly() {},
+    async prudaqOnly() {
+      const { data, address } = await AbuCommon.createPrudaqPostData(
+        this.$store.state
+      );
+      try {
+        await axios.post(address, data);
+      } catch (e) {
+        this.$emit("error-dialog", {
+          title: address,
+          show: true,
+          text: JSON.stringify(e, null, "\t"),
+        });
+        console.error(e);
+      }
+    },
     update() {
       this.worker.postMessage(this.colormap);
     },

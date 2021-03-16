@@ -115,6 +115,7 @@ export default {
       filterName: "",
       dichroicName: "",
       imageName: "",
+      detectroName: "",
       description: "",
     },
   },

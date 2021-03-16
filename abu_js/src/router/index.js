@@ -11,31 +11,19 @@ const routes = [
   {
     path: "/scan",
     name: "Scan",
-    component: () => import(/* webpackChunkName: "Scan" */ "../views/Main.vue"),
+    component: () => import(/* webpackChunkName: "Scan" */ "@/views/Main.vue"),
   },
   {
     path: "/tiff",
     name: "Tiff",
     // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "Tiff" */ "../views/Tiff.vue"),
+    component: () => import(/* webpackChunkName: "Tiff" */ "@/views/Tiff.vue"),
   },
   {
-    path: "/list-tiff",
-    name: "ListTiff",
+    path: "/ome-xml",
+    name: "OmeXml",
     // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "ListTiff" */ "../views/Tiff.vue"),
-  },
-  {
-    path: "/list-json",
-    name: "ListJson",
-    // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "ListTiff" */ "../views/ListJson.vue"),
-  },
-  {
-    path: "/ome",
-    name: "ome",
-    // eslint-disable-next-line
-    component: () => import(/* webpackChunkName: "Camera" */ "../views/Ome.vue"),
+    component: () => import(/* webpackChunkName: "Camera" */ "@/views/OmeXml.vue"),
   },
   {
     path: "/galvo",
@@ -56,8 +44,8 @@ const routes = [
     component: () => import(/* webpackChunkName: "Table" */ "@/views/Table.vue"),
   },
   {
-    path: "/hwconfig",
-    name: "Hwconfig",
+    path: "/config",
+    name: "config",
     // eslint-disable-next-line
     component: () => import(/* webpackChunkName: "Config" */ "@/views/Config.vue"),
   },

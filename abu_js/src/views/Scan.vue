@@ -92,13 +92,13 @@
   </div>
 </template>
 <script>
-import MoveCtrl from "@/components/Move.vue";
-import StopCtrl from "@/components/Stop.vue";
-import CameraPos from "@/components/CameraPos.vue";
+import MoveCtrl from "@/components/scan/Move.vue";
+import StopCtrl from "@/components/scan/Stop.vue";
+import CameraPos from "@/components/scan/CameraPos.vue";
 import axios from "@/plugins/axios";
-import Viewer from "@/components/Viewer.vue";
-import Aom from "@/components/Aom.vue";
-import ScanConfig from "@/components/ScanConfig.vue";
+import Viewer from "@/components/scan/Viewer.vue";
+import Aom from "@/components/scan/Aom.vue";
+import ScanConfig from "@/components/scan/ScanConfig.vue";
 import AbuCommon from "@/assets/js/abu_common";
 import { mapState } from "vuex";
 
