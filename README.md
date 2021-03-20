@@ -6,5 +6,5 @@ Microscope GUI and surrounding test scripts.
 
 microscope controlling GUI
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/d95d7df733ea2ca09858/maintainability)](https://codeclimate.com/github/rcast-2p/aladdin/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d95d7df733ea2ca09858/test_coverage)](https://codeclimate.com/github/rcast-2p/aladdin/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8224ee89c6d82f464b87/maintainability)](https://codeclimate.com/github/rcast-2p/aladdin/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/8224ee89c6d82f464b87/test_coverage)](https://codeclimate.com/github/rcast-2p/aladdin/test_coverage)
