@@ -42,7 +42,7 @@ export default class AbuCommon {
 
   static createScanPostData(state) {
     const { bbai } = state.a.scanDetailedConfig;
-    const bbaiAddress = `http://${bbai.host}:${bbai.port}`;
+    const bbaiAddress = `http://${bbai.host}:${bbai.port}/stage/scan`;
     const {
       pinConfig,
       invert,
@@ -91,7 +91,7 @@ export default class AbuCommon {
 
   static async register2Db(state, uuid = null) {
     const doc = { ...state.a };
-    if (uuid === null) {
+    if (uuid !== null) {
       doc.uuid = uuid;
     } else {
       doc.uuid = AbuCommon.getDateString();

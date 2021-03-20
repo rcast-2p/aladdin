@@ -1,5 +1,5 @@
 <template>
-  <v-row class="orange lighten-4">
+  <v-row class="orange lighten-4 px-4">
     <v-btn @click="aom(1)" dark color="yellow darken-2" :loading="loading"
       >AOM ON</v-btn
     >
@@ -23,7 +23,6 @@ export default {
         this.$store.state.a
       );
       const path = "/stage/aom";
-      console.log("baseData:", baseData);
       try {
         this.loading = true;
         const retval = await axios({
@@ -34,7 +33,6 @@ export default {
           baseURL: bbaiBaseURL,
           url: path,
         });
-        console.log(retval.data);
         this.resultItem = retval.data.retarr;
         this.aomOnoff = aomOnoff === 1;
       } catch (e) {

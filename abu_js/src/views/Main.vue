@@ -12,13 +12,17 @@
             <camera-pos />
           </v-tab-item>
           <v-tab-item value="scan">
+            <move-ctrl @error-dialog="errorDialog" />
+            <v-row>
+              <stop-ctrl @error-dialog="errorDialog" />
+
+              <scan-button @error-dialog="errorDialog" />
+            </v-row>
             <scan-config />
             <scan-over-view />
             <circuit-config />
             <aom @error-dialog="errorDialog" />
-            <move-ctrl @error-dialog="errorDialog" />
-            <stop-ctrl @error-dialog="errorDialog" />
-            <commands />
+            <commands @error-dialog="errorDialog" />
           </v-tab-item>
         </v-tabs-items>
       </v-col>
@@ -37,15 +41,20 @@
       ><v-card
         ><v-card-title>{{ dialog.title }}</v-card-title
         ><v-card-text
-          ><v-textarea v-model="dialog.text" readonly /></v-card-text></v-card
-    ></v-dialog>
+          ><v-textarea v-model="dialog.text" readonly
+        /></v-card-text>
+        <v-card-actions>
+          <v-row><v-btn @click="dialog.show = false">OK</v-btn></v-row>
+        </v-card-actions>
+      </v-card></v-dialog
+    >
   </div>
 </template>
 <script>
 import MoveCtrl from "@/components/scan/Move.vue";
 import StopCtrl from "@/components/scan/Stop.vue";
 import Commands from "@/components/Commands.vue";
-// import CameraPos from "@/components/scan/CameraPos.vue";
+import CameraPos from "@/components/scan/CameraPos.vue";
 // import axios from "@/plugins/axios";
 import Viewer from "@/components/scan/Viewer.vue";
 import Aom from "@/components/scan/Aom.vue";
@@ -55,24 +64,26 @@ import Images from "@/components/scan/Image.vue";
 import Ome from "@/components/scan/Ome.vue";
 import Servers from "@/components/scan/Servers.vue";
 import ScanConfig from "@/components/scan/ScanConfig.vue";
+import ScanButton from "@/components/scan/ScanButton.vue";
 import ScanOverView from "@/components/scan/ScanOverView.vue";
 import Udp from "@/components/scan/Udp.vue";
 import Websocket from "@/components/scan/Websocket.vue";
 import RawData from "@/components/scan/RawData.vue";
 
 // import ScanConfig from "@/components/ScanConfig.vue";
-// import AbuCommon from "@/assets/js/abu_common";
 // import { mapState } from "vuex";
 
 export default {
   components: {
     Aom,
+    CameraPos,
     CircuitConfig,
     Commands,
     DAServer,
     MoveCtrl,
     Images,
     Ome,
+    ScanButton,
     ScanConfig,
     Servers,
     StopCtrl,
@@ -95,7 +106,43 @@ export default {
       tab: "scan",
     };
   },
+  async mounted() {
+    try {
+      const latest = await this.getLatest();
+      if (latest.length > 0) {
+        this.$store.commit("setState", JSON.stringify(latest[0]));
+        this.dialog = {
+          show: true,
+          text: `${latest[0].uuid} was loaded`,
+          title: "previous config was set.",
+        };
+      }
+    } catch (e) {
+      console.error(e);
+      this.dialog = {
+        title: "dbload error",
+        show: true,
+        text: JSON.stringify(e, null, "\t"),
+      };
+    }
+  },
+
   methods: {
+    getLatest() {
+      return new Promise((resolve, reject) => {
+        this.$store.state.d.db.commands
+          .find({})
+          .sort({ updatedAt: -1 })
+          .limit(1)
+          .exec((err, docs) => {
+            if (err === null) {
+              resolve(docs);
+            } else {
+              reject(err);
+            }
+          });
+      });
+    },
     errorDialog(obj) {
       this.dialog = obj;
     },

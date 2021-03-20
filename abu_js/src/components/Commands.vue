@@ -2,8 +2,19 @@
   <div>
     <v-data-table :headers="headers" :items="items"></v-data-table>
     <v-btn @click="load">load</v-btn>
-    <v-btn @click="clearDatabase">clear</v-btn>
+    <v-btn @click="confirmClear">clear</v-btn>
     <a target="_blank" :href="dlUrl">download data</a>
+    <v-dialog v-model="dialog.show"
+      ><v-card
+        ><v-card-title>{{ dialog.title }}</v-card-title
+        ><v-card-text>{{ dialog.text }}</v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="dialog.show = false">cancel</v-btn>
+          <v-btn @click="clearDatabase">OK</v-btn>
+        </v-card-actions>
+      </v-card></v-dialog
+    >
   </div>
 </template>
 <script>
@@ -15,11 +26,15 @@ export default {
     ],
     items: [],
     dlUrl: "",
+    dialog: {
+      show: false,
+      text: "",
+      title: "",
+    },
   }),
   async mounted() {
     try {
       this.items = await this.loadDatabase();
-      console.log(this.items);
     } catch (err) {
       console.error(err);
     }
@@ -37,19 +52,22 @@ export default {
         type: "text/plain",
       });
     },
+    confirmClear() {
+      this.dialog = {
+        title: "confirmation",
+        text: "Is it ok to clear commands database?",
+        show: true,
+      };
+    },
     clearDatabase() {
-      this.$store.state.d.db.commands.remove(
-        {},
-        { multi: true },
-        (err, numRemoved) => {
-          if (err === null) {
-            console.log(numRemoved);
-            this.load();
-          } else {
-            console.error(err);
-          }
+      this.$store.state.d.db.commands.remove({}, { multi: true }, (err) => {
+        if (err === null) {
+          this.dialog.show = false;
+          this.load();
+        } else {
+          console.error(err);
         }
-      );
+      });
     },
     async loadDatabase() {
       return new Promise((resolve, reject) => {
