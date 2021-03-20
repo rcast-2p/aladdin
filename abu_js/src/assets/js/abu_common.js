@@ -1,4 +1,11 @@
 export default class AbuCommon {
+  /**
+   * create a date string
+   * @return {string} uuid
+   * @example
+   * const uuid=AbuCommon.getDateString();
+   * // uuid="fu20210320-184446";
+   */
   static getDateString() {
     const da = new Date();
     const hashLetter0 = String.fromCharCode((da.getTime() % 26) + 97);
@@ -11,6 +18,11 @@ export default class AbuCommon {
     return `${hashLetter0}${hashLetter1}${day}-${timeStr}`;
   }
 
+  /**
+   * create common scan configuration
+   * @param {object} state - this.$store.state
+   * @return {object} common scan configuration.
+   */
   static commonScanConfig(state) {
     const uuid = this.getDateString();
     const { stepPeriodX, stepPeriodY, stepPeriodZ } = state.scanConfig;
@@ -32,6 +44,11 @@ export default class AbuCommon {
     };
   }
 
+  /**
+   * create an object for /prudaq
+   * @param {object} state - this.$store.state
+   * @return {object} create an object for /prudaq
+   */
   static createPrudaqPostData(state) {
     const { prudaq } = state.a;
     const address = `http://${prudaq.host}:${prudaq.port}/prudaq`;
@@ -40,6 +57,11 @@ export default class AbuCommon {
     return { address, data };
   }
 
+  /**
+   * create an object for /stage/scan
+   * @param {object} state - this.$store.state
+   * @return {object} create an object for /stage/scan
+   */
   static createScanPostData(state) {
     const { bbai } = state.a.scanDetailedConfig;
     const bbaiAddress = `http://${bbai.host}:${bbai.port}/stage/scan`;
@@ -89,6 +111,12 @@ export default class AbuCommon {
     return { address: bbaiAddress, data };
   }
 
+  /**
+   * create an object for /stage/scan
+   * @param {object} state - this.$store.state
+   * @param {string} uuid
+   * @returns {Promise} if succeeded, return inserted data (array)
+   */
   static async register2Db(state, uuid = null) {
     const doc = { ...state.a };
     if (uuid !== null) {
@@ -107,6 +135,12 @@ export default class AbuCommon {
     });
   }
 
+  /**
+   * create an object for /receiver
+   * @param {object} state - this.$store.state
+   * @param {string} uuid
+   * @return {object} create an object for /receiver
+   */
   static async createReceiverPostData(state) {
     const uuid = AbuCommon.getDateString();
     const {

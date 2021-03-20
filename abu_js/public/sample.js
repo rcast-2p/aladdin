@@ -51,7 +51,6 @@ socket.addEventListener("message", (event) => {
   );
   const voltageView = new Uint16Array(voltageBuffer);
   const rgba = new Uint32Array(imgBuffer);
-  // console.log(yBegin1, yEnd1, yBegin2, yEnd2, vpView1, vpView2);
   if (yBegin1 === 0 && sentDataSize1 > 0) {
     volMin = 65537;
     volMax = 0;
@@ -76,9 +75,6 @@ socket.addEventListener("message", (event) => {
   if (yBegin2 !== -1 && sentDataSize2 > 0) {
     volMin = 65537;
     volMax = 0;
-    console.log(vpView2.length);
-    console.log(vpView2[0], sentDataSize1, sentDataSize2, headerSize);
-    console.log(yBegin1, yEnd1, yBegin2, yEnd2);
     for (let pI = 0; pI < sentDataSize2; pI += 1) {
       voltageView[pI + width * yBegin2] = vpView2[pI];
       rgba[pI + width * yBegin2] =
@@ -91,7 +87,6 @@ socket.addEventListener("message", (event) => {
       }
     }
 
-    console.log(yBegin2);
     const arr2 = new Uint8ClampedArray(
       imgBuffer,
       4 * width * yBegin2,

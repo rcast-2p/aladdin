@@ -111,14 +111,6 @@ import AbuCommon from "@/assets/js/abu_common";
 import axios from "@/plugins/axios";
 
 export default {
-  props: {
-    sizeX: Number,
-    sizeY: Number,
-    lengthY: Number,
-    zPageNum: Number,
-    packetNum: Number,
-    xFSteps: Number,
-  },
   components: { Roi, ShowColorMap },
   data() {
     return {
@@ -130,8 +122,6 @@ export default {
       colormap: {
         maximum: 28160,
         minimum: 0,
-        maxauto: false,
-        minauto: false,
       },
       loading: false,
       workerOn: false,
@@ -175,6 +165,9 @@ export default {
     },
   },
   methods: {
+    /**
+     * post request to /receiver
+     */
     async receiverOnly() {
       const { data, address } = await AbuCommon.createReceiverPostData(
         this.$store.state
@@ -194,6 +187,9 @@ export default {
       }
     },
     async prudaqOnly() {
+      /**
+       * post request to /prudaq
+       */
       const { data, address } = await AbuCommon.createPrudaqPostData(
         this.$store.state
       );
@@ -209,42 +205,53 @@ export default {
       }
     },
     update() {
+      /**
+       * send colormap to web worker (sample.js)
+       */
       this.worker.postMessage(this.colormap);
     },
     reset() {
-      if (typeof this.worker === "object") {
-        this.workerOn = !this.workerOn;
-        this.worker.terminate();
-        const oldcanv = document.getElementById("canvas");
-        const canmom = document.getElementById("canmom");
-        canmom.removeChild(oldcanv);
-
-        const canv = document.createElement("canvas");
-        canv.id = "canvas";
-        canmom.appendChild(canv);
+      /**
+       * terminate the web worker and reset canvas.
+       */
+      if (typeof this.worker !== "object") {
+        return;
       }
+      this.workerOn = !this.workerOn;
+      this.worker.terminate();
+      const oldcanv = document.getElementById("canvas");
+      const canmom = document.getElementById("canmom");
+      canmom.removeChild(oldcanv);
+
+      const canv = document.createElement("canvas");
+      canv.id = "canvas";
+      canmom.appendChild(canv);
     },
     webworkerStart() {
+      /**
+       * start web worker
+       */
       this.workerOn = !this.workerOn;
       let styleWidth = 512;
       let styleHeight = 512;
 
-      if (this.lengthY < this.sizeX) {
-        styleHeight = Math.round((styleWidth * this.lengthY) / this.sizeX);
+      const { lengthX, lengthY } = this.$store.state.a.scanConfig;
+      if (lengthY < lengthX) {
+        styleHeight = Math.round((styleWidth * lengthY) / lengthX);
       } else {
-        styleWidth = Math.round((styleHeight * this.sizeX) / this.lengthY);
+        styleWidth = Math.round((styleHeight * lengthX) / lengthY);
       }
       this.canvasStyle = {
         width: `${styleWidth}px`,
         height: `${styleHeight}px`,
       };
       const canvas = document.getElementById("canvas");
-      const { sizeX, sizeY } = this;
+      const { sizeX, sizeY } = this.$store.state.a.imageCalc;
       canvas.width = sizeX;
       canvas.height = sizeY;
       const offscreenCanvas = canvas.transferControlToOffscreen();
       this.worker = new Worker("/sample.js");
-      if (localStorage.getItem("colormap") === undefined) {
+      if (localStorage.getItem("colormap") === null) {
         // eslint-disable-next-line
         alert("localStorage colormap was undefined. Please set one colormap;");
         return;
@@ -255,7 +262,7 @@ export default {
         {
           canvas: offscreenCanvas,
           width: sizeX,
-          height: canvas.height,
+          height: sizeY,
           colormap: JSON.parse(localStorage.getItem("colormap")),
           maximum: this.colormap.maximum,
           minimum: this.colormap.minimum,
@@ -285,11 +292,11 @@ export default {
           this.mouse.pos[ypos] = ydoublepos;
           this.mouse.showPos[xpos] = (
             (xdoublepos / rect.width) *
-            this.sizeX
+            sizeX
           ).toFixed(0);
           this.mouse.showPos[ypos] = (
             (ydoublepos / rect.height) *
-            this.lengthY
+            sizeY
           ).toFixed(0);
           let sx;
           let sy;

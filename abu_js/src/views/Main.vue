@@ -44,7 +44,8 @@
           ><v-textarea v-model="dialog.text" readonly
         /></v-card-text>
         <v-card-actions>
-          <v-row><v-btn @click="dialog.show = false">OK</v-btn></v-row>
+          <v-spacer />
+          <v-btn @click="dialog.show = false">OK</v-btn>
         </v-card-actions>
       </v-card></v-dialog
     >
