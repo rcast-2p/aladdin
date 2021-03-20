@@ -99,6 +99,7 @@ export default {
         { name: "aomRef", value: 8 },
       ],
     },
+    position: [0, 0, 0],
     prudaq: {
       host: "192.168.2.104",
       port: 8070,
@@ -129,6 +130,9 @@ export default {
     setState(state, statestr) {
       // eslint-disable-next-line no-param-reassign
       state = JSON.parse(statestr);
+    },
+    updatePosition(state, position) {
+      state.position = JSON.parse(JSON.stringify(position));
     },
   },
   getters: {},

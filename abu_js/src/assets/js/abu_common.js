@@ -89,6 +89,24 @@ export default class AbuCommon {
     return { address: bbaiAddress, data };
   }
 
+  static async register2Db(state, uuid = null) {
+    const doc = { ...state.a };
+    if (uuid === null) {
+      doc.uuid = uuid;
+    } else {
+      doc.uuid = AbuCommon.getDateString();
+    }
+    return new Promise((resolve, reject) => {
+      state.d.db.commands.insert(doc, (err, newDoc) => {
+        if (err === null) {
+          resolve(newDoc);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  }
+
   static async createReceiverPostData(state) {
     const uuid = AbuCommon.getDateString();
     const {

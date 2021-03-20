@@ -18,6 +18,7 @@
             <aom @error-dialog="errorDialog" />
             <move-ctrl @error-dialog="errorDialog" />
             <stop-ctrl @error-dialog="errorDialog" />
+            <commands />
           </v-tab-item>
         </v-tabs-items>
       </v-col>
@@ -43,6 +44,7 @@
 <script>
 import MoveCtrl from "@/components/scan/Move.vue";
 import StopCtrl from "@/components/scan/Stop.vue";
+import Commands from "@/components/Commands.vue";
 // import CameraPos from "@/components/scan/CameraPos.vue";
 // import axios from "@/plugins/axios";
 import Viewer from "@/components/scan/Viewer.vue";
@@ -66,6 +68,7 @@ export default {
   components: {
     Aom,
     CircuitConfig,
+    Commands,
     DAServer,
     MoveCtrl,
     Images,

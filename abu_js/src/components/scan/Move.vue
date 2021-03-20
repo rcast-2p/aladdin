@@ -60,58 +60,75 @@ export default {
         show: false,
       },
       fix: [0, 0, 0],
+      limits: {
+        x: { min: 0, max: 100 },
+        y: { min: 0, max: 100 },
+        z: { min: 0, max: 100 },
+      },
     };
+  },
+  mounted() {
+    const stageHwConfig = JSON.parse(localStorage.getItem("stageHwConfig"));
+    if (stageHwConfig === null) {
+      this.noHwConfig = true;
+      return;
+    }
+    this.limits = stageHwConfig.limits;
   },
   methods: {
     fixPos() {
       this.dialog.show = false;
       this.absolutePos = this.fix.slice(); // clone
     },
+    calcSteps(direction) {
+      let steps = 0;
+      const {
+        xFResolution,
+        xBResolution,
+        yFResolution,
+        yBResolution,
+        zFResolution,
+        zBResolution,
+      } = this.$store.state.a.scanDetailedConfig.sReso;
+      switch (direction) {
+        case 0: {
+          if (this.moveLength > 0) {
+            steps = this.moveLength / xFResolution;
+          } else {
+            steps = this.moveLength / xBResolution;
+          }
+          break;
+        }
+        case 1: {
+          if (this.moveLength > 0) {
+            steps = this.moveLength / yFResolution;
+          } else {
+            steps = this.moveLength / yBResolution;
+          }
+          break;
+        }
+        case 2: {
+          if (this.moveLength > 0) {
+            steps = this.moveLength / zFResolution;
+          } else {
+            steps = this.moveLength / zBResolution;
+          }
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+      return steps;
+    },
     async move(direction) {
+      const steps = this.calcSteps(direction);
       const { bbaiBaseURL, baseData } = AbuCommon.commonScanConfig(
         this.$store.state.a
       );
       const path = "/stage/move";
       try {
         this.loading = true;
-        let steps = 0;
-        const {
-          xFResolution,
-          xBResolution,
-          yFResolution,
-          yBResolution,
-          zFResolution,
-          zBResolution,
-        } = this.$store.state.a.scanDetailedConfig.sReso;
-        switch (direction) {
-          case 0: {
-            if (this.moveLength > 0) {
-              steps = this.moveLength / xFResolution;
-            } else {
-              steps = this.moveLength / xBResolution;
-            }
-            break;
-          }
-          case 1: {
-            if (this.moveLength > 0) {
-              steps = this.moveLength / yFResolution;
-            } else {
-              steps = this.moveLength / yBResolution;
-            }
-            break;
-          }
-          case 2: {
-            if (this.moveLength > 0) {
-              steps = this.moveLength / zFResolution;
-            } else {
-              steps = this.moveLength / zBResolution;
-            }
-            break;
-          }
-          default: {
-            break;
-          }
-        }
 
         const sendData = {
           command: "move",
@@ -120,19 +137,14 @@ export default {
           steps,
           moveLength: this.moveLength,
         };
-        const { db } = this.$store.state.d.db;
-        db.commands.insert(sendData, (err) => {
-          if (err !== null) {
-            console.error(err);
-          }
-        });
         const retval = await axios({
           data: sendData,
           baseURL: bbaiBaseURL,
           url: path,
         });
-        console.log(retval.data);
         this.absolutePos[direction] += this.moveLength;
+        this.$store.commit("updatePosition", this.absolutePos);
+        await AbuCommon.register2Db(this.$store.state);
         this.resultItem = retval.data.retarr;
       } catch (e) {
         this.$emit("error-dialog", {

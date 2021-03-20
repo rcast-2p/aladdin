@@ -181,6 +181,9 @@ export default {
       );
       try {
         await axios.post(address, data);
+        const { uuid } = data;
+        const newDoc = await AbuCommon.register2Db(this.$store.state, uuid);
+        console.log(newDoc);
       } catch (e) {
         this.$emit("error-dialog", {
           title: address,
