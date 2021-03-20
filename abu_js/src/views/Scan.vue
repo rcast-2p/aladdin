@@ -54,7 +54,7 @@
 <script>
 import MoveCtrl from "@/components/scan/Move.vue";
 import StopCtrl from "@/components/scan/Stop.vue";
-import Commands from "@/components/Commands.vue";
+import Commands from "@/components/scan/Commands.vue";
 import CameraPos from "@/components/scan/CameraPos.vue";
 // import axios from "@/plugins/axios";
 import Viewer from "@/components/scan/Viewer.vue";
@@ -107,16 +107,19 @@ export default {
       tab: "scan",
     };
   },
-  async mounted() {
+  async created() {
     try {
       const latest = await this.getLatest();
       if (latest.length > 0) {
         this.$store.commit("setState", JSON.stringify(latest[0]));
+        this.$store.commit("genInc");
+        const gen = this.$store.state.g.generation;
         this.dialog = {
           show: true,
-          text: `${latest[0].uuid} was loaded`,
+          text: `${latest[0].uuid} was loaded. Current generation was ${gen}`,
           title: "previous config was set.",
         };
+        console.log(this.$store.state.a.scanDetailedConfig.bbai.host);
       }
     } catch (e) {
       console.error(e);

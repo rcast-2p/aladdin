@@ -1,6 +1,25 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="items"></v-data-table>
+    <v-data-table
+      :headers="headers"
+      :items="items"
+      show-expand
+      single-expand
+      :expanded.sync="expanded"
+      item-key="uuid"
+    >
+      <template v-slot:[`item.updatedAt`]="{ item }">
+        <v-btn @click="loadSwConfig(item)">load</v-btn>
+      </template>
+      <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length">
+          <v-textarea
+            readonly
+            :value="JSON.stringify(item, null, '\t')"
+          ></v-textarea>
+        </td>
+      </template>
+    </v-data-table>
     <v-btn @click="load">load</v-btn>
     <v-btn @click="confirmClear">clear</v-btn>
     <a target="_blank" :href="dlUrl">download data</a>
@@ -23,6 +42,7 @@ export default {
     headers: [
       { text: "uuid", value: "uuid" },
       { text: "position", value: "position" },
+      { text: "load", value: "updatedAt" },
     ],
     items: [],
     dlUrl: "",
@@ -31,6 +51,7 @@ export default {
       text: "",
       title: "",
     },
+    expanded: [],
   }),
   async mounted() {
     try {
@@ -46,6 +67,18 @@ export default {
       } catch (err) {
         console.error(err);
       }
+    },
+    loadSwConfig(item) {
+      this.$store.commit("setState", JSON.stringify(item));
+      this.$store.commit("genInc");
+
+      const gen = this.$store.state.g.generation;
+      const dialog = {
+        show: true,
+        text: `${item.uuid} was loaded. Current generation was ${gen}`,
+        title: "previous config was set.",
+      };
+      this.$emit("error-dialog", dialog);
     },
     createDlLink(docs) {
       return URL.createObjectURL(new Blob([JSON.stringify({ data: docs })]), {

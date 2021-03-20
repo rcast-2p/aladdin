@@ -1,7 +1,7 @@
 <template>
   <v-col cols="6" class="green lighten-4">
-    <v-btn @click="scanOnly" dark color="green" :loading="loading"
-      >scan only</v-btn
+    <v-btn @click="motorTest" dark color="green" :loading="loading"
+      >motor test</v-btn
     >
     <v-btn @click="start" dark color="green darken-4" :loading="loading"
       >start</v-btn
@@ -17,10 +17,12 @@ export default {
     loading: false,
   }),
   methods: {
-    async scanOnly() {
+    async motorTest() {
       const { address, data } = AbuCommon.createScanPostData(this.$store.state);
       try {
         await axios.post(address, data);
+        const newDoc = await AbuCommon.register2Db(this.$store.state);
+        console.log(newDoc);
       } catch (e) {
         this.$emit("error-dialog", {
           title: address,
@@ -39,6 +41,12 @@ export default {
         const scanPost = axios.post(scanPostData.address, scanPostData.data);
         const recvPost = axios.post(recvPostData.address, recvPostData.data);
         await Promise.all([scanPost, recvPost]);
+
+        const newDoc = await AbuCommon.register2Db(
+          this.$store.state,
+          recvPostData.uuid
+        );
+        console.log(newDoc);
       } catch (e) {
         this.$emit("error-dialog", {
           title: "start error",

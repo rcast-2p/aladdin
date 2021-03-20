@@ -78,7 +78,8 @@ export default {
   methods: {
     fixPos() {
       this.dialog.show = false;
-      this.absolutePos = this.fix.slice(); // clone
+      this.$store.commit("updatePosition", this.fix);
+      this.absolutePos = [...this.fix]; // clone
     },
     calcSteps(direction) {
       let steps = 0;

@@ -156,6 +156,9 @@
 </template>
 <script>
 export default {
+  computed: {
+    generation() {},
+  },
   data() {
     return {
       scanConfig: {},

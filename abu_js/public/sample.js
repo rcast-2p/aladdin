@@ -111,7 +111,7 @@ function step() {
   if (plusImageData1.height === height) {
     ctx.putImageData(plusImageData1, 0, 0);
   } else {
-    // ctx.putImageData(plusImageData1, 0, yBegin1);
+    ctx.putImageData(plusImageData1, 0, yBegin1);
   }
   if (yBegin2 > -1) {
     ctx.putImageData(plusImageData2, 0, yBegin2);

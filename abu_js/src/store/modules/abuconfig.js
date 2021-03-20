@@ -99,7 +99,6 @@ export default {
         { name: "aomRef", value: 8 },
       ],
     },
-    position: [0, 0, 0],
     prudaq: {
       host: "192.168.2.104",
       port: 8070,
@@ -128,11 +127,22 @@ export default {
       state[obj.key0][obj.key1] = obj.content;
     },
     setState(state, statestr) {
+      const stateB = JSON.parse(statestr);
+      // state.scanDetailedConfig = stateB.scanDetailedConfig;
       // eslint-disable-next-line no-param-reassign
-      state = JSON.parse(statestr);
-    },
-    updatePosition(state, position) {
-      state.position = JSON.parse(JSON.stringify(position));
+      state.daServer = stateB.daServer;
+      state.udp = stateB.udp;
+      state.fileSave = stateB.fileSave;
+      state.globalConfig = stateB.globalConfig;
+      state.image = stateB.image;
+      state.imageCalc = stateB.imageCalc;
+      state.websocket = stateB.websocket;
+      state.scanConfig = stateB.scanConfig;
+      state.scanDetailedConfig = stateB.scanDetailedConfig;
+      state.prudaq = stateB.prudaq;
+      state.receiver = stateB.receiver;
+      state.omeMetaData = stateB.omeMetaData;
+      console.log(state.scanDetailedConfig.bbai.host);
     },
   },
   getters: {},
