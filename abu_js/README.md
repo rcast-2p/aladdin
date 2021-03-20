@@ -47,7 +47,11 @@
     "vuetify-loader": "^1.7.2" // MIT
   },
 
-## 
+## show dependencies
+
+```
+npm ls
+```
 
 ## Project setup
 ```
