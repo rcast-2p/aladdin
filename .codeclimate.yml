@@ -7,12 +7,6 @@ engines:
       extensions:
       - .js
       - .vue
-eslint:
-  enabled: true
-  config:
-    extensions:
-    - .js
-    - .vue
 ratings:
    paths:
    - "**.js"
