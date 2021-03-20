@@ -58,7 +58,7 @@ const routes = [
 const router = new VueRouter({
   mode: "history",
   // base: "tms/parser",
-  base: process.env.BASE_URL,
+  base: `/aladdin/${process.env.BASE_URL}`,
   routes,
 });
 
