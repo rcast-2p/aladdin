@@ -1,6 +1,6 @@
 module.exports = {
   transpileDependencies: ["vuetify"],
-  outputDir: "qr",
+  outputDir: "dist",
   publicPath: process.env.VUE_APP_PUBLIC_PATH || "/",
   chainWebpack: (config) => {
     config.module
