@@ -57,20 +57,21 @@ export default {
       receiver: {},
     };
   },
-  mounted() {
-    this.prudaq = this.$store.state.a.prudaq;
-    this.receiver = this.$store.state.a.receiver;
+  computed: {
+    generation() {
+      return this.$store.state.g.generation;
+    },
   },
-  // computed: {
-  //   count() {
-  //     return this.$store.state.servers.count;
-  //   },
-  // },
-  // watch: {
-  //   count() {
-  //     this.servers.count = this.count;
-  //   },
-  // },
+  mounted() {
+    this.prudaq = { ...this.$store.state.a.prudaq };
+    this.receiver = { ...this.$store.state.a.receiver };
+  },
+  watch: {
+    generation() {
+      this.prudaq = { ...this.$store.state.a.prudaq };
+      this.receiver = { ...this.$store.state.a.receiver };
+    },
+  },
   methods: {
     updateState() {
       this.$store.commit("setObject", {

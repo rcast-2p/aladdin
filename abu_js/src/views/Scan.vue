@@ -12,23 +12,32 @@
             <camera-pos />
           </v-tab-item>
           <v-tab-item value="scan">
-            <move-ctrl @error-dialog="errorDialog" />
+            <move-ctrl
+              @error-dialog="errorDialog"
+              @load-commands-db="loadCommandsDB"
+            />
             <v-row>
               <stop-ctrl @error-dialog="errorDialog" />
 
-              <scan-button @error-dialog="errorDialog" />
+              <scan-button
+                @error-dialog="errorDialog"
+                @load-commands-db="loadCommandsDB"
+              />
             </v-row>
             <scan-config />
             <scan-over-view />
             <circuit-config />
             <aom @error-dialog="errorDialog" />
-            <commands @error-dialog="errorDialog" />
+            <commands @error-dialog="errorDialog" ref="commands" />
           </v-tab-item>
         </v-tabs-items>
       </v-col>
       <v-col cols="12" xs="12" sm="12" md="6" lg="6" xl="6">
         <ome />
-        <viewer @error-dialog="errorDialog" />
+        <viewer
+          @error-dialog="errorDialog"
+          @load-commands-db="loadCommandsDB"
+        />
         <udp />
         <images />
         <websocket />
@@ -119,7 +128,6 @@ export default {
           text: `${latest[0].uuid} was loaded. Current generation was ${gen}`,
           title: "previous config was set.",
         };
-        console.log(this.$store.state.a.scanDetailedConfig.bbai.host);
       }
     } catch (e) {
       console.error(e);
@@ -132,6 +140,9 @@ export default {
   },
 
   methods: {
+    loadCommandsDB() {
+      this.$refs.commands.load();
+    },
     getLatest() {
       return new Promise((resolve, reject) => {
         this.$store.state.d.db.commands

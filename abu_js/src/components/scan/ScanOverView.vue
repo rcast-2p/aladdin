@@ -121,7 +121,9 @@ export default {
       return this.$store.state.a.udp.extraCount;
     },
     packetCount() {
-      return Math.ceil((this.wholeUs * this.samplingRate) / this.bufferSize);
+      return Math.ceil(
+        (this.wholeUs * this.samplingRate * 4) / this.bufferSize
+      );
     },
     wholeScan() {
       const {

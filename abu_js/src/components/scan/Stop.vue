@@ -28,6 +28,9 @@ export default {
       });
     },
     async stop(goBack) {
+      /**
+       *@param {number} goBack
+       */
       const path = "/stage/stop";
       try {
         this.loading = true;

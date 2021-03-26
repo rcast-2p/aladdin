@@ -108,6 +108,11 @@
 </template>
 <script>
 export default {
+  computed: {
+    generation() {
+      return this.$store.state.g.generation;
+    },
+  },
   data() {
     return {
       scanDetailedConfig: { sReso: {}, pinConfig: [], bbai: {} },
@@ -125,7 +130,7 @@ export default {
     };
   },
   mounted() {
-    this.scanDetailedConfig = this.$store.state.a.scanDetailedConfig;
+    this.scanDetailedConfig = { ...this.$store.state.a.scanDetailedConfig };
 
     const stageHwConfig = JSON.parse(localStorage.getItem("stageHwConfig"));
     if (stageHwConfig === null) {
@@ -134,6 +139,11 @@ export default {
     }
     this.resolutionOptions = stageHwConfig.resolutionOptions;
     this.limits = stageHwConfig.limits;
+  },
+  watch: {
+    generation() {
+      this.scanDetailedConfig = { ...this.$store.state.a.scanDetailedConfig };
+    },
   },
   methods: {
     updateState() {
@@ -146,12 +156,4 @@ export default {
     },
   },
 };
-
-// { text: "0.2 um (10 div 6)", value: 0.2 },
-// { text: "0.25 um (8 div 5)", value: 0.25 },
-// { text: "0.4 um (5 div 4)", value: 0.4 },
-// { text: "0.5 um (4 div 3)", value: 0.5 },
-// { text: "0.8 um (2.5 div 2)", value: 0.8 },
-// { text: "1.0 um (2 div 1)", value: 1.0 },
-// { text: "2.0 um (1 div 0)", value: 2.0 },
 </script>

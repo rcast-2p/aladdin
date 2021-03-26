@@ -1,22 +1,43 @@
 <template>
   <div>
     <h1>ome xml</h1>
-    <v-text-field label="name" v-model="name" />
-    <v-text-field label="description" v-model="description" />
-    <v-textarea label="ome xml" v-model="omeXml" />
-    <v-btn @click="insert" v-text="'insert'" />
-    <v-btn @click="deleteEntry" v-text="'delete'" />
-    <v-btn @click="fetch" v-text="'fetch'" />
-    <v-data-table :items="dbItems" :headers="dbHeaders" show-expand>
+    <h2>
+      registered settings
+      <v-btn icon @click="fetch"><v-icon>mdi-reload</v-icon></v-btn>
+    </h2>
+    <v-data-table
+      :items="dbItems"
+      :headers="dbHeaders"
+      show-expand
+      item-key="name"
+    >
       <template v-slot:[`item.updatedAt`]="{ item }">
         {{ isostr(item.updatedAt) }}
       </template>
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <v-textarea v-model="item.omeXml" readonly></v-textarea>
+          <v-textarea v-model="item.xml" readonly></v-textarea>
         </td>
       </template>
     </v-data-table>
+
+    <h2>edit</h2>
+    <v-tabs v-model="tab">
+      <v-tab href="#insert">insert</v-tab>
+      <v-tab href="#delete">delete</v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="tab">
+      <v-tab-item value="insert">
+        <v-text-field label="name" v-model="name" />
+        <v-text-field label="description" v-model="description" />
+        <v-textarea label="ome xml" v-model="xml" />
+        <v-btn @click="insert" v-text="'insert'" />
+      </v-tab-item>
+      <v-tab-item value="delete">
+        <v-text-field label="name" v-model="name" />
+        <v-btn @click="deleteEntry" v-text="'delete'" />
+      </v-tab-item>
+    </v-tabs-items>
     <v-dialog>
       <v-card>
         <v-card-title>{{ dialog.title }}</v-card-title>
@@ -36,12 +57,13 @@ export default {
   data: () => ({
     name: "",
     description: "",
-    omeXml: "",
+    xml: "",
     laserPower: 0,
     pmtGain: 0,
     objectiveName: "olympus",
     filterName: "",
     dichroicName: "",
+    tab: "insert",
     version: 0,
     dialog: {
       show: false,
@@ -74,11 +96,13 @@ export default {
       const insertData = {
         name: this.name,
         description: this.description,
-        omeXml: this.omeXml,
+        xml: this.xml,
       };
       this.$store.state.d.db.ome.insert(insertData, (err) => {
         if (err !== null) {
           this.errorDialog(err);
+        } else {
+          this.fetch();
         }
       });
     },
@@ -95,7 +119,11 @@ export default {
         { name: this.name },
         { multi: true },
         (err) => {
-          this.errorDialog(err);
+          if (err !== null) {
+            this.errorDialog(err);
+          } else {
+            this.fetch();
+          }
         }
       );
     },

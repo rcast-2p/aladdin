@@ -47,18 +47,18 @@ export default {
     };
   },
   mounted() {
-    this.image = this.$store.state.a.image;
+    this.image = { ...this.$store.state.a.image };
   },
-  // computed: {
-  //   count() {
-  //     return this.$store.state.image.count;
-  //   },
-  // },
-  // watch: {
-  //   count() {
-  //     this.image.count = this.count;
-  //   },
-  // },
+  watch: {
+    generation() {
+      this.image = { ...this.$store.state.a.image };
+    },
+  },
+  computed: {
+    generation() {
+      return this.$store.state.g.generation;
+    },
+  },
   methods: {
     updateState() {
       console.log(this.image);

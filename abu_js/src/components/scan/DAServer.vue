@@ -56,7 +56,17 @@ export default {
     };
   },
   mounted() {
-    this.daServer = this.$store.state.a.daServer;
+    this.daServer = { ...this.$store.state.a.daServer };
+  },
+  computed: {
+    generation() {
+      return this.$store.state.g.generation;
+    },
+  },
+  watch: {
+    generation() {
+      this.daServer = { ...this.$store.state.a.daServer };
+    },
   },
   methods: {
     updateState() {

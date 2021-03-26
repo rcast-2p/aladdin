@@ -24,6 +24,7 @@ let volMin = 65537;
 let volMax = 0;
 let yBegin1 = 0;
 let yBegin2 = 0;
+let terminated = false;
 socket.addEventListener("open", () => {
   socket.send("Hello Server!");
 });
@@ -41,8 +42,16 @@ socket.addEventListener("message", (event) => {
   yBegin2 = view.getInt16(4, true);
   const yEnd2 = view.getInt16(6, true);
   zIndex = view.getInt32(8, true);
+  if (zIndex === -1) {
+    postMessage("end");
+    terminated = true;
+    return;
+  }
   const sentDataSize1 = width * (yEnd1 - yBegin1);
   const sentDataSize2 = width * (yEnd2 - yBegin2);
+  if (sentDataSize1 === 0 && sentDataSize2 === 0) {
+    return;
+  }
   const vpView1 = new Uint16Array(event.data, headerSize, sentDataSize1);
   const vpView2 = new Uint16Array(
     event.data,
@@ -107,7 +116,9 @@ socket.addEventListener("message", (event) => {
 });
 
 function step() {
-  // TODO こんなに全部貼らなくていいような。
+  if (terminated) {
+    return;
+  }
   if (plusImageData1.height === height) {
     ctx.putImageData(plusImageData1, 0, 0);
   } else {
@@ -144,6 +155,9 @@ self.addEventListener("message", (event) => {
     }
     const arr = new Uint8ClampedArray(imgBuffer, 0, 4 * height * width);
     plusImageData1 = new ImageData(arr, width);
+    if (terminated) {
+      ctx.putImageData(plusImageData1, 0, yBegin1);
+    }
   } else {
     pos = event.data;
   }

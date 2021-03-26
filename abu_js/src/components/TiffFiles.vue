@@ -122,6 +122,7 @@ export default {
         txt: "",
       },
       canvasHeight: 512,
+      updated: {},
     };
   },
   watch: {
@@ -151,6 +152,7 @@ export default {
   mounted() {
     const cjso = JSON.parse(localStorage.getItem("colormap"));
     this.colormap = new Uint32Array(new Uint8Array(cjso).buffer);
+    this.updated = new Date();
   },
   computed: {
     canvasStyle() {

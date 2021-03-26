@@ -8,15 +8,12 @@
         color="yellow lighten-2"
         >Worker Start</v-btn
       >
-      <v-btn @click="receiverOnly" color="cyan darken-2" dark>receiver</v-btn>
+      <v-btn @click="receiverOnly" color="cyan darken-2" dark
+        ><v-icon>mdi-record-rec</v-icon>receiver</v-btn
+      >
       <v-btn @click="prudaqOnly" :loading="loading">PRUDAQ</v-btn>
-      <v-text-field
-        v-model="description"
-        placeholder="description"
-        outlined
-        dense
-        hide-details="auto"
-      />
+      <v-btn @click="sendSignal(2)" dark color="indigo">SIGINT</v-btn>
+      <v-btn @click="sendSignal(9)">SIGKILL</v-btn>
     </v-row>
     <v-row>
       <v-col cols="9">
@@ -133,7 +130,6 @@ export default {
         { text: "stderr", value: "stderr" },
       ],
       resultItem: [],
-      description: "",
       info: {
         maximum: 0,
         minimum: 0,
@@ -155,16 +151,84 @@ export default {
       },
     };
   },
-  mounted() {},
   computed: {
-    recvBaseURL() {
-      return `http://${this.receiver.host}:${this.receiver.port}`;
+    generation() {
+      return this.$store.state.g.generation;
     },
-    prudaqURL() {
-      return `http://${this.prudaq.host}:${this.prudaq.port}`;
+  },
+  watch: {
+    generation() {
+      this.$nextTick(() => {
+        this.colormap = { ...this.$store.state.a.minMax };
+        console.log(this.colormap);
+      });
     },
   },
   methods: {
+    getLatest() {
+      return new Promise((resolve, reject) => {
+        this.$store.state.d.db.commands
+          .find({})
+          .sort({ updatedAt: -1 })
+          .limit(1)
+          .exec((err, docs) => {
+            if (err === null) {
+              resolve(docs);
+            } else {
+              reject(err);
+            }
+          });
+      });
+    },
+    async recordMinMax() {
+      const docs = await this.getLatest();
+      const { uuid } = docs[0];
+      this.updateLatestMinMax(uuid, this.colormap);
+    },
+
+    updateLatestMinMax(uuid, minMax) {
+      this.$store.state.d.db.commands.update(
+        { uuid },
+        { $set: { minMax } },
+        (err, numReplaced) => {
+          if (err === null && numReplaced === 1) {
+            this.$emit("error-dialog", {
+              title: `${uuid} scan complete`,
+              show: true,
+              text: `${uuid} scan has been completed.`,
+            });
+          } else {
+            this.$emit("error-dialog", {
+              title: "db update error",
+              show: true,
+              text: JSON.stringify(err, null, "\t"),
+            });
+            console.error(err);
+          }
+        }
+      );
+    },
+
+    /**
+     * post request to /receiver
+     * @param {number} signum
+     */
+    async sendSignal(signum) {
+      const { receiver } = this.$store.state.a;
+      const address = `http://${receiver.host}:${receiver.port}/receiver/signal`;
+      const data = { signum };
+      try {
+        await axios.post(address, data);
+      } catch (e) {
+        this.$emit("error-dialog", {
+          title: address,
+          show: true,
+          text: JSON.stringify(e, null, "\t"),
+        });
+        console.error(e);
+      }
+    },
+
     /**
      * post request to /receiver
      */
@@ -175,7 +239,12 @@ export default {
       try {
         await axios.post(address, data);
         const { uuid } = data;
-        const newDoc = await AbuCommon.register2Db(this.$store.state, uuid);
+        const newDoc = await AbuCommon.register2Db(
+          this.$store.state,
+          "receiver",
+          uuid
+        );
+        this.$emit("load-commands-db");
         console.log(newDoc);
       } catch (e) {
         this.$emit("error-dialog", {
@@ -209,6 +278,7 @@ export default {
        * send colormap to web worker (sample.js)
        */
       this.worker.postMessage(this.colormap);
+      this.recordMinMax();
     },
     reset() {
       /**
@@ -227,15 +297,15 @@ export default {
       canv.id = "canvas";
       canmom.appendChild(canv);
     },
-    webworkerStart() {
+    setCanvasPhysicalSize() {
       /**
-       * start web worker
+       * called from webworkerStart()
+       * @param {number} lengthX
+       * @param {number} lengthY
        */
-      this.workerOn = !this.workerOn;
+      const { lengthX, lengthY } = this.$store.state.a.scanConfig;
       let styleWidth = 512;
       let styleHeight = 512;
-
-      const { lengthX, lengthY } = this.$store.state.a.scanConfig;
       if (lengthY < lengthX) {
         styleHeight = Math.round((styleWidth * lengthY) / lengthX);
       } else {
@@ -245,12 +315,19 @@ export default {
         width: `${styleWidth}px`,
         height: `${styleHeight}px`,
       };
+    },
+    webworkerStart() {
+      /**
+       * start web worker
+       */
+      this.workerOn = !this.workerOn;
+      this.setCanvasPhysicalSize();
       const canvas = document.getElementById("canvas");
       const { sizeX, sizeY } = this.$store.state.a.imageCalc;
       canvas.width = sizeX;
       canvas.height = sizeY;
       const offscreenCanvas = canvas.transferControlToOffscreen();
-      this.worker = new Worker("/sample.js");
+      this.worker = new Worker(`${process.env.VUE_APP_PUBLIC_PATH}/sample.js`);
       if (localStorage.getItem("colormap") === null) {
         // eslint-disable-next-line
         alert("localStorage colormap was undefined. Please set one colormap;");
@@ -271,6 +348,11 @@ export default {
         [offscreenCanvas]
       );
       this.worker.onmessage = (e) => {
+        if (e.data === "end") {
+          this.recordMinMax();
+          this.$emit("load-commands-db");
+          return;
+        }
         this.info = {
           maximum: e.data.volMax,
           minimum: e.data.volMin,

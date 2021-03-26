@@ -15,32 +15,17 @@
   </v-row>
 </template>
 <script>
-import axios from "@/plugins/axios";
 import TiffFiles from "../components/TiffFiles.vue";
 
 export default {
   components: { TiffFiles },
-  data() {
-    return {
-      folder: "",
-      filename: "",
-      fileList: [],
-    };
-  },
   methods: {
-    async getFileList() {
-      const axres = await axios.get("http://localhost:8070/tiff/list", {
-        params: { folder: this.folder },
-      });
-      this.fileList = axres.data.data.fileList;
+    recvMessage(event) {
+      console.log(event.data);
     },
-    async getTiffFile() {
-      const axres = await axios.get("http://localhost:8070/tiff/file", {
-        params: { folder: this.folder, filename: this.filename },
-      });
-      const blob = new Blob([axres.data], { type: "image/tiff" });
-      console.log(blob);
-    },
+  },
+  mounted() {
+    window.addEventListener("message", this.recvMessage, false);
   },
 };
 </script>

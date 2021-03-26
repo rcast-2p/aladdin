@@ -60,23 +60,23 @@ export default {
     };
   },
   mounted() {
-    this.websocket = this.$store.state.a.websocket;
+    this.websocket = { ...this.$store.state.a.websocket };
   },
-  // computed: {
-  //   count() {
-  //     return this.$store.state.image.count;
-  //   },
-  // },
-  // watch: {
-  //   count() {
-  //     this.image.count = this.count;
-  //   },
-  // },
+  computed: {
+    generation() {
+      return this.$store.state.g.generation;
+    },
+  },
+  watch: {
+    generation() {
+      this.websocket = { ...this.$store.state.a.websocket };
+    },
+  },
   methods: {
     updateState() {
       this.$store.commit("setObject", {
         key: "websocket",
-        content: JSON.stringify(this.image),
+        content: JSON.stringify(this.websocket),
       });
     },
   },

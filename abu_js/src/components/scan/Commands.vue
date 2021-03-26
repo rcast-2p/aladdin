@@ -7,9 +7,23 @@
       single-expand
       :expanded.sync="expanded"
       item-key="uuid"
+      sort-by="updatedAt"
+      :sort-desc="true"
     >
+      <template v-slot:[`item.uuid`]="{ item }">
+        <v-btn text @click="sendMessage(item)">{{ item.uuid }}</v-btn>
+      </template>
       <template v-slot:[`item.updatedAt`]="{ item }">
         <v-btn @click="loadSwConfig(item)">load</v-btn>
+      </template>
+      <template v-slot:[`item.createdAt`]="{ item }">
+        <span v-if="item.command === 'receiver'">
+          {{ item.scanConfig.lengthX }} x {{ item.scanConfig.lengthY }} x ({{
+            item.imageCalc.sizeZ
+          }}
+          x {{ item.scanConfig.zFLengthPerSeq }})
+        </span>
+        <span v-else-if="item.command === 'move'"> move </span>
       </template>
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
@@ -42,7 +56,9 @@ export default {
     headers: [
       { text: "uuid", value: "uuid" },
       { text: "position", value: "position" },
+      { text: "command", value: "command" },
       { text: "load", value: "updatedAt" },
+      { text: "summary", value: "createdAt" },
     ],
     items: [],
     dlUrl: "",
@@ -52,8 +68,10 @@ export default {
       title: "",
     },
     expanded: [],
+    tiffViewer: {},
   }),
   async mounted() {
+    this.tiffViewer = window.open("/tiff", "tiff");
     try {
       this.items = await this.loadDatabase();
     } catch (err) {
@@ -101,6 +119,10 @@ export default {
           console.error(err);
         }
       });
+    },
+    sendMessage(item) {
+      console.log(item.uuid);
+      this.tiffViewer.postMessage(item.uuid);
     },
     async loadDatabase() {
       return new Promise((resolve, reject) => {

@@ -1,10 +1,10 @@
 <template>
   <v-col cols="6" class="green lighten-4">
     <v-btn @click="motorTest" dark color="green" :loading="loading"
-      >motor test</v-btn
+      ><v-icon>mdi-record-rec</v-icon> motor test</v-btn
     >
     <v-btn @click="start" dark color="green darken-4" :loading="loading"
-      >start</v-btn
+      ><v-icon>mdi-record-rec</v-icon> start</v-btn
     >
   </v-col>
 </template>
@@ -21,7 +21,10 @@ export default {
       const { address, data } = AbuCommon.createScanPostData(this.$store.state);
       try {
         await axios.post(address, data);
-        const newDoc = await AbuCommon.register2Db(this.$store.state);
+        const newDoc = await AbuCommon.register2Db(
+          this.$store.state,
+          "motorTest"
+        );
         console.log(newDoc);
       } catch (e) {
         this.$emit("error-dialog", {
@@ -44,8 +47,10 @@ export default {
 
         const newDoc = await AbuCommon.register2Db(
           this.$store.state,
+          "scan",
           recvPostData.uuid
         );
+        this.$emit("load-commands-db");
         console.log(newDoc);
       } catch (e) {
         this.$emit("error-dialog", {

@@ -115,8 +115,12 @@ export default {
       filterName: "",
       dichroicName: "",
       imageName: "",
-      detectroName: "",
+      detectorName: "",
       description: "",
+    },
+    minMax: {
+      minimum: 0,
+      maximum: 65536,
     },
   },
   mutations: {
@@ -142,7 +146,7 @@ export default {
       state.prudaq = stateB.prudaq;
       state.receiver = stateB.receiver;
       state.omeMetaData = stateB.omeMetaData;
-      console.log(state.scanDetailedConfig.bbai.host);
+      state.minMax = stateB.minMax;
     },
   },
   getters: {},

@@ -117,8 +117,8 @@ export default class AbuCommon {
    * @param {string} uuid
    * @returns {Promise} if succeeded, return inserted data (array)
    */
-  static async register2Db(state, uuid = null) {
-    const doc = { ...state.a };
+  static async register2Db(state, command, uuid = null) {
+    const doc = { ...state.a, position: state.g.position, command };
     if (uuid !== null) {
       doc.uuid = uuid;
     } else {
@@ -135,8 +135,51 @@ export default class AbuCommon {
     });
   }
 
+  /* eslint-disable implicit-arrow-linebreak */
+
   /**
-   * create an object for /receiver
+   * create an object for /
+   * @param {object} omeMetaData
+   * @return {object} load detailed info of omeMetaData
+   */
+  static getOmeDetail(omeMetaData) {
+    const opticsOptions = JSON.parse(localStorage.getItem("opticsOptions"));
+    console.log(opticsOptions.Detectors);
+    const detector = opticsOptions.Detectors.find(
+      (doc) => doc["@Model"] === omeMetaData.detectorName
+    );
+    const filter = opticsOptions.Filters.find(
+      (doc) => doc["@Model"] === omeMetaData.filterName
+    );
+    const dichroic = opticsOptions.Dichroics.find(
+      (doc) => doc["@Model"] === omeMetaData.dichroicName
+    );
+    const objective = opticsOptions.Dichroics.find(
+      (doc) => doc["@Model"] === omeMetaData.dichroicName
+    );
+
+    const {
+      baseOme,
+      laserPower,
+      pmtGain,
+      imageName,
+      description,
+    } = omeMetaData;
+    return {
+      detector,
+      filter,
+      dichroic,
+      objective,
+      baseOme,
+      laserPower,
+      pmtGain,
+      imageName,
+      description,
+    };
+  }
+
+  /**
+   * create an object for /
    * @param {object} state - this.$store.state
    * @param {string} uuid
    * @return {object} create an object for /receiver
@@ -147,10 +190,12 @@ export default class AbuCommon {
       daServer,
       fileSave,
       omeMetaData,
+      receiver,
+      scanConfig,
       udp,
       websocket,
-      receiver,
     } = state.a;
+    const { position } = state.g;
     const { baseOme } = omeMetaData;
     const baseOmeObj = await new Promise((resolve, reject) => {
       state.d.db.ome.find(
@@ -167,9 +212,10 @@ export default class AbuCommon {
       );
     });
 
+    console.log(this.getOmeDetail(omeMetaData));
     const ome = {
       omeXml: baseOmeObj[0],
-      ...omeMetaData,
+      ...this.getOmeDetail(omeMetaData),
     };
     const receiverAddress = `http://${receiver.host}:${receiver.port}/receiver`;
     const { sizeX, sizeY, sizeZ, xFSteps } = state.a.imageCalc;
@@ -186,11 +232,13 @@ export default class AbuCommon {
       fileSave,
       galvo,
       image,
-      verbosity,
-      udp,
-      websocket,
-      uuid,
       ome,
+      position,
+      scanConfig,
+      udp,
+      uuid,
+      verbosity,
+      websocket,
     };
     return { address: receiverAddress, data };
   }

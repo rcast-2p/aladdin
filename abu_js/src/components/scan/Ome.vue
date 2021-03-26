@@ -22,7 +22,7 @@
           <v-text-field
             label="name"
             v-model="ome.imageName"
-            type="number"
+            type="text"
             outlined
             hide-details="auto"
             dense
@@ -116,6 +116,11 @@
 import opticsOptionsJson from "@/assets/json/optics_options.json";
 
 export default {
+  computed: {
+    generation() {
+      return this.$store.state.g.generation;
+    },
+  },
   data() {
     return {
       ome: {},
@@ -142,6 +147,11 @@ export default {
     this.$store.state.d.db.ome.find({}, (err, docs) => {
       this.xmlItems = docs.map((el) => el.name);
     });
+  },
+  watch: {
+    generation() {
+      this.ome = JSON.parse(JSON.stringify(this.$store.state.a.omeMetaData));
+    },
   },
   methods: {
     updateState() {

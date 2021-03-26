@@ -12,9 +12,15 @@
       />
     </v-col>
     <v-col cols="5">
-      <v-btn @click="move(0)" dark color="blue" :loading="loading">X</v-btn>
-      <v-btn @click="move(1)" dark color="indigo" :loading="loading">Y</v-btn>
-      <v-btn @click="move(2)" dark color="purple" :loading="loading">Z</v-btn>
+      <v-btn @click="move(0)" dark color="blue" :loading="loading"
+        ><v-icon>mdi-record-rec</v-icon> X</v-btn
+      >
+      <v-btn @click="move(1)" dark color="indigo" :loading="loading"
+        ><v-icon>mdi-record-rec</v-icon>Y</v-btn
+      >
+      <v-btn @click="move(2)" dark color="purple" :loading="loading"
+        ><v-icon>mdi-record-rec</v-icon>Z</v-btn
+      >
       <v-icon @click="moveLength = -moveLength">mdi-plus-minus</v-icon>
     </v-col>
     <v-col cols="3">
@@ -82,6 +88,11 @@ export default {
       this.absolutePos = [...this.fix]; // clone
     },
     calcSteps(direction) {
+      /**
+       * calculate how many steps are necessary depending on the direction
+       * @param {number} direction - 0:x 1:y 2:z
+       * @return {number} steps
+       */
       let steps = 0;
       const {
         xFResolution,
@@ -145,7 +156,8 @@ export default {
         });
         this.absolutePos[direction] += this.moveLength;
         this.$store.commit("updatePosition", this.absolutePos);
-        await AbuCommon.register2Db(this.$store.state);
+        await AbuCommon.register2Db(this.$store.state, "move");
+        this.$emit("load-commands-db");
         this.resultItem = retval.data.retarr;
       } catch (e) {
         this.$emit("error-dialog", {

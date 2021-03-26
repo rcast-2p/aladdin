@@ -157,7 +157,9 @@
 <script>
 export default {
   computed: {
-    generation() {},
+    generation() {
+      return this.$store.state.g.generation;
+    },
   },
   data() {
     return {
@@ -171,9 +173,12 @@ export default {
     };
   },
   mounted() {
-    this.scanConfig = JSON.parse(
-      JSON.stringify(this.$store.state.a.scanConfig)
-    );
+    this.scanConfig = { ...this.$store.state.a.scanConfig };
+  },
+  watch: {
+    generation() {
+      this.scanConfig = { ...this.$store.state.a.scanConfig };
+    },
   },
   methods: {
     validationY() {

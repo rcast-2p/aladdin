@@ -129,6 +129,8 @@ class WebsocketWrap:
             time_end = time.perf_counter()
             print(time_end - time_start)
             time.sleep(max(self.duration - time_end + time_start, 0))
+        imgbytes = bytes(np.asarray([0, 0, -1], dtype=np.int32))
+        await websocket.send(imgbytes)
 
     async def recv_img_data(self):
         """

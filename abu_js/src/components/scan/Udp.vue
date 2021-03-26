@@ -101,14 +101,20 @@ export default {
     };
   },
   mounted() {
-    this.udp = this.$store.state.a.udp;
+    this.udp = { ...this.$store.state.a.udp };
   },
   computed: {
     count() {
       return this.$store.state.a.udp.count;
     },
+    generation() {
+      return this.$store.state.g.generation;
+    },
   },
   watch: {
+    generation() {
+      this.udp = { ...this.$store.state.a.udp };
+    },
     count() {
       this.udp.count = this.count;
     },

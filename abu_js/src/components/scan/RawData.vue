@@ -84,8 +84,8 @@ export default {
     };
   },
   mounted() {
-    this.globalConfig = this.$store.state.a.globalConfig;
-    this.fileSave = this.$store.state.a.fileSave;
+    this.globalConfig = { ...this.$store.state.a.globalConfig };
+    this.fileSave = { ...this.$store.state.a.fileSave };
     const da = new Date();
     const daStr = da.toISOString();
     const savePath = `octo_test/${daStr.slice(5, 7) + daStr.slice(8, 10)}/`;
@@ -102,6 +102,17 @@ export default {
   //     this.rawdata.count = this.count;
   //   },
   // },
+  computed: {
+    generation() {
+      return this.$store.state.g.generation;
+    },
+  },
+  watch: {
+    generation() {
+      this.globalConfig = { ...this.$store.state.a.globalConfig };
+      this.fileSave = { ...this.$store.state.a.fileSave };
+    },
+  },
   methods: {
     updateGlobalConfig() {
       this.$store.commit("setObject", {
