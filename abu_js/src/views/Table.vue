@@ -34,7 +34,6 @@ export default {
         return acc;
       }, []);
       this.tiffData.items = axResult.data.data;
-      // console.log(json);
     },
   },
 };

@@ -1,7 +1,5 @@
-import axios from "axios";
 import Vue from "vue";
 import Vuex from "vuex";
-import AbuCommon from "@/assets/js/abu_common";
 
 Vue.use(Vuex);
 
@@ -98,6 +96,7 @@ export default {
         { name: "aomPin", value: 7 },
         { name: "aomRef", value: 8 },
       ],
+      delay: 1000,
     },
     prudaq: {
       host: "192.168.2.104",
@@ -150,35 +149,6 @@ export default {
     },
   },
   getters: {},
-  actions: {
-    async scan(context) {
-      try {
-        const { address, data } = AbuCommon.createScanPostData(context);
-        await axios.post(address, data);
-      } catch (e) {
-        console.error(e);
-      }
-    },
-    async receiver(context) {
-      try {
-        const { address, data } = AbuCommon.createReceiverPostData(context);
-        await axios.post(address, data);
-      } catch (e) {
-        console.error(e);
-      }
-    },
-    async scanNReceive(context) {
-      const { scanAddress, scanData } = AbuCommon.createScanPostData(context);
-      const { address, data } = AbuCommon.createReceiverPostData(context);
-      try {
-        await Promise.all([
-          axios.post(scanAddress, scanData),
-          axios.post(address, data),
-        ]);
-      } catch (e) {
-        console.error(e);
-      }
-    },
-  },
+  actions: {},
   modules: {},
 };

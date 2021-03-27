@@ -23,7 +23,6 @@ export default {
   },
   methods: {
     fileLoad() {
-      console.log(this.file);
       const reader = new FileReader();
       reader.onload = (e) => {
         const arr = [];
@@ -42,7 +41,6 @@ export default {
             arr.push(255);
           }
         });
-        console.log(arr);
         localStorage.setItem("colormap", JSON.stringify(arr));
         this.showColorMap(arr);
       };

@@ -21,11 +21,7 @@ export default {
       const { address, data } = AbuCommon.createScanPostData(this.$store.state);
       try {
         await axios.post(address, data);
-        const newDoc = await AbuCommon.register2Db(
-          this.$store.state,
-          "motorTest"
-        );
-        console.log(newDoc);
+        await AbuCommon.register2Db(this.$store.state, "motorTest");
       } catch (e) {
         this.$emit("error-dialog", {
           title: address,
@@ -36,22 +32,30 @@ export default {
       }
     },
     async start() {
+      const prudaqPostData = await AbuCommon.createPrudaqPostData(
+        this.$store.state
+      );
       const scanPostData = AbuCommon.createScanPostData(this.$store.state);
       const recvPostData = await AbuCommon.createReceiverPostData(
         this.$store.state
       );
       try {
+        const prudaqPost = axios.post(
+          prudaqPostData.address,
+          prudaqPostData.data
+        );
+        scanPostData.data.delay = this.$store.state.a.scanDetailedConfig.delay;
         const scanPost = axios.post(scanPostData.address, scanPostData.data);
         const recvPost = axios.post(recvPostData.address, recvPostData.data);
-        await Promise.all([scanPost, recvPost]);
+        await Promise.all([prudaqPost, scanPost, recvPost]);
 
-        const newDoc = await AbuCommon.register2Db(
+        this.$emit("start-webworker");
+        await AbuCommon.register2Db(
           this.$store.state,
           "scan",
-          recvPostData.uuid
+          recvPostData.data.uuid
         );
         this.$emit("load-commands-db");
-        console.log(newDoc);
       } catch (e) {
         this.$emit("error-dialog", {
           title: "start error",

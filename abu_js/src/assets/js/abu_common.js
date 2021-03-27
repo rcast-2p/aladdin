@@ -66,7 +66,6 @@ export default class AbuCommon {
     const { bbai } = state.a.scanDetailedConfig;
     const bbaiAddress = `http://${bbai.host}:${bbai.port}/stage/scan`;
     const { pinConfig, invert, aomOpenHl } = state.a.scanDetailedConfig;
-    console.log(pinConfig);
     const {
       stepPeriodX,
       stepPeriodY,
@@ -116,6 +115,7 @@ export default class AbuCommon {
    */
   static async register2Db(state, command, uuid = null) {
     const doc = { ...state.a, position: state.g.position, command };
+    console.log(uuid);
     if (uuid !== null) {
       doc.uuid = uuid;
     } else {
@@ -141,7 +141,6 @@ export default class AbuCommon {
    */
   static getOmeDetail(omeMetaData) {
     const opticsOptions = JSON.parse(localStorage.getItem("opticsOptions"));
-    console.log(opticsOptions.Detectors);
     const detector = opticsOptions.Detectors.find(
       (doc) => doc["@Model"] === omeMetaData.detectorName
     );
@@ -209,7 +208,6 @@ export default class AbuCommon {
       );
     });
 
-    console.log(this.getOmeDetail(omeMetaData));
     const ome = {
       omeXml: baseOmeObj[0],
       ...this.getOmeDetail(omeMetaData),

@@ -76,11 +76,6 @@
     </v-row>
     <v-row no-gutters>
       <v-text-field label="description" v-model="description"></v-text-field>
-      <v-text-field
-        label="canvasHeight"
-        v-model.number="canvasHeight"
-        type="number"
-      ></v-text-field>
       <v-btn @click="writeJsonFile" disabled>write</v-btn>
     </v-row>
     <v-row no-gutters>
@@ -123,6 +118,7 @@ export default {
       },
       canvasHeight: 512,
       updated: {},
+      glue: false,
     };
   },
   watch: {
@@ -130,11 +126,17 @@ export default {
       if (this.maximumSli !== val) {
         this.maximumSli = val;
       }
+      if (this.glue) {
+        return;
+      }
       this.imageLoad();
     },
     minimum(val) {
       if (this.minimumSli !== val) {
         this.minimumSli = val;
+      }
+      if (this.glue) {
+        return;
       }
       this.imageLoad();
     },
@@ -242,6 +244,7 @@ export default {
       canvas.width = this.width;
       canvas.height = this.height;
       this.imageLoad(0);
+      this.glue = false;
     },
     async getFileList() {
       const axres = await axios.get("http://localhost:8070/tiff/list", {
@@ -252,6 +255,7 @@ export default {
     glueParent(uuid, folder, maximum, minimum) {
       this.filename = `${uuid}.tiff`;
       this.folder = folder;
+      this.glue = true;
       this.maximum = maximum;
       this.minimum = minimum;
       this.getFileList();
@@ -309,6 +313,8 @@ export default {
       const parsedJson = JSON.parse(configJson);
       this.description = parsedJson.ome.omeXml.description;
       this.configJson = JSON.stringify(parsedJson, null, 2);
+      this.canvasHeight =
+        (512 * parsedJson.scanConfig.lengthY) / parsedJson.scanConfig.lengthX;
     },
   },
 };

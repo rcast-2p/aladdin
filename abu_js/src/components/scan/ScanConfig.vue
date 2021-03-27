@@ -212,7 +212,6 @@ export default {
       this.updateState();
     },
     updateState() {
-      console.log(this.scanConfig);
       this.$store.commit("setObject", {
         key: "scanConfig",
         content: JSON.stringify(this.scanConfig),

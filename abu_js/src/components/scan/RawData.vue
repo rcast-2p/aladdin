@@ -84,13 +84,7 @@ export default {
     };
   },
   mounted() {
-    this.globalConfig = { ...this.$store.state.a.globalConfig };
-    this.fileSave = { ...this.$store.state.a.fileSave };
-    const da = new Date();
-    const daStr = da.toISOString();
-    const savePath = `octo_test/${daStr.slice(5, 7) + daStr.slice(8, 10)}/`;
-    this.fileSave.debug = savePath;
-    this.fileSave.rawData = savePath;
+    this.loadStore();
   },
   // computed: {
   //   count() {
@@ -109,11 +103,19 @@ export default {
   },
   watch: {
     generation() {
-      this.globalConfig = { ...this.$store.state.a.globalConfig };
-      this.fileSave = { ...this.$store.state.a.fileSave };
+      this.loadStore();
     },
   },
   methods: {
+    loadStore() {
+      this.globalConfig = { ...this.$store.state.a.globalConfig };
+      this.fileSave = { ...this.$store.state.a.fileSave };
+      const da = new Date();
+      const daStr = da.toISOString();
+      const savePath = `octo_test/${daStr.slice(5, 7) + daStr.slice(8, 10)}/`;
+      this.fileSave.debug = savePath;
+      this.fileSave.rawData = savePath;
+    },
     updateGlobalConfig() {
       this.$store.commit("setObject", {
         key: "globalConfig",

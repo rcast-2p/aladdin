@@ -136,7 +136,6 @@ export default {
     this.ome = this.$store.state.a.omeMetaData;
     let opticsOptions = JSON.parse(localStorage.getItem("opticsOptions"));
     if (opticsOptions === null) {
-      console.log(opticsOptionsJson);
       opticsOptions = opticsOptionsJson;
       this.noConfigError = true;
     }

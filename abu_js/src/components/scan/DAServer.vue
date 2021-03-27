@@ -70,7 +70,6 @@ export default {
   },
   methods: {
     updateState() {
-      console.log(this.daServer);
       this.$store.commit("setObject", {
         key: "daServer",
         content: JSON.stringify(this.daServer),

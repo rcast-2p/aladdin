@@ -21,7 +21,6 @@ export default {
   components: { TiffFiles },
   methods: {
     recvMessage(event) {
-      console.log(event.data);
       if (event.data.debug === undefined) {
         return;
       }
@@ -32,7 +31,6 @@ export default {
       let oldest = now.setDate(now.getDate() + 1);
       let oldestArg = -1;
       for (let compI = 0; compI < compNum; compI += 1) {
-        console.log(this.$refs[`tiff${compI}`].updated);
         if (oldest > this.$refs[`tiff${compI}`].updated) {
           oldestArg = compI;
           oldest = this.$refs[`tiff${compI}`].updated;

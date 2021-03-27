@@ -22,6 +22,7 @@
               <scan-button
                 @error-dialog="errorDialog"
                 @load-commands-db="loadCommandsDB"
+                @start-webworker="webworkerStart"
               />
             </v-row>
             <scan-config />
@@ -37,6 +38,7 @@
         <viewer
           @error-dialog="errorDialog"
           @load-commands-db="loadCommandsDB"
+          ref="viewer"
         />
         <udp />
         <images />
@@ -140,6 +142,9 @@ export default {
   },
 
   methods: {
+    webworkerStart() {
+      this.$refs.viewer.webworkerRefresh();
+    },
     loadCommandsDB() {
       this.$refs.commands.load();
     },

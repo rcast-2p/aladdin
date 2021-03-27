@@ -88,6 +88,20 @@
               />
             </v-col>
           </v-row>
+          <h2>delay</h2>
+          <v-row>
+            <v-col cols="4">
+              <v-text-field
+                label="delay"
+                v-model.number="scanDetailedConfig.delay"
+                hide-details="auto"
+                dense
+                outlined
+                suffix="ms"
+                type="number"
+              />
+            </v-col>
+          </v-row>
           <h2>range</h2>
           <v-row>
             <v-col cols="8">
@@ -147,7 +161,6 @@ export default {
   },
   methods: {
     updateState() {
-      console.log(this.daServer);
       this.$store.commit(
         "setObject",
         "scanDetailedConfig",

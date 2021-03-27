@@ -61,7 +61,6 @@ export default {
   },
   methods: {
     updateState() {
-      console.log(this.image);
       this.$store.commit("setObject", "image", JSON.stringify(this.image));
     },
   },

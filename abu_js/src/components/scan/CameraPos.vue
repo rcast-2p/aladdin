@@ -171,7 +171,6 @@ export default {
       reader.readAsText(this.logJsonFile);
     },
     customSort(items, _, isDesc) {
-      console.log(items);
       items.sort((a, b) => {
         const aDate = Number(a.uuid.slice(2, 10) + a.uuid.slice(11, 17));
         const bDate = Number(b.uuid.slice(2, 10) + b.uuid.slice(11, 17));
@@ -272,7 +271,6 @@ export default {
       try {
         const historyLoad = JSON.parse(this.historyLoadStr);
         const { db } = this.$store.state;
-        console.log(historyLoad.data);
         db.commands.insert(historyLoad.data, (err, newDoc) => {
           if (err !== null) {
             this.dialog = { show: true, title: "nedb error", text: err };

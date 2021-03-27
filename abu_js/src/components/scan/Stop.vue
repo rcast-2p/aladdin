@@ -38,7 +38,7 @@ export default {
           this.$store.state.a
         );
         this.killLite();
-        const retval = await axios({
+        await axios({
           data: {
             command: "stop",
             ...baseData,
@@ -47,7 +47,6 @@ export default {
           baseURL: bbaiBaseURL,
           url: path,
         });
-        this.resultItem = retval.data.retarr;
       } catch (e) {
         this.$emit("error-dialog", {
           title: this.baseURL + path,

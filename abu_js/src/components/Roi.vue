@@ -147,7 +147,6 @@ export default {
       this.updateXRange();
     },
     maximum(val) {
-      console.log(val);
       this.$refs.chart.updateOptions({
         yaxis: {
           max: val,
@@ -156,7 +155,6 @@ export default {
       });
     },
     minimum(val) {
-      console.log(val);
       this.$refs.chart.updateOptions({
         yaxis: {
           max: this.maximum,

@@ -160,7 +160,6 @@ export default {
     generation() {
       this.$nextTick(() => {
         this.colormap = { ...this.$store.state.a.minMax };
-        console.log(this.colormap);
       });
     },
   },
@@ -180,13 +179,13 @@ export default {
           });
       });
     },
-    async recordMinMax() {
+    async recordMinMax(dialog = false) {
       const docs = await this.getLatest();
       const { uuid } = docs[0];
-      this.updateLatestMinMax(uuid, this.colormap);
+      this.updateLatestMinMax(uuid, this.colormap, dialog);
     },
 
-    updateLatestMinMax(uuid, minMax) {
+    updateLatestMinMax(uuid, minMax, dialog) {
       this.$store.state.d.db.commands.update(
         { uuid },
         { $set: { minMax } },
@@ -194,9 +193,10 @@ export default {
           if (err === null && numReplaced === 1) {
             this.$emit("error-dialog", {
               title: `${uuid} scan complete`,
-              show: true,
+              show: dialog,
               text: `${uuid} scan has been completed.`,
             });
+            this.$emit("load-commands-db");
           } else {
             this.$emit("error-dialog", {
               title: "db update error",
@@ -239,13 +239,8 @@ export default {
       try {
         await axios.post(address, data);
         const { uuid } = data;
-        const newDoc = await AbuCommon.register2Db(
-          this.$store.state,
-          "receiver",
-          uuid
-        );
+        await AbuCommon.register2Db(this.$store.state, "receiver", uuid);
         this.$emit("load-commands-db");
-        console.log(newDoc);
       } catch (e) {
         this.$emit("error-dialog", {
           title: address,
@@ -280,6 +275,12 @@ export default {
       this.worker.postMessage(this.colormap);
       this.recordMinMax();
     },
+    webworkerRefresh() {
+      if (this.workerOn) {
+        this.reset();
+      }
+      this.webworkerStart();
+    },
     reset() {
       /**
        * terminate the web worker and reset canvas.
@@ -287,7 +288,7 @@ export default {
       if (typeof this.worker !== "object") {
         return;
       }
-      this.workerOn = !this.workerOn;
+      this.workerOn = false;
       this.worker.terminate();
       const oldcanv = document.getElementById("canvas");
       const canmom = document.getElementById("canmom");
@@ -303,6 +304,8 @@ export default {
        * @param {number} lengthX
        * @param {number} lengthY
        */
+
+      const canvas = document.getElementById("canvas");
       const { lengthX, lengthY } = this.$store.state.a.scanConfig;
       let styleWidth = 512;
       let styleHeight = 512;
@@ -315,14 +318,20 @@ export default {
         width: `${styleWidth}px`,
         height: `${styleHeight}px`,
       };
+      canvas.style.width = `${styleWidth}px`;
+      canvas.style.height = `${styleHeight}px`;
+      return new Promise((resolve) => {
+        this.$nextTick(() => {
+          resolve(canvas);
+        });
+      });
     },
-    webworkerStart() {
+    async webworkerStart() {
       /**
        * start web worker
        */
-      this.workerOn = !this.workerOn;
-      this.setCanvasPhysicalSize();
-      const canvas = document.getElementById("canvas");
+      this.workerOn = true;
+      const canvas = await this.setCanvasPhysicalSize();
       const { sizeX, sizeY } = this.$store.state.a.imageCalc;
       canvas.width = sizeX;
       canvas.height = sizeY;
@@ -349,7 +358,7 @@ export default {
       );
       this.worker.onmessage = (e) => {
         if (e.data === "end") {
-          this.recordMinMax();
+          this.recordMinMax(true);
           this.$emit("load-commands-db");
           return;
         }

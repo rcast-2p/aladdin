@@ -126,7 +126,6 @@ export default {
       });
     },
     async sendMessage(item) {
-      console.log(item.uuid);
       if (typeof this.tiffViewer !== "object") {
         this.tiffViewer = window.open("/tiff", "tiff");
         await new Promise((resolve) => {
