@@ -593,7 +593,7 @@ paths:
       description: control stage scan
       operationId: stage-scan
       requestBody:
-        description: "pinConfig:16 bit * 12, 0-: 32 bit"
+        description: 'pinConfig:16 bit * 12, 0-: 32 bit'
         content:
           application/json:
             examples:
@@ -655,34 +655,34 @@ paths:
                       - value
                 command:
                   type: string
-                  description: '0'
+                  description: '00'
                 invert:
                   type: integer
-                  description: '1'
+                  description: '01'
                 stepPeriodX:
                   type: integer
-                  description: '2'
+                  description: '02'
                 stepPeriodY:
                   type: integer
-                  description: '3'
+                  description: '03'
                 stepPeriodZ:
                   type: integer
-                  description: '4'
+                  description: '04'
                 aomOpenHl:
                   type: integer
-                  description: '5'
+                  description: '05'
                 aomOpenUs:
                   type: integer
-                  description: '6'
+                  description: '06'
                 xFSteps:
                   type: integer
-                  description: '7'
+                  description: '07'
                 xBSteps:
                   type: integer
-                  description: '8'
+                  description: '08'
                 yFStepSeqs:
                   type: integer
-                  description: '9'
+                  description: '09'
                 yFStepsPerSeq:
                   type: integer
                   description: '10'
@@ -791,25 +791,25 @@ paths:
                       - value
                 command:
                   type: string
-                  description: '0'
+                  description: '00'
                 invert:
                   type: integer
-                  description: '1'
+                  description: '01'
                 stepPeriodX:
                   type: integer
-                  description: '2'
+                  description: '02'
                 stepPeriodY:
                   type: integer
-                  description: '3'
+                  description: '03'
                 stepPeriodZ:
                   type: integer
-                  description: '4'
+                  description: '04'
                 aomOpenHl:
                   type: integer
-                  description: '5'
+                  description: '05'
                 goBack:
                   type: integer
-                  description: '6'
+                  description: '06'
                 uuid:
                   type: string
               required:
@@ -825,5 +825,61 @@ paths:
       responses:
         '200':
           description: OK
+      tags:
+        - stage-scan
+  /tiff/list:
+    get:
+      description: listup tiff in the designated folder.
+      operationId: tiff-list
+      responses:
+        '200':
+          description: OK
+      summary: /tiff/list
+      tags:
+        - stage-scan
+      parameters:
+        - schema:
+            type: string
+            example: "0320"
+          in: query
+          name: folder
+          required: true
+          description: ''
+  /tiff/file:
+    get:
+      description: get tiff file
+      operationId: tiff-file
+      parameters:
+        - schema:
+            type: string
+            example: "0320"
+          in: query
+          name: folder
+          required: true
+          description: ''
+        - schema:
+            type: string
+            example: "aw20210323-225248.tiff"
+          in: query
+          name: filename
+          required: true
+          description: ''
+        - schema:
+            type: string
+            example: "tiff,json"
+          in: query
+          name: filetype
+          required: true
+          description: ''
+        - schema:
+            type: boolean
+          in: query
+          name: renew
+          required: false
+          description: ''
+      responses:
+        '200':
+          description: OK
+      summary: /tiff/file
       tags:
         - stage-scan

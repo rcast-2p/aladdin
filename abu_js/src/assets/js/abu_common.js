@@ -65,11 +65,8 @@ export default class AbuCommon {
   static createScanPostData(state) {
     const { bbai } = state.a.scanDetailedConfig;
     const bbaiAddress = `http://${bbai.host}:${bbai.port}/stage/scan`;
-    const {
-      pinConfig,
-      invert,
-      aomOpenHl,
-    } = state.a.scanDetailedConfig.pinConfig;
+    const { pinConfig, invert, aomOpenHl } = state.a.scanDetailedConfig;
+    console.log(pinConfig);
     const {
       stepPeriodX,
       stepPeriodY,

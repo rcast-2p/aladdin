@@ -1,6 +1,12 @@
 # abu_js
 
-:
+This is a microscope controlling GUI. CI, CD (continuous integration and continuous delivery) are set, and when you push to `master` branch, GitHub actions automatically build the source and deploy it to https://rcast-2p.github.io/abu/.
+
+## how to use
+
+If you want to use https://rcast-2p.github.io/abu/ you need enable mixed content to access `http` (non `https`) API.
+- [How Do I Enable Mixed Content in My Browser? | Adobe Target](https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en#task_FF297A08F66E47A588C14FD67C037B3A)
+Or you can build the source by yourself or get the product of build and run it on `docker nginx server` or equivalent server.
 
 
 ## /prudaq
@@ -53,7 +59,8 @@
 npm ls
 ```
 
-## Project setup
+## develop
+### Project setup
 ```
 npm install
 ```

@@ -25,10 +25,12 @@ export default {
       const path = "/stage/aom";
       try {
         this.loading = true;
+        const command = "aom";
         const retval = await axios({
           data: {
             ...baseData,
             aomOnoff,
+            command,
           },
           baseURL: bbaiBaseURL,
           url: path,

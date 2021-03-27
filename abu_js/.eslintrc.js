@@ -20,6 +20,8 @@ module.exports = {
     "no-else-return": "off",
     indent: "off",
     "object-curly-newline": "off",
+    "arrow-body-style": "off",
+    "implicit-arrow-linebreak": "off",
     camelcase: [
       "error",
       {

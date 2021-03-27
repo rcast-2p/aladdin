@@ -81,7 +81,7 @@
         v-model.number="canvasHeight"
         type="number"
       ></v-text-field>
-      <v-btn @click="writeJsonFile">write</v-btn>
+      <v-btn @click="writeJsonFile" disabled>write</v-btn>
     </v-row>
     <v-row no-gutters>
       <v-textarea label="json" v-model="configJson"></v-textarea>
@@ -116,7 +116,7 @@ export default {
       description: "",
       imgMax: 0,
       imgMin: 0,
-      windowId: 0,
+      windowId: 1,
       snackbar: {
         show: false,
         txt: "",
@@ -206,6 +206,7 @@ export default {
             this.minimum
           )
         ];
+        this.updated = new Date();
       }
 
       const arr = new Uint8ClampedArray(
@@ -248,6 +249,14 @@ export default {
       });
       this.fileList = axres.data.data.fileList;
     },
+    glueParent(uuid, folder, maximum, minimum) {
+      this.filename = `${uuid}.tiff`;
+      this.folder = folder;
+      this.maximum = maximum;
+      this.minimum = minimum;
+      this.getFileList();
+      this.getFiles();
+    },
     getFiles() {
       this.getTiffFile();
       this.getJsonFile();
@@ -276,12 +285,12 @@ export default {
         });
         this.snackbar = {
           show: true,
-          text: `ファイル ${this.filename}への書き込みに成功しました。${axres.description}`,
+          text: `Succeeded to write to a file ${this.filename}.${axres.description}`,
         };
       } catch (e) {
         this.snackbar = {
           show: true,
-          text: `ファイル ${this.filename}への書き込みエラーが発生しました。`,
+          text: `Error writing to a file ${this.filename}`,
         };
         console.error(e);
       }
@@ -298,7 +307,7 @@ export default {
       const blob = new Blob([axres.data]);
       const configJson = await blob.text();
       const parsedJson = JSON.parse(configJson);
-      this.description = parsedJson.description;
+      this.description = parsedJson.ome.omeXml.description;
       this.configJson = JSON.stringify(parsedJson, null, 2);
     },
   },

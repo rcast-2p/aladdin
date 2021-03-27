@@ -11,7 +11,13 @@
       :sort-desc="true"
     >
       <template v-slot:[`item.uuid`]="{ item }">
-        <v-btn text @click="sendMessage(item)">{{ item.uuid }}</v-btn>
+        <v-btn
+          v-if="item.command === 'scan' || item.command === 'receiver'"
+          text
+          @click="sendMessage(item)"
+          small
+          ><v-icon>mdi-image</v-icon>{{ item.uuid }}</v-btn
+        ><span v-else>{{ item.uuid }}</span>
       </template>
       <template v-slot:[`item.updatedAt`]="{ item }">
         <v-btn @click="loadSwConfig(item)">load</v-btn>
@@ -68,10 +74,9 @@ export default {
       title: "",
     },
     expanded: [],
-    tiffViewer: {},
+    tiffViewer: "",
   }),
   async mounted() {
-    this.tiffViewer = window.open("/tiff", "tiff");
     try {
       this.items = await this.loadDatabase();
     } catch (err) {
@@ -120,9 +125,21 @@ export default {
         }
       });
     },
-    sendMessage(item) {
+    async sendMessage(item) {
       console.log(item.uuid);
-      this.tiffViewer.postMessage(item.uuid);
+      if (typeof this.tiffViewer !== "object") {
+        this.tiffViewer = window.open("/tiff", "tiff");
+        await new Promise((resolve) => {
+          setTimeout(resolve, 3000, 3000);
+        });
+      }
+      this.tiffViewer.postMessage({
+        uuid: item.uuid,
+        debug: item.fileSave.debug,
+        maximum: item.minMax.maximum,
+        minimum: item.minMax.minimum,
+      });
+      this.tiffViewer.focus();
     },
     async loadDatabase() {
       return new Promise((resolve, reject) => {
