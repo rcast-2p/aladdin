@@ -11,6 +11,7 @@
 <script>
 import axios from "@/plugins/axios";
 import AbuCommon from "@/assets/js/abu_common";
+import pack from "../../../package.json";
 
 export default {
   data: () => ({
@@ -45,6 +46,7 @@ export default {
           prudaqPostData.data
         );
         scanPostData.data.delay = this.$store.state.a.scanDetailedConfig.delay;
+        recvPostData.data.apiVersion = pack.version;
         const scanPost = axios.post(scanPostData.address, scanPostData.data);
         const recvPost = axios.post(recvPostData.address, recvPostData.data);
         await Promise.all([prudaqPost, scanPost, recvPost]);

@@ -106,6 +106,7 @@ import Roi from "@/components/Roi.vue";
 import ShowColorMap from "@/components/ShowColorMap.vue";
 import AbuCommon from "@/assets/js/abu_common";
 import axios from "@/plugins/axios";
+import pack from "../../../package.json";
 
 export default {
   components: { Roi, ShowColorMap },
@@ -236,6 +237,7 @@ export default {
       const { data, address } = await AbuCommon.createReceiverPostData(
         this.$store.state
       );
+      data.apiVersion = pack.version;
       try {
         await axios.post(address, data);
         const { uuid } = data;

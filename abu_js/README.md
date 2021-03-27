@@ -8,6 +8,9 @@ If you want to use https://rcast-2p.github.io/abu/ you need enable mixed content
 - [How Do I Enable Mixed Content in My Browser? | Adobe Target](https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html?lang=en#task_FF297A08F66E47A588C14FD67C037B3A)
 Or you can build the source by yourself or get the product of build and run it on `docker nginx server` or equivalent server.
 
+## setup base OME
+
+- [Schema documentation for ome.xsd](https://www.openmicroscopy.org/Schemas/Documentation/Generated/OME-2016-06/ome.html)
 
 ## /prudaq
 
