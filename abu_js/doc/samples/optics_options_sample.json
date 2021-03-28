@@ -1,0 +1,39 @@
+{
+  "Detectors": [
+    {
+      "@ID": "urn:lsid:antenna.k.wasabi:Detector:PMT2101/M",
+      "@Manufacturer": "Thorlabs",
+      "@Model": "PMT2101/M",
+      "@SerialNumber": "",
+      "@Type": "PMT",
+      "@Gain": "50",
+      "@Offset": "0.88"
+    }
+  ],
+  "Objectives": [
+    {
+      "@ID": "urn:lsid:antenna.k.wasabi:Objective:sigma20x0.45",
+      "@Immersion": "Air",
+      "@LensNA": "0.45",
+      "@Manufacturer": "Sigma",
+      "@Model": "PAL-20-NIR-HR-LC00",
+      "@NominalMagnification": "20",
+      "@WorkingDistance": "20",
+      "@WorkingDistanceUnit": "mm"
+    }
+  ],
+  "Filters": [
+    {
+      "@ID": "urn:lsid:antenna.k.wasabi:Filter:PMT2101/M",
+      "@Manufacturer": "chroma",
+      "@Model": "D535/40M"
+    }
+  ],
+  "Dichroics": [
+    {
+      "@ID": "urn:lsid:antenna.k.wasabi:Dichroic:Di03-R635-t1",
+      "@Manufacturer": "semrock",
+      "@Model": "Di03-R635-t1"
+    }
+  ]
+}

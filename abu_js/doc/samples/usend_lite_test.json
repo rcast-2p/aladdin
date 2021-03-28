@@ -1,0 +1,146 @@
+{
+  "daServer": {
+    "enabled": false,
+    "host": "0.0.0.0",
+    "path": "/da/mock",
+    "port": 9090
+  },
+  "udp": {
+    "bufferNum": 4096,
+    "bufferSize": 64020,
+    "count": 496,
+    "enabled": true,
+    "host": "192.168.2.100",
+    "port": 60000,
+    "samplingRate": 6.25,
+    "extraCount": 300
+  },
+  "fileSave": {
+    "debug": "octo_test/0220/",
+    "enabled": true,
+    "rawData": "octo_test/0220/",
+    "rawDataSave": false,
+    "tiffSave": true
+  },
+  "globalConfig": {
+    "verbosity": true,
+    "galvo": false
+  },
+  "image": {
+    "dataChan": 0,
+    "pixelDataNum": 10,
+    "threshold": 100
+  },
+  "imageCalc": {
+    "sizeX": 100,
+    "sizeY": 20,
+    "sizeZ": 1,
+    "xFSteps": 100,
+    "xBSteps": 100,
+    "yFStepSeqs": 20,
+    "yFStepsPerSeq": 5,
+    "yBSteps": 100,
+    "zFStepSeqs": 1,
+    "zFStepsPerSeq": 100,
+    "zBSteps": 100
+  },
+  "websocket": {
+    "enabled": false,
+    "host": "0.0.0.0",
+    "interval": 100,
+    "port": 8072
+  },
+  "scanConfig": {
+    "lengthX": 100,
+    "lengthY": 100,
+    "lengthZ": 100,
+    "yFLengthPerSeq": 5,
+    "zFLengthPerSeq": 100,
+    "xyRepeatNum": 1,
+    "xyzRepeatNum": 1,
+    "aomOpenUs": 1,
+    "stepPeriodX": 75,
+    "stepPeriodY": 500,
+    "stepPeriodZ": 500
+  },
+  "scanDetailedConfig": {
+    "bbai": {
+      "host": "192.168.2.101",
+      "port": 8070
+    },
+    "invert": 1,
+    "aomOpenHl": 1,
+    "sReso": {
+      "xFResolution": 1,
+      "xBResolution": 1,
+      "yFResolution": 1,
+      "yBResolution": 1,
+      "zFResolution": 1,
+      "zBResolution": 1
+    },
+    "pinConfig": [
+      {
+        "name": "plsPin1",
+        "value": 1
+      },
+      {
+        "name": "dirPin1",
+        "value": 2
+      },
+      {
+        "name": "plsPin2",
+        "value": 3
+      },
+      {
+        "name": "dirPin2",
+        "value": 4
+      },
+      {
+        "name": "plsPin3",
+        "value": 5
+      },
+      {
+        "name": "dirPin3",
+        "value": 6
+      },
+      {
+        "name": "aomPin",
+        "value": 7
+      },
+      {
+        "name": "aomRef",
+        "value": 8
+      }
+    ],
+    "delay": 1000
+  },
+  "prudaq": {
+    "host": "192.168.2.104",
+    "port": 8070
+  },
+  "receiver": {
+    "host": "0.0.0.0",
+    "port": 8070
+  },
+  "omeMetaData": {
+    "baseOme": "atto488",
+    "laserPower": 0,
+    "pmtGain": 0,
+    "objectiveName": "olympus",
+    "filterName": "",
+    "dichroicName": "",
+    "imageName": "",
+    "detectorName": "",
+    "description": ""
+  },
+  "minMax": {
+    "minimum": 0,
+    "maximum": 65536
+  },
+  "position": [0, 0, 0],
+  "command": "receiver",
+  "uuid": "ic20210328-144602",
+  "_id": "8iRwV4ispKFf0gfZ",
+  "createdAt": "2021-03-28T05:46:02.647Z",
+  "updatedAt": "2021-03-28T05:46:02.647Z"
+}

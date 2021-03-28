@@ -4,11 +4,6 @@
     <v-textarea label="stage hardware config" v-model="config"> </v-textarea>
     <v-btn @click="update">update</v-btn>
 
-    <h1>software configuration</h1>
-    <v-textarea label="stage software config" v-model="softwareConfig">
-    </v-textarea>
-    <v-btn @click="scUpdate">update</v-btn>
-
     <h1>colormap</h1>
     <color-map />
     <optics-options />
@@ -27,7 +22,6 @@ import OpticsOptions from "@/components/config/Optics.vue";
 export default {
   data: () => ({
     config: "",
-    softwareConfig: "",
     dialog: { show: false, text: "", title: "" },
   }),
   components: { ColorMap, OpticsOptions },
@@ -67,18 +61,6 @@ export default {
           show: true,
           title: "Congratulations",
           text: "stageHwConfig was successfully set.",
-        };
-      } catch (e) {
-        this.handleJsonParseError(e);
-      }
-    },
-    scUpdate() {
-      try {
-        this.$store.commit("setState", this.softwareConfig);
-        this.dialog = {
-          show: true,
-          title: "Congratulations",
-          text: "successfully set.",
         };
       } catch (e) {
         this.handleJsonParseError(e);

@@ -20,6 +20,10 @@ export default {
     canvas.width = 256;
     canvas.height = 1;
     this.ctx = canvas.getContext("2d");
+    if (localStorage.getItem("colormap")) {
+      const arr = JSON.parse(localStorage.getItem("colormap"));
+      this.showColorMap(arr);
+    }
   },
   methods: {
     fileLoad() {

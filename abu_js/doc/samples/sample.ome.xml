@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?> <OME xmlns="http://www.openmicroscopy.org/Schemas/OME/2016-06" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Creator="bombyx.kanzaki.abu" UUID="urn:uuid:cb8b431f-ab4e-4e54-8351-96d4eb785014" xsi:schemaLocation="http://www.openmicroscopy.org/Schemas/OME/2016-06 http://www.openmicroscopy.org/Schemas/OME/2016-06/ome.xsd">
+  <Experiment ID="urn:lsid:fiber.great.two-photon:Experiment:TPM00" Type="PGIDocumentation">
+    <Description>Atto 488 honey bee</Description>
+    <ExperimenterRef ID="urn:lsid:fiber.great.two-photon:Experimenter:0">
+  </ExperimenterRef>  </Experiment>
+  <Experimenter Email="far@antenna.imi.i.fiber-laser.ac.jp" FirstName="Rechard" ID="urn:lsid:fiber.great.two-photon:Experimenter:0" Institution="fiber-laser.bombyx" LastName="Pineman">
+  </Experimenter>
+  <Experimenter Email="main@antenna.imi.i.fiber-laser.ac.jp" FirstName="Hodgkin" ID="urn:lsid:fiber.great.two-photon:Experimenter:1" Institution="fiber-laser.bombyx" LastName="Huxley">
+  </Experimenter>
+  <Instrument ID="urn:lsid:fiber.great.two-photon:Instrument:TPM1030">
+    <Microscope Manufacturer="bombyx" Model="TPM1030 2020-12" Type="Other">
+    </Microscope>
+    <Laser ID="urn:lsid:fiber.great.two-photon:LightSource:honey-bee1030" LaserMedium="Other" Manufacturer="bombyx.honey-bee" Power="19" Pulse="ModeLocked" RepetitionRate="167" RepetitionRateUnit="MHz" Model="honey-bee1030" SerialNumber="000" Tuneable="false" Wavelength="1030" Type="Other">
+    </Laser>
+    <Detector ID="urn:lsid:fiber.great.two-photon:Detector:PMT2101/M" Manufacturer="Thorlabs" Model="PMT2101/M" SerialNumber="" Type="PMT" Gain="50" Offset="0.88">
+    </Detector>
+    <Objective ID="urn:lsid:fiber.great.two-photon:Objective:sigma20x0.45" Immersion="Air" LensNA="0.45" Manufacturer="Sigma" Model="PAL-20-NIR-HR-LC00" NominalMagnification="20" WorkingDistance="20" WorkingDistanceUnit="mm">
+    </Objective>
+    <Filter ID="urn:lsid:fiber.great.two-photon:Filter:PMT2101/M" Manufacturer="chroma" Model="D535/40M">
+    </Filter>
+    <Dichroic ID="urn:lsid:fiber.great.two-photon:Dichroic:Di03-R635-t1" Manufacturer="semrock" Model="Di03-R635-t1">
+    </Dichroic>
+  </Instrument>
+  <Image ID="Image:0" Name="tubhiswt">
+    <AcquisitionDate>2020-12-11T17:34:50+09:00</AcquisitionDate>
+    <Description>atto488 honey bee</Description>
+    <InstrumentRef ID="urn:lsid:fiber.great.two-photon:Instrument:TPM1030">
+    </InstrumentRef>
+    <Pixels BigEndian="false" DimensionOrder="XYZTC" ID="Pixels:0" SizeC="1" SizeT="1" SizeX="1" SizeY="1" SizeZ="5" PhysicalSizeX="1" PhysicalSizeY="1" PhysicalSizeZ="25" Type="uint16">
+      <Channel Color="-1" ID="Channel:0:0" SamplesPerPixel="1250">
+        <LightSourceSettings ID="urn:lsid:fiber.great.two-photon:LightSource:honey-bee1030">
+        </LightSourceSettings>
+        <DetectorSettings ID="urn:lsid:fiber.great.two-photon:Detector:PMT2101/M">
+        </DetectorSettings>
+      </Channel>
+      <TiffData>
+        <UUID FileName="hy20201211-173450.tiff">urn:uuid:08165452-5197-0000-2020-121117345000</UUID>
+      </TiffData>
+      <Plane TheC="0" TheT="0" TheZ="0" PositionX="0" PositionY="0" PositionZ="0">
+      </Plane>
+    </Pixels>
+  </Image>
+</OME>
