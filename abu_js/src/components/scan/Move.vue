@@ -149,7 +149,7 @@ export default {
           steps,
           moveLength: this.moveLength,
         };
-        const retval = await axios({
+        await axios({
           data: sendData,
           baseURL: bbaiBaseURL,
           url: path,
@@ -158,7 +158,6 @@ export default {
         this.$store.commit("updatePosition", this.absolutePos);
         await AbuCommon.register2Db(this.$store.state, "move");
         this.$emit("load-commands-db");
-        this.resultItem = retval.data.retarr;
       } catch (e) {
         this.$emit("error-dialog", {
           title: bbaiBaseURL + path,
