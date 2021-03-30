@@ -7,5 +7,5 @@ services:
       - "61990:80"
     volumes:
       - ./default.conf:/etc/nginx/conf.d/default.conf
-      - ../dist/abu-gh-pages:/var/www/html/abu
+      - ../abu-gh-pages:/var/www/html/abu
     restart: always
