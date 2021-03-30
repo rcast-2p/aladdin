@@ -26,7 +26,7 @@ export default {
       try {
         this.loading = true;
         const command = "aom";
-        const retval = await axios({
+        await axios({
           data: {
             ...baseData,
             aomOnoff,
@@ -35,7 +35,6 @@ export default {
           baseURL: bbaiBaseURL,
           url: path,
         });
-        this.resultItem = retval.data.retarr;
         this.aomOnoff = aomOnoff === 1;
       } catch (e) {
         this.$emit("error-dialog", {
