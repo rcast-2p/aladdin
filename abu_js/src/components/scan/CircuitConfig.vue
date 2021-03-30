@@ -24,6 +24,7 @@
                 outlined
                 hide-details="auto"
                 dense
+                @change="updateState"
               />
             </v-col>
             <v-col cols="3">
@@ -35,6 +36,7 @@
                 outlined
                 hide-details="auto"
                 dense
+                @change="updateState"
               />
             </v-col>
             <v-col cols="3">
@@ -49,6 +51,7 @@
                 type="number"
                 hide-details="auto"
                 dense
+                @change="updateState"
               />
             </v-col>
           </v-row>
@@ -66,6 +69,7 @@
                 hide-details="auto"
                 dense
                 outlined
+                @change="updateState"
               />
             </v-col>
             <v-col cols="4">
@@ -75,6 +79,7 @@
                 hide-details="auto"
                 dense
                 outlined
+                @change="updateState"
               />
             </v-col>
             <v-col cols="4">
@@ -85,6 +90,7 @@
                 dense
                 outlined
                 type="number"
+                @change="updateState"
               />
             </v-col>
           </v-row>
@@ -99,6 +105,7 @@
                 outlined
                 suffix="ms"
                 type="number"
+                @change="updateState"
               />
             </v-col>
           </v-row>
@@ -161,11 +168,10 @@ export default {
   },
   methods: {
     updateState() {
-      this.$store.commit(
-        "setObject",
-        "scanDetailedConfig",
-        JSON.stringify(this.scanDetailedConfig)
-      );
+      this.$store.commit("setObject", {
+        key: "scanDetailedConfig",
+        content: JSON.stringify(this.scanDetailedConfig),
+      });
     },
   },
 };

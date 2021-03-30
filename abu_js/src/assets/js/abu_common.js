@@ -115,7 +115,6 @@ export default class AbuCommon {
    */
   static async register2Db(state, command, uuid = null) {
     const doc = { ...state.a, position: state.g.position, command };
-    console.log(uuid);
     if (uuid !== null) {
       doc.uuid = uuid;
     } else {

@@ -61,7 +61,10 @@ export default {
   },
   methods: {
     updateState() {
-      this.$store.commit("setObject", "image", JSON.stringify(this.image));
+      this.$store.commit("setObject", {
+        key: "image",
+        content: JSON.stringify(this.image),
+      });
     },
   },
 };
