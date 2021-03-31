@@ -311,7 +311,7 @@ export default {
       const blob = new Blob([axres.data]);
       const configJson = await blob.text();
       const parsedJson = JSON.parse(configJson);
-      this.description = parsedJson.ome.omeXml.description;
+      this.description = parsedJson.ome.description;
       this.configJson = JSON.stringify(parsedJson, null, 2);
       this.canvasHeight =
         (512 * parsedJson.scanConfig.lengthY) / parsedJson.scanConfig.lengthX;

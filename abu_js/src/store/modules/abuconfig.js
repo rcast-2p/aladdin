@@ -40,7 +40,7 @@ export default {
     imageCalc: {
       sizeX: 100, // currently the same as lengthX
       sizeY: 100, // calculated from lengthY, yFResolution, yFLengthPerSeq
-      sizeZ: 5, // calculated from lengthZ and zFLengthPerSeq
+      sizeZ: 5, // calculated from lengthZ and zFLengthPerSeq, xyRepeatNum, xyzRepeatNum
       xFSteps: 400, // calculated from lengthX and xFResolution
       xBSteps: 400, // calculated from lengthX and xBResolution
       yFStepSeqs: 400, // calculated from lengthY and yFLengthPerSeq

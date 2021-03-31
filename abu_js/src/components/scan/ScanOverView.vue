@@ -28,8 +28,10 @@ export default {
     },
     sizeZ() {
       return (
-        this.$store.state.a.scanConfig.lengthZ /
-        this.$store.state.a.scanConfig.zFLengthPerSeq
+        (this.$store.state.a.scanConfig.lengthZ /
+          this.$store.state.a.scanConfig.zFLengthPerSeq) *
+        this.$store.state.a.scanConfig.xyRepeatNum *
+        this.$store.state.a.scanConfig.xyzRepeatNum
       );
     },
     zFLengthPerSeq() {
