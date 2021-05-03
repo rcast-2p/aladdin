@@ -87,3 +87,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Documentation
+
+See [Kocal/jsdoc-vuejs: 📖 A JSDoc plugin for documenting .vue files.](https://github.com/Kocal/jsdoc-vuejs) for detail.

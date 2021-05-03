@@ -14,6 +14,9 @@
 </template>
 
 <script>
+/**
+ * @vue-data {Number} version - current version
+ */
 import TopMenu from "./components/TopMenu.vue";
 import pack from "../package.json";
 

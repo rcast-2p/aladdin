@@ -91,7 +91,11 @@
     </v-row>
     <show-color-map />
     <v-switch v-model="showRoiGraph" />
-    <roi :average="info.average" :count="count" v-if="showRoiGraph" />
+    <roi
+      :average="info.average"
+      :roiGeneration="roiGeneration"
+      v-if="showRoiGraph"
+    />
     <v-dialog v-model="dialog.show"
       ><v-card
         ><v-card-title>{{ dialog.title }}</v-card-title
@@ -101,21 +105,23 @@
   </div>
 </template>
 <script>
-// import Worker from "worker-loader!../worker/sample.worker";
 import Roi from "@/components/Roi.vue";
 import ShowColorMap from "@/components/ShowColorMap.vue";
 import AbuCommon from "@/assets/js/abu_common";
 import axios from "@/plugins/axios";
 import pack from "../../../package.json";
 
+/**
+ * @module components/scan/Viewer
+ */
 export default {
   components: { Roi, ShowColorMap },
   data() {
     return {
       mouse: {
-        pos: [0, 0, 10, 10],
+        rawPos: [0, 0, 10, 10],
         showPos: [0, 0, 10, 10],
-        state: 0,
+        state: 0, // 0 (UPPER LEFT) or 1 (LOWER RIGHT)
       },
       colormap: {
         maximum: 28160,
@@ -138,14 +144,14 @@ export default {
         zIndex: 0,
       },
       showRoiGraph: false,
+      dialog: { show: false, text: "", title: "" },
+      roiGeneration: 0,
       roiStyle: {
         top: "20px",
         left: "20px",
         width: "200px",
         height: "100px",
       },
-      dialog: { show: false, text: "", title: "" },
-      count: 0,
       canvasStyle: {
         width: `512px`,
         height: `512px`,
@@ -328,10 +334,11 @@ export default {
         });
       });
     },
+    /**
+     * start a webworker and give canvas control to the web worker.
+     * Also set up communicator with webworker.
+     */
     async webworkerStart() {
-      /**
-       * start web worker
-       */
       this.workerOn = true;
       const canvas = await this.setCanvasPhysicalSize();
       const { sizeX, sizeY } = this.$store.state.a.imageCalc;
@@ -368,9 +375,9 @@ export default {
           maximum: e.data.volMax,
           minimum: e.data.volMin,
           average: e.data.average,
-          zIndex: e.data.zIndex,
+          zIndex: e.data.zIndex + 1,
         };
-        this.count += 1;
+        this.roiGeneration += 1;
       };
 
       canvas.addEventListener(
@@ -381,8 +388,8 @@ export default {
           const ypos = this.mouse.state * 2 + 1;
           const xdoublepos = e.clientX - rect.left;
           const ydoublepos = e.clientY - rect.top;
-          this.mouse.pos[xpos] = xdoublepos;
-          this.mouse.pos[ypos] = ydoublepos;
+          this.mouse.rawPos[xpos] = xdoublepos;
+          this.mouse.rawPos[ypos] = ydoublepos;
           this.mouse.showPos[xpos] = (
             (xdoublepos / rect.width) *
             sizeX
@@ -396,23 +403,23 @@ export default {
           let sw;
           let sh;
           // if (this.mouse.state === 1) {
-          if (this.mouse.pos[0] < this.mouse.pos[2]) {
+          if (this.mouse.rawPos[0] < this.mouse.rawPos[2]) {
             // eslint-disable-next-line
-            sx = this.mouse.pos[0];
-            sw = this.mouse.pos[2] - this.mouse.pos[0];
+            sx = this.mouse.rawPos[0];
+            sw = this.mouse.rawPos[2] - this.mouse.rawPos[0];
           } else {
             // eslint-disable-next-line
-            sx = this.mouse.pos[2];
-            sw = this.mouse.pos[0] - this.mouse.pos[2];
+            sx = this.mouse.rawPos[2];
+            sw = this.mouse.rawPos[0] - this.mouse.rawPos[2];
           }
-          if (this.mouse.pos[1] < this.mouse.pos[3]) {
+          if (this.mouse.rawPos[1] < this.mouse.rawPos[3]) {
             // eslint-disable-next-line
-            sy = this.mouse.pos[1];
-            sh = this.mouse.pos[3] - this.mouse.pos[1];
+            sy = this.mouse.rawPos[1];
+            sh = this.mouse.rawPos[3] - this.mouse.rawPos[1];
           } else {
             // eslint-disable-next-line
-            sy = this.mouse.pos[3];
-            sh = this.mouse.pos[1] - this.mouse.pos[3];
+            sy = this.mouse.rawPos[3];
+            sh = this.mouse.rawPos[1] - this.mouse.rawPos[3];
           }
           this.roiStyle = {
             top: `${sy}px`,

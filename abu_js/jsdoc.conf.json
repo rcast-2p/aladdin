@@ -1,0 +1,16 @@
+{
+  "plugins": ["node_modules/jsdoc-vuejs", "plugins/markdown"],
+  "source": {
+    "includePattern": "\\.(vue|js)$",
+    "include": [
+      "src/",
+      "src/views/",
+      "src/components/",
+      "src/components/scan/",
+      "README.md"
+    ]
+  },
+  "opts": {
+    "template": "node_modules/minami"
+  }
+}

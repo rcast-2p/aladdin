@@ -48,7 +48,7 @@
 import VueApexCharts from "vue-apexcharts";
 
 export default {
-  props: { average: Number, count: Number },
+  props: { average: Number, roiGeneration: Number },
   components: { apexchart: VueApexCharts },
   data() {
     return {
@@ -131,7 +131,7 @@ export default {
     this.updateXRange();
   },
   watch: {
-    count() {
+    roiGeneration() {
       this.x += 1;
       const data = this.chartData;
       data.shift();

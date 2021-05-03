@@ -13,6 +13,11 @@
 import axios from "@/plugins/axios";
 import AbuCommon from "@/assets/js/abu_common";
 
+/**
+ * @module components/scan/Aom
+ * @vue-data {boolean} [loading=false]
+ * @vue-data {boolean} [aomOnoff=false]
+ */
 export default {
   data() {
     return { loading: false, aomOnoff: false };

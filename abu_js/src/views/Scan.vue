@@ -18,7 +18,6 @@
             />
             <v-row>
               <stop-ctrl @error-dialog="errorDialog" />
-
               <scan-button
                 @error-dialog="errorDialog"
                 @load-commands-db="loadCommandsDB"
@@ -67,7 +66,6 @@ import MoveCtrl from "@/components/scan/Move.vue";
 import StopCtrl from "@/components/scan/Stop.vue";
 import Commands from "@/components/scan/Commands.vue";
 import CameraPos from "@/components/scan/CameraPos.vue";
-// import axios from "@/plugins/axios";
 import Viewer from "@/components/scan/Viewer.vue";
 import Aom from "@/components/scan/Aom.vue";
 import DAServer from "@/components/scan/DAServer.vue";
@@ -82,9 +80,11 @@ import Udp from "@/components/scan/Udp.vue";
 import Websocket from "@/components/scan/Websocket.vue";
 import RawData from "@/components/scan/RawData.vue";
 
-// import ScanConfig from "@/components/ScanConfig.vue";
-// import { mapState } from "vuex";
-
+/**
+ * @vue-data {String} tab - camera or scan
+ * @vue-data {object} dialog - necessary variables for showing a dialog
+ * @module views/Scan
+ */
 export default {
   components: {
     Aom,
@@ -107,13 +107,6 @@ export default {
   },
   data() {
     return {
-      // resultItem: [],
-      // resultHeader: [
-      //   { text: "command", value: "command" },
-      //   { text: "returncode", value: "returncode" },
-      //   { text: "stdout", value: "stdout" },
-      //   { text: "stderr", value: "stderr" },
-      // ],
       dialog: { show: false, text: "", title: "" },
       tab: "scan",
     };
@@ -163,6 +156,9 @@ export default {
           });
       });
     },
+    /**
+     * show a dialog
+     */
     errorDialog(obj) {
       this.dialog = obj;
     },
